@@ -1,76 +1,81 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import './Gallery.css'
 
 const Gallery = ({ id }) => {
   const [selectedProject, setSelectedProject] = useState(null)
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isScrolled, setIsScrolled] = useState(false)
   const carouselRef = useRef(null)
+  const modalRef = useRef(null)
 
   const projects = [
     {
       id: 1,
-      title: "Wildlife Illustration Series",
-      category: "Digital Art",
-      description: "A collection of detailed wildlife illustrations showcasing various species in their natural habitats.",
-      thumbnail: "https://picsum.photos/400/500?random=1",
-      images: ["https://picsum.photos/600/800?random=1"]
+      title: "Modern Architecture Design",
+      category: "Architecture",
+      description: "Contemporary architectural design showcasing clean lines and innovative space utilization. This project features sustainable materials and innovative structural solutions that blend form and function seamlessly. The design prioritizes natural light, open spaces, and environmental integration.",
+      thumbnail: "/images/gallery/architecture-1.jpg",
+      images: [
+        "/images/gallery/architecture-1.jpg",
+        "/images/gallery/design-1.jpg",
+        "/images/gallery/art-1.jpg",
+        "/images/gallery/creative-1.jpg",
+        "/images/gallery/portfolio-1.jpg"
+      ]
     },
     {
       id: 2,
-      title: "Nature App UI Design",
+      title: "UI/UX Design System",
       category: "UI/UX Design",
-      description: "Mobile application design for nature enthusiasts with intuitive navigation and organic visuals.",
-      thumbnail: "https://picsum.photos/400/500?random=2",
-      images: ["https://picsum.photos/600/800?random=2"]
+      description: "Comprehensive design system with modern interfaces and user-friendly interactions. This design system includes a complete component library, design tokens, and accessibility guidelines. It ensures consistency across all digital products while maintaining flexibility for creative expression.",
+      thumbnail: "/images/gallery/design-1.jpg",
+      images: [
+        "/images/gallery/design-1.jpg",
+        "/images/gallery/architecture-1.jpg",
+        "/images/gallery/portfolio-1.jpg",
+        "/images/gallery/art-1.jpg"
+      ]
     },
     {
       id: 3,
-      title: "Conservation Website",
-      category: "Web Design",
-      description: "Website design for wildlife conservation organization with donation functionality.",
-      thumbnail: "https://picsum.photos/400/500?random=3",
-      images: ["https://picsum.photos/600/800?random=3"]
+      title: "Digital Art Collection",
+      category: "Digital Art",
+      description: "Contemporary digital artwork featuring vibrant colors and abstract compositions. This collection explores the intersection of traditional artistic principles and modern digital techniques. Each piece tells a unique story through color, form, and digital manipulation.",
+      thumbnail: "/images/gallery/art-1.jpg",
+      images: [
+        "/images/gallery/art-1.jpg",
+        "/images/gallery/creative-1.jpg",
+        "/images/gallery/design-1.jpg",
+        "/images/gallery/architecture-1.jpg",
+        "/images/gallery/portfolio-1.jpg"
+      ]
     },
     {
       id: 4,
-      title: "Animal Pattern Design",
-      category: "Pattern Design",
-      description: "Repeatable patterns featuring animal motifs for textile and product design.",
-      thumbnail: "https://picsum.photos/400/500?random=4",
-      images: ["https://picsum.photos/600/800?random=4"]
+      title: "Creative Development",
+      category: "Development",
+      description: "Innovative coding projects showcasing modern web development techniques. This portfolio includes responsive web applications, interactive experiences, and cutting-edge frontend implementations. Each project demonstrates technical excellence and creative problem-solving.",
+      thumbnail: "/images/gallery/creative-1.jpg",
+      images: [
+        "/images/gallery/creative-1.jpg",
+        "/images/gallery/portfolio-1.jpg",
+        "/images/gallery/design-1.jpg"
+      ]
     },
     {
       id: 5,
-      title: "Eco Brand Identity",
-      category: "Branding",
-      description: "Complete brand identity for sustainable products company with nature-inspired logo.",
-      thumbnail: "https://picsum.photos/400/500?random=5",
-      images: ["https://picsum.photos/600/800?random=5"]
-    },
-    {
-      id: 6,
-      title: "Wildlife Photography",
-      category: "Photography",
-      description: "Nature photography collection capturing wildlife behavior and natural landscapes.",
-      thumbnail: "https://picsum.photos/400/500?random=6",
-      images: ["https://picsum.photos/600/800?random=6"]
-    },
-    {
-      id: 7,
-      title: "Educational App Design",
-      category: "UI/UX Design",
-      description: "Interactive learning app for children about wildlife and environmental conservation.",
-      thumbnail: "https://picsum.photos/400/500?random=7",
-      images: ["https://picsum.photos/600/800?random=7"]
-    },
-    {
-      id: 8,
-      title: "Nature Journal Design",
-      category: "Print Design",
-      description: "Custom journal design with wildlife illustrations and nature-inspired layouts.",
-      thumbnail: "https://picsum.photos/400/500?random=8",
-      images: ["https://picsum.photos/600/800?random=8"]
+      title: "Portfolio Showcase",
+      category: "Portfolio",
+      description: "Professional portfolio presentation highlighting various design and development projects. This comprehensive showcase demonstrates a wide range of skills from conceptual design to final implementation. It represents years of dedicated work and creative exploration.",
+      thumbnail: "/images/gallery/portfolio-1.jpg",
+      images: [
+        "/images/gallery/portfolio-1.jpg",
+        "/images/gallery/art-1.jpg",
+        "/images/gallery/creative-1.jpg",
+        "/images/gallery/architecture-1.jpg",
+        "/images/gallery/design-1.jpg"
+      ]
     }
   ]
 
@@ -94,6 +99,21 @@ const Gallery = ({ id }) => {
     setCurrentIndex(index)
     setSelectedProject(projects[index])
   }
+
+  // Handle modal scroll for parallax effect
+  const handleModalScroll = () => {
+    if (modalRef.current) {
+      const scrollTop = modalRef.current.scrollTop
+      setIsScrolled(scrollTop > 100)
+    }
+  }
+
+  // Reset scroll state when modal closes
+  useEffect(() => {
+    if (!selectedProject) {
+      setIsScrolled(false)
+    }
+  }, [selectedProject])
 
   return (
     <section id={id} className="gallery-section">
@@ -210,14 +230,35 @@ const Gallery = ({ id }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
             onClick={() => setSelectedProject(null)}
           >
             <motion.div
-              className="modal-content"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              className={`modal-content ${isScrolled ? 'scrolled' : ''}`}
+              initial={{ 
+                scale: 0.8, 
+                opacity: 0,
+                y: 50
+              }}
+              animate={{ 
+                scale: 1, 
+                opacity: 1,
+                y: 0
+              }}
+              exit={{ 
+                scale: 0.8, 
+                opacity: 0,
+                y: 50
+              }}
+              transition={{ 
+                duration: 0.5, 
+                ease: [0.25, 0.1, 0.25, 1.0],
+                scale: { duration: 0.6 },
+                opacity: { duration: 0.4 }
+              }}
               onClick={(e) => e.stopPropagation()}
+              ref={modalRef}
+              onScroll={handleModalScroll}
             >
               <button 
                 className="close-modal"
@@ -230,16 +271,59 @@ const Gallery = ({ id }) => {
                 <img 
                   src={selectedProject.images[0]} 
                   alt={selectedProject.title}
+                  className="modal-hero-image"
                 />
+                <div className="image-overlay">
+                  <h2>{selectedProject.title}</h2>
+                  <span className="modal-category">{selectedProject.category}</span>
+                </div>
               </div>
               
               <div className="modal-info">
-                <h2>{selectedProject.title}</h2>
-                <span className="modal-category">{selectedProject.category}</span>
-                <p>{selectedProject.description}</p>
+                <div className="project-details">
+                  <div className="detail-section">
+                    <h3>Project Overview</h3>
+                    <p>{selectedProject.description}</p>
+                  </div>
+                  
+                  <div className="detail-section">
+                    <h3>Technologies Used</h3>
+                    <div className="tech-tags">
+                      <span className="tech-tag">React</span>
+                      <span className="tech-tag">Framer Motion</span>
+                      <span className="tech-tag">CSS3</span>
+                      <span className="tech-tag">JavaScript</span>
+                    </div>
+                  </div>
+                  
+                  <div className="detail-section">
+                    <h3>Additional Images</h3>
+                    <div className="additional-images">
+                      {selectedProject.images.map((image, index) => (
+                        <img 
+                          key={index}
+                          src={image} 
+                          alt={`${selectedProject.title} ${index + 1}`}
+                          className="additional-image"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
                 <div className="modal-actions">
-                  <button className="btn-primary">View Live Project</button>
-                  <button className="btn-secondary">See More Details</button>
+                  <button className="btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V19A2 2 0 0 0 5 21H19A2 2 0 0 0 21 19V9H15V1H21Z"/>
+                    </svg>
+                    View Live Project
+                  </button>
+                  <button className="btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                    </svg>
+                    Download Case Study
+                  </button>
                 </div>
               </div>
             </motion.div>

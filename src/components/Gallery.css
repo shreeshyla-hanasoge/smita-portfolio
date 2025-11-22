@@ -237,96 +237,310 @@
   transform: scale(1.1);
 }
 
-/* Project Modal */
+/* Project Modal - Full Page SPA Experience */
 .project-modal {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.98);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
   z-index: 1000;
-  padding: 20px;
+  backdrop-filter: blur(15px);
+  overflow: hidden;
 }
 
 .modal-content {
   background: white;
-  border-radius: 20px;
-  max-width: 900px;
   width: 100%;
-  max-height: 90vh;
+  height: 100vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+  transform-origin: center center;
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px; /* Space for topbar */
+  margin-top: -80px; /* Compensate for padding */
 }
 
 .close-modal {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
   border: none;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 50%;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   cursor: pointer;
-  z-index: 10;
+  z-index: 1010;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .close-modal:hover {
   background: #e74c3c;
   color: white;
-  transform: scale(1.1);
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
 }
 
 .modal-images {
   width: 100%;
-  height: 400px;
+  height: 70vh;
   overflow: hidden;
+  position: relative;
+  transform-style: preserve-3d;
 }
 
-.modal-images img {
+.modal-images::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(11, 61, 44, 0.4), rgba(17, 106, 68, 0.4));
+  z-index: 2;
+  pointer-events: none;
+}
+
+.modal-hero-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: translateZ(-10px) scale(2);
+  transition: transform 0.8s ease-out;
+  will-change: transform;
+}
+
+.modal-images:hover .modal-hero-image {
+  transform: translateZ(-5px) scale(1.8);
+}
+
+/* Parallax effect on scroll */
+.modal-content.scrolled .modal-hero-image {
+  transform: translateZ(-20px) scale(2.5);
 }
 
 .modal-info {
-  padding: 40px;
+  padding: 50px;
 }
 
-.modal-info h2 {
-  font-size: 2rem;
-  color: #2c3e50;
-  margin-bottom: 10px;
+/* Modal Hero Image Overlay with Parallax */
+.image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent 0%, rgba(0, 0, 0, 0.1) 30%, rgba(0, 0, 0, 0.8) 100%);
+  padding: 60px 50px 40px;
+  color: white;
+  z-index: 3;
+  transform: translateZ(0);
+  backdrop-filter: blur(5px);
 }
 
-.modal-category {
-  color: var(--primary);
-  font-size: 1rem;
+.image-overlay h2 {
+  font-size: 3.5rem;
+  margin-bottom: 12px;
+  font-weight: 800;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+  letter-spacing: -0.5px;
+  transform: translateY(20px);
+  opacity: 0;
+  animation: slideInUp 0.8s ease 0.3s forwards;
+}
+
+.image-overlay .modal-category {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.3rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 3px;
   font-weight: 600;
-  display: block;
-  margin-bottom: 20px;
+  transform: translateY(30px);
+  opacity: 0;
+  animation: slideInUp 0.8s ease 0.5s forwards;
 }
 
-.modal-info p {
-  color: #6c757d;
-  line-height: 1.6;
-  margin-bottom: 30px;
-  font-size: 1.1rem;
+/* Project Details */
+.project-details {
+  margin-bottom: 40px;
 }
+
+.detail-section {
+  margin-bottom: 35px;
+}
+
+.detail-section h3 {
+  font-size: 1.4rem;
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-weight: 600;
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 8px;
+}
+
+.detail-section p {
+  color: #6c757d;
+  line-height: 1.7;
+  font-size: 1.1rem;
+  margin-bottom: 0;
+}
+
+/* Tech Tags */
+.tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tech-tag {
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid var(--primary);
+}
+
+/* Creative Image Gallery Layout - Masonry Style */
+.additional-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-auto-rows: 200px;
+  gap: 20px;
+  margin-top: 30px;
+  perspective: 1200px;
+}
+
+.additional-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1.0);
+  cursor: pointer;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  transform-style: preserve-3d;
+  position: relative;
+  overflow: hidden;
+  grid-row: span 1;
+}
+
+/* Varied heights for masonry effect */
+.additional-image:nth-child(3n+1) {
+  grid-row: span 2;
+  height: 250px;
+}
+
+.additional-image:nth-child(5n+2) {
+  grid-row: span 1;
+  height: 180px;
+}
+
+.additional-image:nth-child(4n+3) {
+  grid-row: span 3;
+  height: 300px;
+}
+
+.additional-image::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(11, 61, 44, 0.4), rgba(17, 106, 68, 0.4));
+  opacity: 0;
+  transition: all 0.4s ease;
+  z-index: 1;
+}
+
+.additional-image::after {
+  content: '🔍 View Larger';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: all 0.4s ease;
+  z-index: 2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.additional-image:hover {
+  transform: translateY(-8px) rotate3d(0.5, 1, 0.5, 3deg) scale(1.05);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.additional-image:hover::before {
+  opacity: 0.8;
+}
+
+.additional-image:hover::after {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Creative staggered animation for images */
+.additional-image {
+  animation: fadeInScale 0.8s ease forwards;
+  opacity: 0;
+}
+
+.additional-image:nth-child(1) { animation-delay: 0.1s; }
+.additional-image:nth-child(2) { animation-delay: 0.2s; }
+.additional-image:nth-child(3) { animation-delay: 0.3s; }
+.additional-image:nth-child(4) { animation-delay: 0.4s; }
+.additional-image:nth-child(5) { animation-delay: 0.5s; }
+.additional-image:nth-child(6) { animation-delay: 0.6s; }
+.additional-image:nth-child(7) { animation-delay: 0.7s; }
 
 .modal-actions {
   display: flex;
   gap: 15px;
   flex-wrap: wrap;
+  border-top: 1px solid #eee;
+  padding-top: 30px;
+}
+
+/* Keyframe Animations */
+@keyframes slideInUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    transform: scale(0.8) translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Staggered animations for additional images */
+.additional-image {
+  animation: fadeInScale 0.8s ease forwards;
+  opacity: 0;
 }
 
 .btn-primary,
