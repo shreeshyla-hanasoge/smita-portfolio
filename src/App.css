@@ -1,0 +1,147 @@
+/* App.css - Main application styles */
+
+.App {
+  width: 100%;
+  position: relative;
+}
+
+/* Video background container */
+.video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--background);
+}
+
+.video-background video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* filter: brightness(0.7); */
+  background-color: #000;
+  min-height: 100vh;
+}
+
+/* Overlay for better text readability */
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+}
+
+/* Landing section specific styles */
+.landing-section {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 40px;
+  z-index: 2;
+}
+
+.intro-text {
+  color: #8c8c8c;
+  max-width: 600px;
+  /* text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); */
+}
+
+.intro-text h1 {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+}
+
+.intro-text p {
+  font-size: 1.8rem;
+  opacity: 0.9;
+}
+
+/* Gallery section */
+.gallery-section {
+  min-height: 100vh;
+  background: var(--background);
+  padding: 80px 0;
+  position: relative;
+  z-index: 3;
+}
+
+/* Contact section */
+.contact-section {
+  min-height: 50vh;
+  background: var(--background);
+  padding: 80px 0;
+  color: var(--text);
+  position: relative;
+  z-index: 3;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .landing-section {
+    padding: 20px;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .intro-text h1 {
+    font-size: 2.5rem;
+  }
+  
+  .intro-text p {
+    font-size: 1.4rem;
+  }
+  
+  .gallery-section,
+  .contact-section {
+    padding: 40px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .intro-text h1 {
+    font-size: 2rem;
+  }
+  
+  .intro-text p {
+    font-size: 1.2rem;
+  }
+  
+  .landing-section {
+    padding: 15px;
+  }
+}
+
+/* Smooth scrolling behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Performance optimizations */
+.video-background video {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .video-background video {
+    display: none;
+  }
+  
+  .video-background {
+    background: var(--background);
+  }
+}
