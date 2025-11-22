@@ -1,0 +1,16 @@
+# Large video files that caused push errors
+Screen Recording*.mov
+*.mov
+*.mp4
+*.webm
+
+# Build outputs
+dist/
+build/
+
+# Node modules
+node_modules/
+
+# System files
+.DS_Store
+Thumbs.db
