@@ -5,7 +5,9 @@ import './Gallery.css'
 const Gallery = ({ id }) => {
   const [selectedProject, setSelectedProject] = useState(null)
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [scrollY, setScrollY] = useState(0)
   const carouselRef = useRef(null)
+  const modalRef = useRef(null)
 
   const projects = [
     {
@@ -81,6 +83,22 @@ const Gallery = ({ id }) => {
     }, 5000)
     return () => clearInterval(interval)
   }, [projects.length])
+
+  // Parallax scroll effect for modal
+  useEffect(() => {
+    const handleScroll = () => {
+      if (modalRef.current) {
+        const scrollTop = modalRef.current.scrollTop
+        setScrollY(scrollTop)
+      }
+    }
+
+    const modal = modalRef.current
+    if (modal) {
+      modal.addEventListener('scroll', handleScroll)
+      return () => modal.removeEventListener('scroll', handleScroll)
+    }
+  }, [selectedProject])
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + projects.length) % projects.length)
@@ -214,23 +232,32 @@ const Gallery = ({ id }) => {
           >
             <motion.div
               className="modal-content"
+              ref={modalRef}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <button 
+              <button
                 className="close-modal"
                 onClick={() => setSelectedProject(null)}
               >
                 ×
               </button>
-              
-              <div className="modal-images">
-                <img 
-                  src={selectedProject.images[0]} 
-                  alt={selectedProject.title}
-                />
+
+              <div className="modal-hero-wrapper">
+                <motion.div
+                  className="modal-images"
+                  style={{
+                    transform: `translateY(${scrollY * 0.5}px)`
+                  }}
+                >
+                  <img
+                    src={selectedProject.images[0]}
+                    alt={selectedProject.title}
+                  />
+                  <div className="modal-hero-overlay"></div>
+                </motion.div>
               </div>
               
               <div className="modal-info">
