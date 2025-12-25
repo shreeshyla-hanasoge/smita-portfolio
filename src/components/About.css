@@ -1,0 +1,126 @@
+/* About Section Styles */
+.about-section {
+  padding: 100px 0;
+  background-color: #EBEBEB; /* Light gray background matching screenshot */
+  position: relative;
+  overflow: hidden;
+}
+
+.about-content {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.about-content h2 {
+  text-align: center;
+  font-family: 'Reenie Beanie', cursive;
+  font-size: 3.5rem;
+  color: #4A4A4A;
+  margin-bottom: 60px;
+  font-weight: 400;
+}
+
+.about-grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+}
+
+.about-image-wrapper {
+  flex-shrink: 0;
+}
+
+.about-image-wrapper img {
+  width: 320px;
+  height: 320px;
+  object-fit: none;
+  border-radius: 60px 20px 60px 20px; /* Organic leaf-like shape */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  background-color: white;
+}
+
+.about-text {
+  text-align: left;
+  max-width: 600px;
+}
+
+.about-text p {
+  font-family: 'Barlow', sans-serif;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+.about-text p:last-child {
+  margin-bottom: 0;
+}
+
+.about-social {
+  margin-top: 30px;
+  font-weight: 500;
+  color: #555;
+}
+
+.about-social a {
+  color: #7BB369; /* Green link color */
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+  margin-left: 5px;
+}
+
+.about-social a:hover {
+  color: #5a8c4c;
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .about-grid {
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+  }
+
+  .about-text {
+    text-align: center;
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-section {
+    padding: 80px 0;
+  }
+
+  .about-content h2 {
+    font-size: 2.8rem;
+    margin-bottom: 40px;
+  }
+
+  .about-image-wrapper img {
+    width: 280px;
+    height: 280px;
+  }
+
+  .about-text p {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-section {
+    padding: 60px 0;
+  }
+
+  .about-content h2 {
+    font-size: 2.5rem;
+  }
+  
+  .about-image-wrapper img {
+    width: 240px;
+    height: 240px;
+  }
+}

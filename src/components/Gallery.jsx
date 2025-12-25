@@ -90,6 +90,12 @@ const Gallery = ({ id }) => {
                     }}
                   >
                     <Link to={`/project/${project.id}`} className="project-link">
+                      {isCenter && (
+                        <div className="project-info">
+                          <h3>{project.title}</h3>
+                          {/* <span className="project-category">{project.category}</span> */}
+                        </div>
+                      )}
                       <div className="project-image">
                         <motion.img 
                           src={project.thumbnail} 
@@ -106,12 +112,6 @@ const Gallery = ({ id }) => {
                           <span className="view-project">View Project</span>
                         </div>
                       </div>
-                      {isCenter && (
-                        <div className="project-info">
-                          <h3>{project.title}</h3>
-                          <span className="project-category">{project.category}</span>
-                        </div>
-                      )}
                     </Link>
                   </motion.div>
                 )

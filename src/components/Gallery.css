@@ -17,7 +17,7 @@
   font-family: 'Reenie Beanie', cursive;
   font-size: 4rem;
   text-align: center;
-  color: var(--primary);
+  color: #4A4A4A;
   margin-bottom: 20px;
   font-weight: 400;
 }
@@ -26,7 +26,7 @@
   text-align: center;
   font-size: 1.2rem;
   color: var(--muted);
-  margin-bottom: 60px;
+  margin-bottom: 0px;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
@@ -38,7 +38,6 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 40px 0;
 }
 
 .carousel-wrapper {
@@ -164,7 +163,7 @@
 /* Project Info */
 .project-info {
   text-align: center;
-  margin-top: 20px;
+  margin-bottom: 40px;
   opacity: 0;
   animation: fadeInUp 0.6s ease 0.2s forwards;
 }
@@ -200,7 +199,7 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 2px solid var(--primary);
+  border: none;
   background: white;
   color: var(--primary);
   cursor: pointer;
@@ -619,4 +618,9 @@
   font-family: 'Barlow', sans-serif;
   font-size: 1rem;
   line-height: 1.7;
+}
+
+.project-info h4 {
+  font-size: 2rem;
+  padding-top: 32px;
 }

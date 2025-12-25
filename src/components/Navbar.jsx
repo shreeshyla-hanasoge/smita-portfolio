@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useLocation, useNavigate } from 'react-router-dom'
 import './Navbar.css'
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,10 +18,16 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
+  const handleNavigation = (sectionId) => {
+    // If we're on the home page (/), scroll to the section
+    if (location.pathname === '/') {
+      const element = document.getElementById(sectionId)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
+    } else {
+      // If we're on any other page (like project page), navigate to home with hash
+      navigate(`/#${sectionId}`)
     }
     setIsMobileMenuOpen(false)
   }
@@ -37,7 +46,11 @@ const Navbar = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <span className="brand-text">Smita</span>
+          <img 
+            src="/images/gallery/Updated_logo_light_wo_tagline.svg" 
+            alt="Smita Logo" 
+            className="logo-image"
+          />
         </motion.div>
 
         {/* Desktop Navigation */}
@@ -46,7 +59,7 @@ const Navbar = () => {
             className="nav-link"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => scrollToSection('landing')}
+            onClick={() => handleNavigation('landing')}
           >
             Home
           </motion.button>
@@ -54,7 +67,7 @@ const Navbar = () => {
             className="nav-link"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => scrollToSection('gallery')}
+            onClick={() => handleNavigation('gallery')}
           >
             Projects
           </motion.button>
@@ -62,7 +75,15 @@ const Navbar = () => {
             className="nav-link"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => scrollToSection('contact')}
+            onClick={() => handleNavigation('about')}
+          >
+            About
+          </motion.button>
+          <motion.button 
+            className="nav-link"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleNavigation('contact')}
           >
             Contact
           </motion.button>
@@ -85,9 +106,10 @@ const Navbar = () => {
           animate={{ opacity: isMobileMenuOpen ? 1 : 0, y: isMobileMenuOpen ? 0 : -20 }}
           transition={{ duration: 0.3 }}
         >
-          <button onClick={() => scrollToSection('landing')}>Home</button>
-          <button onClick={() => scrollToSection('gallery')}>Projects</button>
-          <button onClick={() => scrollToSection('contact')}>Contact</button>
+          <button onClick={() => handleNavigation('landing')}>Home</button>
+          <button onClick={() => handleNavigation('gallery')}>Projects</button>
+          <button onClick={() => handleNavigation('about')}>About</button>
+          <button onClick={() => handleNavigation('contact')}>Contact</button>
         </motion.div>
       </div>
     </motion.nav>

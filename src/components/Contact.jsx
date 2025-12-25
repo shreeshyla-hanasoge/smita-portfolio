@@ -21,7 +21,7 @@ const Contact = ({ id }) => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="contact-subtitle"
         >
-          Interested in collaborating or have a project in mind? Get in touch!
+          We’re on the lookout for fresh, fun opportunities to create, experiment, and collaborate. If you have projects where a mix of colour, creativity, and storytelling could make a difference, we would love to get involved!
         </motion.p>
 
         <div className="contact-content">
@@ -39,9 +39,9 @@ const Contact = ({ id }) => {
                 </svg>
               </div>
               <div className="contact-details">
-                <h3>Email</h3>
-                <a href="mailto:smita@example.com" className="contact-link">
-                  smita@example.com
+                {/* <h3>Email</h3> */}
+                <a href="mailto:smita@studiomintleaf.in" className="contact-link">
+                  smita@studiomintleaf.in
                 </a>
               </div>
             </div>
@@ -54,21 +54,8 @@ const Contact = ({ id }) => {
                 </svg>
               </div>
               <div className="contact-details">
-                <h3>Location</h3>
+                {/* <h3>Location</h3> */}
                 <span className="contact-text">Bangalore, India</span>
-              </div>
-            </div>
-
-            <div className="contact-item">
-              <div className="contact-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <polyline points="12 6 12 12 16 14"/>
-                </svg>
-              </div>
-              <div className="contact-details">
-                <h3>Availability</h3>
-                <span className="contact-text">Available for freelance projects</span>
               </div>
             </div>
           </motion.div>
@@ -100,7 +87,7 @@ const Contact = ({ id }) => {
               
               <div className="form-group">
                 <textarea 
-                  placeholder="Tell me about your project" 
+                  placeholder="Tell us about your project" 
                   className="form-textarea"
                   rows="5"
                   required
@@ -108,7 +95,7 @@ const Contact = ({ id }) => {
               </div>
               
               <button type="submit" className="form-submit">
-                Send Message
+                <span>Send Message</span>
               </button>
             </form>
           </motion.div>
@@ -120,7 +107,7 @@ const Contact = ({ id }) => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
         >
-          <p>&copy; 2024 Smita. All rights reserved.</p>
+          <p>&copy; 2024 Studio Mintleaf. All rights reserved.</p>
           <p>Wildlife Artist & UI/UX Designer</p>
         </motion.div>
       </div>

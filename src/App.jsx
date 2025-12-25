@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Navbar from './components/Navbar'
 import Landing from './components/Landing'
+import About from './components/About'
 import Gallery from './components/Gallery'
 import Contact from './components/Contact'
 import ProjectPage from './components/ProjectPage'
@@ -18,6 +19,7 @@ function App() {
             <>
               <Landing id="landing" />
               <Gallery id="gallery" />
+              <About id="about" />
               <Contact id="contact" />
             </>
           } />
