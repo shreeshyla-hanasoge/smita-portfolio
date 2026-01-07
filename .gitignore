@@ -1,3 +1,7 @@
+# Environment variables
+.env
+.env.local
+
 # Large video files that caused push errors
 Screen Recording*.mov
 *.mov

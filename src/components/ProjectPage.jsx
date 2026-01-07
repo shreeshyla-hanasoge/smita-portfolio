@@ -35,7 +35,7 @@ export const projects = [
       dimensions: "3500x4500px",
       completionDate: "October 2024",
       inspiration: "Celebrating the native Indian Tulip tree and its cultural significance in Indian flora"
-    }
+    },
   },
   {
     id: 3,
@@ -51,7 +51,14 @@ export const projects = [
       dimensions: "24x36 inches",
       completionDate: "September 2024",
       inspiration: "Raising awareness about wild cat conservation through accessible educational materials"
-    }
+    },
+    testimonials: [
+      {
+        text: "Whoever saw the cover page art raved about it.",
+        author: "Sindhu Kulkarni",
+        role: "Owner at Tacit Games"
+      }
+    ]
   },
   {
     id: 4,
@@ -83,7 +90,14 @@ export const projects = [
       dimensions: "24x36 inches",
       completionDate: "September 2024",
       inspiration: "Raising awareness about wild cat conservation through accessible educational materials"
-    }
+    },
+    testimonials: [
+      {
+        text: "Working with Smita was a delight. She was engrossed, ready to learn and delivered smoothly even on tight timelines. Her illustrations are beautiful and sound",
+        author: "Misha Bansal",
+        role: "Content creator at Early Bird"
+      }
+    ]
   },
   {
     id: 6,
@@ -99,11 +113,23 @@ export const projects = [
       dimensions: "24x36 inches",
       completionDate: "September 2024",
       inspiration: "Raising awareness about wild cat conservation through accessible educational materials"
-    }
+    },
+    testimonials: [
+      {
+        text: "We are a volunteer group from L Street, Koramangala, and worked with Smita to beautify our street through art. Her enthusiasm, patience, and personal involvement, along with her nature-inspired artwork- concepts and boards, have beautifully transformed the street and made the collaboration truly joyful. We look forward to working with her much more.",
+        author: "Carol Pinto",
+        role: "Volunteer, Friends of L street"
+      },
+      {
+        text: "Smita has a very pleasing aesthetic and design sense and a real feel for nature. The combination results in stunning designs, whether its street art, information boards or any other visual medium. Friends of L Street were lucky to work with Smitha to create joy on our street",
+        author: "Ashish Patel",
+        role: "Volunteer, Friends of L street"
+      }
+    ]
   },
   {
     id: 7,
-    title: "FruitStudies",
+    title: "Fruit Illustrations",
     category: "Educational Poster",
     description: "Created during my early days of painting, these fruit studies were a way to slow down and learn through observation. Simple subjects allowed space to focus on colour, texture and technique, laying the groundwork for later work.",
     thumbnail: "/images/gallery/thumbnails/fruit.jpg",
@@ -115,7 +141,19 @@ export const projects = [
       dimensions: "24x36 inches",
       completionDate: "September 2024",
       inspiration: "Raising awareness about wild cat conservation through accessible educational materials"
-    }
+    },
+    testimonials: [
+      {
+        text: "The requirement from us was so huge that we were not sure of meeting the aggressive timeline. However, after looking at the sample picture Smita created, we kind of forgot the timeline; but she didn't! Every photo kept exceeding our expectations and made us wait for the next illustration eagerly.",
+        author: "Anantha Jois",
+        role: "Software engineer"
+      },
+      {
+        text: "Smita created a very comfortable space to discuss the work and get started according to my wishes. She was very professional in all communication and kept me up to date on the progress of the project throughout. She was open to make the changes I suggested mid-work and also gave her point of view from the artist's perspective. All this lead to her completing the work on time and it came out perfect in all respects.",
+        author: "Jithin V",
+        role: "A very satisfied client"
+      }
+    ]
   },
 ]
 
@@ -198,6 +236,11 @@ const ProjectPage = () => {
     if (foundProject) {
       document.title = `${foundProject.title} - Smita Portfolio`
     }
+    
+    // Cleanup function to reset title when component unmounts
+    return () => {
+      document.title = "Smita Portfolio"
+    }
   }, [projectId])
 
   if (!project) {
@@ -272,32 +315,26 @@ const ProjectPage = () => {
       )}
 
       {/* Testimonials Section */}
-      <section className="testimonials-section">
-        <div className="container">
-          <h3>Client Testimonials</h3>
-          <div className="testimonials-grid">
-            <div className="testimonial-card">
-              <div className="testimonial-content">
-                <p>"Smita's attention to detail and artistic vision brought our project to life in ways we couldn't have imagined. The botanical illustrations were scientifically accurate yet beautifully artistic."</p>
-              </div>
-              <div className="testimonial-author">
-                <span className="author-name">Dr. Sarah Chen</span>
-                <span className="author-role">Botanical Research Institute</span>
-              </div>
-            </div>
-            
-            <div className="testimonial-card">
-              <div className="testimonial-content">
-                <p>"Working with Smita was an absolute pleasure. Her ability to translate complex educational concepts into visually engaging materials made our wild cat conservation campaign incredibly effective."</p>
-              </div>
-              <div className="testimonial-author">
-                <span className="author-name">Michael Rodriguez</span>
-                <span className="author-role">Wildlife Conservation NGO</span>
-              </div>
+      {project.testimonials && project.testimonials.length > 0 && (
+        <section className="testimonials-section">
+          <div className="container">
+            <h3>Client Testimonials</h3>
+            <div className="testimonials-grid">
+              {project.testimonials.map((testimonial, index) => (
+                <div key={index} className="testimonial-card">
+                  <div className="testimonial-content">
+                    <p>"{testimonial.text}"</p>
+                  </div>
+                  <div className="testimonial-author">
+                    <span className="author-name">{testimonial.author}</span>
+                    {testimonial.role && <span className="author-role">{testimonial.role}</span>}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Explore Other Projects Carousel */}
       <section className="explore-projects">
@@ -331,7 +368,7 @@ const ProjectPage = () => {
                         animate={{
                           scale: isCenter ? 1 : 0.85 - Math.abs(position) * 0.05,
                           opacity: isVisible ? 1 : 0.2,
-                          zIndex: 20 - Math.abs(position) * 2,
+                          zIndex: isCenter ? 100 : 50 - Math.abs(position),
                           x: `${position * 360}px`,
                           rotateY: position * -15,
                           z: Math.abs(position) * -50
@@ -344,6 +381,12 @@ const ProjectPage = () => {
                         }}
                       >
                         <Link to={`/project/${otherProject.id}`} className="project-link">
+                          {isCenter && (
+                            <div className="project-info">
+                              <h4>{otherProject.title}</h4>
+                              {/* <span className="project-category">{otherProject.category}</span> */}
+                            </div>
+                          )}
                           <div className="project-image">
                             <motion.img 
                               src={otherProject.thumbnail} 
@@ -359,12 +402,6 @@ const ProjectPage = () => {
                               <span className="view-project">View Project</span>
                             </div>
                           </div>
-                          {isCenter && (
-                            <div className="project-info">
-                              <h4>{otherProject.title}</h4>
-                              {/* <span className="project-category">{otherProject.category}</span> */}
-                            </div>
-                          )}
                         </Link>
                       </motion.div>
                     )
@@ -415,16 +452,25 @@ const ProjectPage = () => {
                   <path d="M15 18l-6-6 6-6"/>
                 </svg>
               </button>
-              <motion.img 
-                key={lightboxIndex}
-                src={project.images[lightboxIndex]} 
-                alt={`${project.title} view ${lightboxIndex + 1}`}
-                className="lightbox-image"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-              />
+              <AnimatePresence mode="popLayout">
+                <motion.img 
+                  key={lightboxIndex}
+                  src={project.images[lightboxIndex]} 
+                  alt={`${project.title} view ${lightboxIndex + 1}`}
+                  className="lightbox-image"
+                  initial={{ opacity: 0, scale: 0.9, x: "-50%", y: "-50%" }}
+                  animate={{ opacity: 1, scale: 1, x: "-50%", y: "-50%" }}
+                  exit={{ opacity: 0, scale: 0.9, x: "-50%", y: "-50%" }}
+                  transition={{ duration: 0.3 }}
+                  style={{ 
+                    position: 'absolute', 
+                    top: '50%', 
+                    left: '50%',
+                    maxWidth: '90%',
+                    maxHeight: '90vh'
+                  }}
+                />
+              </AnimatePresence>
               <button className="lightbox-nav next" onClick={nextLightboxImage}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M9 18l6-6-6-6"/>

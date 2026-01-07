@@ -42,7 +42,7 @@
 
 .contact-item {
   display: flex;
-  align-items: anchor-center;
+  align-items: center;
   gap: 1.5rem;
   /* padding: 1.5rem; */
   background: #ffffff;
@@ -78,6 +78,13 @@
   font-family: 'Barlow', sans-serif;
 }
 
+.contact-details a {
+  color: #7BB369; /* Green link color */
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
 .contact-link {
   color: #4A4A4A;
   text-decoration: none;
@@ -86,58 +93,67 @@
 }
 
 .contact-link:hover {
-  color: #09432f;
+  color: #5a8c4c;
   text-decoration: underline;
 }
 
 .contact-text {
-  color: var(--muted);
   font-size: 1.4rem;
-  font-family: 'Barlow', sans-serif;
+  color: #4A4A4A;
 }
 
-/* Contact Form */
-.contact-form {
-  background: #ffffff;
-  /* border: 1px solid var(--border); */
-  /* padding: 2rem; */
-  border-radius: 16px;
+.input-error {
+  border-color: #b91c1c;
+  background-color: #fef2f2;
 }
 
+.input-error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+.error-text {
+  color: #b91c1c;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  margin-left: 0.25rem;
+}
+
+/* Form Styles */
 .form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); */
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 
 .form-input,
 .form-textarea {
+  width: 100%;
   padding: 1rem 1.5rem;
-  border: 1px solid var(--border);
+  background: #F9F9F9;
+  border: 1px solid #E0E0E0;
   border-radius: 8px;
-  background: #ffffff;
+  font-size: 1rem;
   color: var(--text);
   font-family: 'Barlow', sans-serif;
-  font-size: 1.2rem;
   transition: all 0.3s ease;
 }
 
 .form-input:focus,
 .form-textarea:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: #7BB369;
   background: #ffffff;
-}
-
-.form-input::placeholder,
-.form-textarea::placeholder {
-  color: #888;
+  box-shadow: 0 0 0 4px rgba(123, 179, 105, 0.1);
 }
 
 .form-textarea {
@@ -192,6 +208,25 @@
   opacity: 1;
   /* transform: translateY(-50%) rotate(90deg); */
 }
+.form-submit:disabled {
+  background: #999;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.status-message {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.status-message.success {
+  background-color: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
 
 /* Footer */
 .footer {
@@ -206,8 +241,17 @@
   margin-bottom: 0.5rem;
 }
 
-/* Responsive Design */
-@media (max-width: 968px) {
+.status-message.error {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+@media (max-width: 768px) {
+  .contact-title {
+    font-size: 2.5rem;
+  }
+  
   .contact-content {
     grid-template-columns: 1fr;
     gap: 3rem;
@@ -220,90 +264,8 @@
   .contact-form {
     order: 1;
   }
-}
-
-@media (max-width: 768px) {
-  .contact-title {
-    font-size: 3rem;
-  }
   
-  .contact-subtitle {
-    font-size: 1.5rem;
-  }
-  
-  .contact-item {
-    flex-direction: column;
-    text-align: center;
-    /* padding: 1.5rem; */
-  }
-  
-  .contact-icon {
-    align-self: center;
-  }
-  
-  .form-submit {
-    align-self: stretch;
-    text-align: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .contact-section {
-    padding: 60px 0 40px;
-  }
-  
-  .contact-title {
-    font-size: 2.5rem;
-  }
-  
-  .contact-item {
-    /* padding: 1rem; */
-  }
-  
-  .contact-form {
+  .form {
     padding: 1.5rem;
   }
-  
-  .form-input,
-  .form-textarea {
-    padding: 0.8rem 1.2rem;
-    font-size: 1.2rem;
-  }
-  
-  .form-submit {
-    padding: 1rem 2rem;
-    font-size: 1.4rem;
-  }
-}
-
-/* Focus styles for accessibility */
-.form-input:focus,
-.form-textarea:focus,
-.form-submit:focus {
-  outline: 2px solid #4a90e2;
-  outline-offset: 2px;
-}
-
-/* Loading state for form */
-.form-submit:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* Success/error states */
-.form-input.success,
-.form-textarea.success {
-  border-color: #4caf50;
-}
-
-.form-input.error,
-.form-textarea.error {
-  border-color: #f44336;
-}
-
-.form-error {
-  color: #f44336;
-  font-size: 1.2rem;
-  margin-top: 0.5rem;
 }
