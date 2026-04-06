@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import './Gallery.css'
 
@@ -8,7 +8,24 @@ import { projects } from './ProjectPage'
 const Gallery = ({ id }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const carouselRef = useRef(null)
+  const [isMobile, setIsMobile] = useState(false)
+  const [touchStart, setTouchStart] = useState(null)
+  const [touchEnd, setTouchEnd] = useState(null)
   const clamp = (v, min = 0, max = 100) => Math.min(max, Math.max(min, v))
+
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50
+
+  // Check if mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Auto-slide effect
   useEffect(() => {
@@ -26,8 +43,28 @@ const Gallery = ({ id }) => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % projects.length)
   }
 
-  const handleProjectClick = (index) => {
-    setCurrentIndex(index)
+  // Touch handlers
+  const onTouchStart = (e) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe) {
+      handleNext()
+    } else if (isRightSwipe) {
+      handlePrev()
+    }
   }
 
   return (
@@ -48,12 +85,18 @@ const Gallery = ({ id }) => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="gallery-subtitle"
         >
-          Explore my creative journey through wildlife art and digital design
+          Highlights from recent collaborations and assignments.
         </motion.p>
 
         <div className="carousel-container">
           <div className="carousel-wrapper">
-            <div className="carousel" ref={carouselRef}>
+            <div 
+              className="carousel" 
+              ref={carouselRef}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
               {projects.map((project, index) => {
                 // Calculate relative position to center (0)
                 let position = index - currentIndex
@@ -65,35 +108,92 @@ const Gallery = ({ id }) => {
                 }
                 
                 const isCenter = position === 0
-                const isLeft = position === -1 || position === -2
-                const isRight = position === 1 || position === 2
-                const isVisible = Math.abs(position) <= 2
+                const isLeft = position === -1
+                const isRight = position === 1
+                const isVisible = isMobile ? Math.abs(position) <= 1 : Math.abs(position) <= 2
+
+                // Mobile-specific positioning
+                const getMobileTransform = () => {
+                  if (isMobile) {
+                    if (isCenter) return { 
+                      x: 0, 
+                      scale: 1, 
+                      opacity: 1, 
+                      zIndex: 10,
+                      rotateY: 0,
+                      z: 0
+                    }
+                    if (isLeft) return { 
+                      x: -200, 
+                      scale: 0.8, 
+                      opacity: 0.7, 
+                      zIndex: 5,
+                      rotateY: 20,
+                      z: -40
+                    }
+                    if (isRight) return { 
+                      x: 200, 
+                      scale: 0.8, 
+                      opacity: 0.7, 
+                      zIndex: 5,
+                      rotateY: -20,
+                      z: -40
+                    }
+                    return { 
+                      x: position > 0 ? 400 : -400, 
+                      scale: 0.6, 
+                      opacity: 0, 
+                      zIndex: 1,
+                      rotateY: position > 0 ? -40 : 40,
+                      z: -80
+                    }
+                  }
+                  
+                  // Desktop positioning (existing logic)
+                  return {
+                    x: position * 360,
+                    scale: isCenter ? 1 : 0.85 - Math.abs(position) * 0.05,
+                    opacity: isVisible ? 1 : 0.2,
+                    zIndex: 20 - Math.abs(position) * 2,
+                    rotateY: position * -15,
+                    z: Math.abs(position) * -50
+                  }
+                }
+
+                const transform = getMobileTransform()
 
                 return (
                   <motion.div
                     key={project.id}
                     className={`carousel-item ${isCenter ? 'center' : ''} ${isLeft ? 'left' : ''} ${isRight ? 'right' : ''} ${!isVisible ? 'hidden' : ''}`}
                     initial={false}
-                    animate={{
-                      scale: isCenter ? 1 : 0.85 - Math.abs(position) * 0.05,
-                      opacity: isVisible ? 1 : 0.2,
-                      zIndex: 20 - Math.abs(position) * 2,
-                      x: `${position * 360}px`,
-                      rotateY: position * -15,
-                      z: Math.abs(position) * -50
-                    }}
+                    animate={transform}
                     transition={{ 
                       duration: 0.8, 
                       ease: [0.25, 0.1, 0.25, 1.0],
                       scale: { duration: 0.6 },
                       rotateY: { duration: 0.7 }
                     }}
+                    onClick={() => {
+                      // On mobile, clicking side cards navigates to them
+                      if (isMobile && !isCenter) {
+                        setCurrentIndex(index)
+                      }
+                    }}
                   >
-                    <Link to={`/project/${project.id}`} className="project-link">
+                    <Link 
+                      to={`/project/${project.id}`} 
+                      className="project-link"
+                      onClick={(e) => {
+                        // Prevent navigation if clicking side cards on mobile
+                        if (isMobile && !isCenter) {
+                          e.preventDefault()
+                        }
+                      }}
+                    >
                       {isCenter && (
                         <div className="project-info">
                           <h3>{project.title}</h3>
-                          {/* <span className="project-category">{project.category}</span> */}
                         </div>
                       )}
                       <div className="project-image">
@@ -143,8 +243,6 @@ const Gallery = ({ id }) => {
           </div>
         </div>
       </div>
-
-
     </section>
   )
 }

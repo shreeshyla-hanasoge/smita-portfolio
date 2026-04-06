@@ -93,7 +93,7 @@ const Contact = ({ id }) => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="contact-subtitle"
         >
-          We’re on the lookout for fresh, fun opportunities to create, experiment, and collaborate. If you have projects where a mix of colour, creativity, and storytelling could make a difference, we would love to get involved!
+          We’re always on the lookout for fresh, fun opportunities to create, experiment, and collaborate — especially projects where a mix of colour, creativity, and storytelling can make a difference. If you liked our work or have any ideas or suggestions, we’d love to hear from you, so drop us a message!
         </motion.p>
 
         <div className="contact-content">

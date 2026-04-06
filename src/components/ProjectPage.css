@@ -173,10 +173,6 @@
   transition: transform 0.3s ease;
 }
 
-.testimonial-card:hover {
-  transform: translateY(-5px);
-}
-
 .testimonial-content p {
   font-size: 1.1rem;
   line-height: 1.8;

@@ -64,6 +64,7 @@
   transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1.0);
   transform-style: preserve-3d;
   backface-visibility: hidden;
+  pointer-events: auto;
 }
 
 .carousel-item.center {
@@ -491,12 +492,20 @@
     font-size: 3rem;
   }
   
+  .carousel-container {
+    overflow: hidden;
+    padding: 0 20px;
+  }
+  
   .carousel {
     height: 400px;
+    overflow: visible;
+    perspective: 1000px;
   }
   
   .carousel-item {
-    width: 250px;
+    width: 280px;
+    transform-style: preserve-3d;
   }
   
   .project-image {
@@ -548,12 +557,20 @@
     margin-bottom: 40px;
   }
   
+  .carousel-container {
+    overflow: hidden;
+    padding: 0 15px;
+  }
+  
   .carousel {
     height: 350px;
+    overflow: visible;
+    perspective: 800px;
   }
   
   .carousel-item {
-    width: 220px;
+    width: 240px;
+    transform-style: preserve-3d;
   }
   
   .project-image {

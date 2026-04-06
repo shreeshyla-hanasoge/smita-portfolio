@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { useParams, Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import './ProjectPage.css'
 
 // Project data (moved from Gallery for shared access)
@@ -9,7 +10,7 @@ export const projects = [
     id: 1,
     title: "ABC of Indian Birds",
     category: "Illustration",
-    description: "A personal project --- I created a pocket book featuring commonly found Indian birds, each accompanied by fun facts to spark interest in birding and nature among the general public. Every illustrated bird included a unique detail or observation. I would love to create similar series on **urban gardens, plants, insects, and other species** as well.",
+    description: "A personal project --- I created a pocket book featuring commonly found Indian birds, each accompanied by fun facts to spark interest in birding and nature among the general public. Every illustrated bird included a unique detail or observation. I would love to create similar series on urban gardens, plants, insects, and other species as well.",
     thumbnail: "/images/gallery/thumbnails/ABC.jpg",
     images: ["/images/gallery/ABC1.jpg", "/images/gallery/ABC2.jpg", "/images/gallery/ABC3.jpg", "/images/gallery/ABC4.jpg"],
     preview: { x: 0, y: -200, zoom: 1 },
@@ -25,7 +26,7 @@ export const projects = [
     id: 2,
     title: "Deva Dhaare",
     category: "Illustration",
-    description: "Nestled in Sakleshpur at the foothills of the Western Ghats, **Deva Dhaare** is an eco-conscious homestay celebrating its rich biodiversity. Collaborating with renowned artist **Sangeetha Kadur**, I designed displays showcasing the region's endemic species, enhancing guests' appreciation and understanding of this unique ecological haven.",
+    description: "Nestled in Sakleshpur at the foothills of the Western Ghats, Deva Dhaare is an eco-conscious homestay celebrating its rich biodiversity. Collaborating with renowned artist Sangeetha Kadur, I designed displays showcasing the region's endemic species, enhancing guests' appreciation and understanding of this unique ecological haven.",
     thumbnail: "/images/gallery/thumbnails/deva_dhaare.jpg",
     images: ["/images/gallery/devadhaare1.jpg", "/images/gallery/devadhaare2.jpg"],
     preview: { x: 0, y: -200, zoom: 1 },
@@ -41,7 +42,7 @@ export const projects = [
     id: 3,
     title: "Hampi & the Sun Jewel",
     category: "Educational Poster",
-    description: "Board game illustration for **Hampi & the Sun Jewel** by Tacit Games. I worked on the tile elements, characters, and box-cover artwork. It was an exciting project that gave me an opportunity to explore the beautiful landscape of the erstwhile **Vijayanagara empire**. The game features a unique combination of strategy and luck, with players navigating through the complex terrain of Hampi to collect jewels and reach the Sun Jewel at the end of the game.",
+    description: "Board game illustration for Hampi & the Sun Jewel by Tacit Games. I worked on the tile elements, characters, and box-cover artwork. It was an exciting project that gave me an opportunity to explore the beautiful landscape of the erstwhile Vijayanagara empire. The game features a unique combination of strategy and luck, with players navigating through the complex terrain of Hampi to collect jewels and reach the Sun Jewel at the end of the game.",
     thumbnail: "/images/gallery/thumbnails/hampi.jpg",
     images: ["/images/gallery/hampi1.jpg", "/images/gallery/hampi2.jpg", "/images/gallery/hampi3.jpg", "/images/gallery/hampi4.jpg"],
     preview: { x: 30, y: 50, zoom: 1 },
@@ -64,7 +65,7 @@ export const projects = [
     id: 4,
     title: "Holematthi Nature Foundation -- Creatives",
     category: "Educational Poster",
-    description: "In collaboration with the **Holematthi Nature Foundation (HNF)**, I developed engaging educational activities for children focused on the **Kaveri River ecosystem**. The project highlighted the river's diverse riparian habitat and its native species through creatives such as face masks, finger puppets, an educational jigsaw puzzle, and more.",
+    description: "In collaboration with the Holematthi Nature Foundation (HNF), I developed engaging educational activities for children focused on the Kaveri River ecosystem. The project highlighted the river's diverse riparian habitat and its native species through creatives such as face masks, finger puppets, an educational jigsaw puzzle, and more.",
     thumbnail: "/images/gallery/thumbnails/holematthi.jpg",
     images: ["/images/gallery/holematthi1.jpg", "/images/gallery/holematthi2.jpg", "/images/gallery/holematthi3.jpg", "/images/gallery/holematthi4.jpg"],
     preview: { x: 30, y: 50, zoom: 1 },
@@ -80,7 +81,7 @@ export const projects = [
     id: 5,
     title: "Early Bird -- Creatives",
     category: "Educational Poster",
-    description: "Working with **Early Bird** (part of the **Nature Conservation Foundation**), I illustrated various activity materials for children as part of their educational outreach programs.",
+    description: "Working with Early Bird (part of the Nature Conservation Foundation), I illustrated various activity materials for children as part of their educational outreach programs.",
     thumbnail: "/images/gallery/thumbnails/early_bird.jpg",
     images: ["/images/gallery/early_bird1.jpg", "/images/gallery/early_bird2.jpg", "/images/gallery/early_bird3.jpg"],
     preview: { x: 30, y: 50, zoom: 1 },
@@ -231,16 +232,6 @@ const ProjectPage = () => {
     
     // Scroll to top when project changes
     window.scrollTo(0, 0)
-    
-    // Update document title
-    if (foundProject) {
-      document.title = `${foundProject.title} - Smita Portfolio`
-    }
-    
-    // Cleanup function to reset title when component unmounts
-    return () => {
-      document.title = "Smita Portfolio"
-    }
   }, [projectId])
 
   if (!project) {
@@ -264,6 +255,25 @@ const ProjectPage = () => {
 
   return (
     <div className="project-page">
+      <Helmet>
+        <title>{project.title} - Studio Mintleaf</title>
+        <meta name="description" content={project.description} />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:title" content={`${project.title} - Studio Mintleaf`} />
+        <meta property="og:description" content={project.description} />
+        <meta property="og:image" content={`https://studiomintleaf.in${project.thumbnail}`} />
+        <meta property="og:url" content={`https://studiomintleaf.in/project/${project.id}`} />
+        <meta property="og:type" content="article" />
+        
+        {/* Twitter */}
+        <meta name="twitter:title" content={`${project.title} - Studio Mintleaf`} />
+        <meta name="twitter:description" content={project.description} />
+        <meta name="twitter:image" content={`https://studiomintleaf.in${project.thumbnail}`} />
+        
+        <link rel="canonical" href={`https://studiomintleaf.in/project/${project.id}`} />
+      </Helmet>
+
       {/* Header Section */}
       <section className="project-header">
         <div className="container">

@@ -32,6 +32,11 @@ const Navbar = () => {
     setIsMobileMenuOpen(false)
   }
 
+  const handleRouteNavigation = (path) => {
+    navigate(path)
+    setIsMobileMenuOpen(false)
+  }
+
   return (
     <motion.nav 
       className={`navbar ${isScrolled ? 'scrolled' : ''}`}
@@ -45,6 +50,7 @@ const Navbar = () => {
           className="nav-brand"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => handleNavigation('landing')}
         >
           <img 
             src="/images/gallery/Updated_logo_light_wo_tagline.svg" 
@@ -87,6 +93,14 @@ const Navbar = () => {
           >
             Contact
           </motion.button>
+          <motion.button
+            className="nav-link"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleRouteNavigation('/newsletter/q1-2026')}
+          >
+            Newsletter
+          </motion.button>
         </div>
 
         {/* Mobile Menu Button */}
@@ -110,6 +124,7 @@ const Navbar = () => {
           <button onClick={() => handleNavigation('gallery')}>Projects</button>
           <button onClick={() => handleNavigation('about')}>About</button>
           <button onClick={() => handleNavigation('contact')}>Contact</button>
+          <button onClick={() => handleRouteNavigation('/newsletter/q1-2026')}>Newsletter</button>
         </motion.div>
       </div>
     </motion.nav>
