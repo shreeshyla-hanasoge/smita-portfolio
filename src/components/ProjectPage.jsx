@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { useParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
@@ -164,11 +164,29 @@ const ProjectPage = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
-  
+  const [isMobile, setIsMobile] = useState(false)
+  const [viewportWidth, setViewportWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  )
+  const carouselTouchRef = useRef(null)
+  const lightboxTouchRef = useRef(null)
+
   const otherProjects = project ? projects.filter(p => p.id !== project.id) : []
-  
+
   const { scrollYProgress } = useScroll()
   const heroScale = useTransform(scrollYProgress, [0, 0.5], [1, 1.1])
+
+  // Track viewport size
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+      setViewportWidth(window.innerWidth)
+    }
+
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   // Carousel navigation functions
   const handlePrev = () => {
@@ -179,6 +197,66 @@ const ProjectPage = () => {
   const handleNext = () => {
     if (otherProjects.length === 0) return
     setCurrentIndex((prevIndex) => (prevIndex + 1) % otherProjects.length)
+  }
+
+  // Swipe support for the explore carousel — only mostly-horizontal
+  // gestures count so vertical page scrolling is left alone
+  const onCarouselTouchStart = (e) => {
+    carouselTouchRef.current = {
+      x: e.targetTouches[0].clientX,
+      y: e.targetTouches[0].clientY
+    }
+  }
+
+  const onCarouselTouchEnd = (e) => {
+    if (!carouselTouchRef.current) return
+    const dx = e.changedTouches[0].clientX - carouselTouchRef.current.x
+    const dy = e.changedTouches[0].clientY - carouselTouchRef.current.y
+    carouselTouchRef.current = null
+
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return
+    if (dx < 0) {
+      handleNext()
+    } else {
+      handlePrev()
+    }
+  }
+
+  // Carousel card transforms; mobile offsets follow the real viewport width
+  // (card width formula must stay in sync with ProjectPage.css)
+  const getCarouselTransform = (position, isCenter) => {
+    if (isMobile) {
+      const cardWidth = Math.min(280, viewportWidth - 110)
+      const sideX = viewportWidth / 2 + (cardWidth * 0.8) / 2 - 36
+      if (isCenter) return { x: 0, scale: 1, opacity: 1, zIndex: 100, rotateY: 0, z: 0 }
+      if (Math.abs(position) === 1) {
+        return {
+          x: position * sideX,
+          scale: 0.8,
+          opacity: 0.6,
+          zIndex: 50,
+          rotateY: position * -18,
+          z: -40
+        }
+      }
+      return {
+        x: position * (sideX + 120),
+        scale: 0.6,
+        opacity: 0,
+        zIndex: 1,
+        rotateY: position * -40,
+        z: -80
+      }
+    }
+
+    return {
+      scale: isCenter ? 1 : 0.85 - Math.abs(position) * 0.05,
+      opacity: Math.abs(position) <= 2 ? 1 : 0.2,
+      zIndex: isCenter ? 100 : 50 - Math.abs(position),
+      x: position * 360,
+      rotateY: position * -15,
+      z: Math.abs(position) * -50
+    }
   }
 
   // Lightbox functions
@@ -204,6 +282,28 @@ const ProjectPage = () => {
     e?.stopPropagation()
     if (project && project.images) {
       setLightboxIndex((prev) => (prev - 1 + project.images.length) % project.images.length)
+    }
+  }
+
+  // Swipe between images inside the lightbox
+  const onLightboxTouchStart = (e) => {
+    lightboxTouchRef.current = {
+      x: e.targetTouches[0].clientX,
+      y: e.targetTouches[0].clientY
+    }
+  }
+
+  const onLightboxTouchEnd = (e) => {
+    if (!lightboxTouchRef.current) return
+    const dx = e.changedTouches[0].clientX - lightboxTouchRef.current.x
+    const dy = e.changedTouches[0].clientY - lightboxTouchRef.current.y
+    lightboxTouchRef.current = null
+
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return
+    if (dx < 0) {
+      nextLightboxImage()
+    } else {
+      prevLightboxImage()
     }
   }
 
@@ -352,45 +452,56 @@ const ProjectPage = () => {
           <h3>Explore Other Projects</h3>
           <div className="carousel-container">
             <div className="carousel-wrapper">
-              <div className="carousel">
+              <div
+                className="carousel"
+                onTouchStart={onCarouselTouchStart}
+                onTouchEnd={onCarouselTouchEnd}
+              >
                 {otherProjects.map((otherProject, index) => {
                     // Calculate relative position to center (0)
                     let position = index - currentIndex
                     const length = otherProjects.length
-                    
+
                     // Handle circular positioning
                     if (position > Math.floor(length / 2)) {
                       position = position - length
                     } else if (position < -Math.floor(length / 2)) {
                       position = position + length
                     }
-                    
+
                     const isCenter = position === 0
                     const isLeft = position === -1 || position === -2
                     const isRight = position === 1 || position === 2
-                    const isVisible = Math.abs(position) <= 2
-                    
+                    const isVisible = isMobile ? Math.abs(position) <= 1 : Math.abs(position) <= 2
+
                     return (
                       <motion.div
                         key={otherProject.id}
                         className={`carousel-item ${isCenter ? 'center' : ''} ${isLeft ? 'left' : ''} ${isRight ? 'right' : ''} ${!isVisible ? 'hidden' : ''}`}
                         initial={false}
-                        animate={{
-                          scale: isCenter ? 1 : 0.85 - Math.abs(position) * 0.05,
-                          opacity: isVisible ? 1 : 0.2,
-                          zIndex: isCenter ? 100 : 50 - Math.abs(position),
-                          x: `${position * 360}px`,
-                          rotateY: position * -15,
-                          z: Math.abs(position) * -50
-                        }}
-                        transition={{ 
-                          duration: 0.8, 
+                        animate={getCarouselTransform(position, isCenter)}
+                        transition={{
+                          duration: 0.8,
                           ease: [0.25, 0.1, 0.25, 1.0],
                           scale: { duration: 0.6 },
                           rotateY: { duration: 0.7 }
                         }}
+                        onClick={() => {
+                          // On mobile, tapping a side card brings it to center
+                          if (isMobile && !isCenter) {
+                            setCurrentIndex(index)
+                          }
+                        }}
                       >
-                        <Link to={`/project/${otherProject.id}`} className="project-link">
+                        <Link
+                          to={`/project/${otherProject.id}`}
+                          className="project-link"
+                          onClick={(e) => {
+                            if (isMobile && !isCenter) {
+                              e.preventDefault()
+                            }
+                          }}
+                        >
                           {isCenter && (
                             <div className="project-info">
                               <h4>{otherProject.title}</h4>
@@ -455,7 +566,12 @@ const ProjectPage = () => {
             transition={{ duration: 0.3 }}
             onClick={closeLightbox}
           >
-            <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="lightbox-content"
+              onClick={(e) => e.stopPropagation()}
+              onTouchStart={onLightboxTouchStart}
+              onTouchEnd={onLightboxTouchEnd}
+            >
               <button className="lightbox-close" onClick={closeLightbox}>×</button>
               <button className="lightbox-nav prev" onClick={prevLightboxImage}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

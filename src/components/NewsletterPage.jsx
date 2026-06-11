@@ -7,15 +7,18 @@ const radarItems = [
     title: 'Bird, Nest & Egg',
     description:
       'This is a newly-released book containing several intricate illustrations by Joris De Raedt',
+    link: 'https://www.amazon.in/Bird-Nest-Egg-Extraordinary-Species/dp/0847875903/ref=asc_df_0847875903?mcid=97749997e2243bd9bef96585acdad82c&tag=googleshopmob-21&linkCode=df0&hvadid=709883442145&hvpos=&hvnetw=g&hvrand=13971251561058211373&hvpone=&hvptwo=&hvqmt=&hvdev=m&hvdvcmdl=&hvlocint=&hvlocphy=9062077&hvtargid=pla-2442810771778&psc=1&hvocijid=13971251561058211373-0847875903-&hvexpln=0&gad_source=1&dplnkId=40aee59f-1703-41b3-800a-2e3b11d6cb24&nodl=1'
   },
   {
     title: 'Paper Gardens',
     description: 'an exhibition about botanical art at MAP Bangalore',
+    link: 'https://map-india.org'
   },
   {
     title: 'Summer Scribbles',
     description:
       'by Sefi George - she has some very interesting walks scheduled and lovely merchandise on her website',
+    link: 'https://www.summerscribbles.in/'
   },
 ]
 
@@ -81,13 +84,13 @@ const NewsletterPage = () => {
 
             <div className="newsletter-note-copy">
               <h2 id="artist-note-title">Artist&apos;s note</h2>
-              <p>
+              <p className="newsletter-note-intro">
                 Studio Mintleaf started at a point of change when I stepped away from a
                 decade-long corporate career to build something of my own. What began as a
                 small art practice has slowly taken shape into a studio focused on
                 illustration, nature-led storytelling, and thoughtful collaborations.
               </p>
-              <p>
+              <p className="newsletter-note-body">
                 Today, Studio Mintleaf works with people that care about nuance, craft, and
                 quiet impact. As the practice grows, the intention remains the same: to
                 create work that feels alive, grounded, and gently shifts the way people see
@@ -162,7 +165,10 @@ const NewsletterPage = () => {
               <ul>
                 {radarItems.map((item) => (
                   <li key={item.title}>
-                    <strong>{item.title}</strong> - {item.description}
+                    <a href={item.link} target="_blank" rel="noopener noreferrer">
+                      {item.title}
+                    </a>
+                    <span> - {item.description}</span>
                   </li>
                 ))}
               </ul>

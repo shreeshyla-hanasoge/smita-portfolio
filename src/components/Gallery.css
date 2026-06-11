@@ -488,55 +488,75 @@
 }
 
 @media (max-width: 768px) {
+  .gallery-section {
+    min-height: auto;
+    padding: 60px 0;
+  }
+
   .gallery-title {
     font-size: 3rem;
   }
-  
+
+  /* Full-bleed strip: side cards get clipped at the viewport edge,
+     leaving a small peek that signals "swipe me" */
   .carousel-container {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    padding: 0;
     overflow: hidden;
-    padding: 0 20px;
   }
-  
+
+  .carousel-wrapper {
+    padding: 20px 0;
+  }
+
   .carousel {
-    height: 400px;
+    height: 420px;
     overflow: visible;
     perspective: 1000px;
+    /* horizontal swipes drive the carousel, vertical stays page scroll */
+    touch-action: pan-y;
   }
-  
+
+  /* Width formula must stay in sync with getMobileTransform() in Gallery.jsx */
   .carousel-item {
-    width: 280px;
+    width: min(280px, calc(100vw - 110px));
     transform-style: preserve-3d;
   }
-  
+
   .project-image {
-    height: 300px;
+    height: min(340px, calc((100vw - 110px) * 1.25));
   }
-  
+
+  .project-info {
+    margin-bottom: 14px;
+  }
+
   .carousel-controls {
-    margin-top: 30px;
+    margin-top: 16px;
   }
-  
+
   .carousel-btn {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
   }
-  
+
   .modal-content {
     margin: 10px;
   }
-  
+
   .modal-info {
     padding: 30px 20px;
   }
-  
+
   .modal-info h2 {
     font-size: 1.5rem;
   }
-  
+
   .modal-actions {
     flex-direction: column;
   }
-  
+
   .btn-primary,
   .btn-secondary {
     width: 100%;
@@ -545,51 +565,38 @@
 
 @media (max-width: 480px) {
   .gallery-section {
-    padding: 60px 0;
+    padding: 50px 0;
   }
-  
+
   .gallery-title {
     font-size: 2.5rem;
   }
-  
+
   .gallery-subtitle {
     font-size: 1rem;
-    margin-bottom: 40px;
+    margin-bottom: 10px;
+    padding: 0 10px;
   }
-  
-  .carousel-container {
-    overflow: hidden;
-    padding: 0 15px;
-  }
-  
+
   .carousel {
-    height: 350px;
-    overflow: visible;
+    height: 390px;
     perspective: 800px;
   }
-  
-  .carousel-item {
-    width: 240px;
-    transform-style: preserve-3d;
-  }
-  
-  .project-image {
-    height: 250px;
-  }
-  
+
   .carousel-controls {
     gap: 15px;
   }
-  
+
   .carousel-btn {
-    width: 45px;
-    height: 45px;
+    width: 44px;
+    height: 44px;
   }
-  
+
   .carousel-dots {
     gap: 8px;
+    margin-top: 20px;
   }
-  
+
   .dot {
     width: 10px;
     height: 10px;

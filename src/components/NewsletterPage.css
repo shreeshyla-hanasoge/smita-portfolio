@@ -24,7 +24,7 @@
 
 .newsletter-header {
   min-height: 176px;
-  padding: 28px 280px 24px;
+  padding: 28px 280px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -59,7 +59,7 @@
 
 .newsletter-main {
   position: relative;
-  padding: 46px 280px 0;
+  padding: 46px 280px;
 }
 
 .newsletter-main h2 {
@@ -264,6 +264,11 @@
   text-decoration: underline;
 }
 
+.newsletter-radar li a {
+  color: var(--newsletter-green);
+  font-weight: 600;
+}
+
 .newsletter-footer {
   min-height: 64px;
   display: flex;
@@ -358,82 +363,132 @@
 
   .newsletter-header {
     min-height: 0;
-    padding: 24px 20px 22px;
-    flex-direction: column;
-    gap: 16px;
+    padding: 20px 18px 18px;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .newsletter-header-copy {
+    flex: 1;
+    min-width: 0;
+    max-width: calc(100% - 88px);
+  }
+
+  .newsletter-header-copy h1 {
+    font-size: clamp(2rem, 8.2vw, 2.85rem);
+    line-height: 0.98;
   }
 
   .newsletter-header-copy p {
-    font-size: 1rem;
+    margin-top: 6px;
+    font-size: 0.88rem;
   }
 
   .newsletter-header-logo {
-    width: auto;
-    height: 68px;
-    max-width: 104px;
-    margin-top: 0;
+    height: 44px;
+    max-width: none;
+    margin-top: 4px;
+    margin-left: 6px;
+    align-self: flex-start;
   }
 
   .newsletter-main {
-    padding: 30px 20px 0;
+    padding: 26px 18px 0;
   }
 
   .newsletter-main h2 {
-    font-size: 2rem;
+    font-size: 2.1rem;
+    margin-bottom: 10px;
   }
 
   .newsletter-main p,
   .newsletter-main li {
     font-size: 1rem;
-    line-height: 1.5;
+    line-height: 1.55;
   }
 
   .newsletter-note {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    grid-template-columns: 122px minmax(0, 1fr);
+    gap: 14px 18px;
     min-height: 0;
+    align-items: start;
   }
 
   .newsletter-note-portrait {
     margin-top: 0;
-    width: 176px;
+    width: 122px;
+    grid-row: 1;
+  }
+
+  .newsletter-note-portrait img:first-child {
+    width: 122px;
+  }
+
+  .newsletter-note-copy {
+    max-width: none;
+  }
+
+  .newsletter-note-intro {
+    margin-bottom: 0;
   }
 
   .newsletter-copperpod {
-    width: 128px;
-    margin-top: -12px;
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: center;
+    align-self: start;
+    width: 90px;
+    margin-top: -6px;
+    margin-right: 0;
+  }
+
+  .newsletter-note-body {
+    grid-column: 1 / -1;
+    margin-top: 8px;
   }
 
   .newsletter-projects {
-    margin-top: 10px;
+    margin-top: 28px;
   }
 
   .newsletter-projects-followup {
-    margin-top: 28px;
+    margin-top: 20px;
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 18px;
   }
 
   .newsletter-memory-art img {
-    width: min(257px, 100%);
+    width: min(220px, 68vw);
   }
 
   .newsletter-projects-copy {
     padding-top: 0;
+    max-width: none;
   }
 
-  .newsletter-fishing-cat,
+  .newsletter-fishing-cat {
+    width: min(74vw, 280px);
+    margin: 14px 0 0 auto;
+  }
+
   .newsletter-wolves {
-    width: min(100%, 360px);
+    width: min(100%, 330px);
+    margin: 12px auto 0;
   }
 
   .newsletter-radar-next {
-    padding-bottom: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 26px;
+    padding-bottom: 0;
   }
 
   .newsletter-books {
-    height: 270px;
+    order: 2;
+    height: 260px;
     width: 210px;
+    margin: 4px auto 0;
   }
 
   .newsletter-book-paper {
@@ -449,8 +504,25 @@
     top: 106px;
   }
 
+  .newsletter-next-wrap {
+    order: 3;
+    padding-top: 0;
+  }
+
+  .newsletter-barbet {
+    position: static;
+    order: 4;
+    transform: none;
+    width: min(62vw, 220px);
+    margin: 8px auto 0;
+  }
+
   .newsletter-wrap {
     margin-top: 28px;
+  }
+
+  .newsletter-footer {
+    padding: 0 16px;
   }
 
   .newsletter-footer span {
@@ -463,28 +535,86 @@
     padding: 82px 0 18px;
   }
 
+  .newsletter-header {
+    padding: 18px 14px 16px;
+    gap: 12px;
+  }
+
+  .newsletter-header-copy {
+    max-width: calc(100% - 74px);
+  }
+
+  .newsletter-header-copy h1 {
+    font-size: clamp(1.85rem, 9.8vw, 2.55rem);
+  }
+
+  .newsletter-header-copy p {
+    font-size: 0.84rem;
+  }
+
+  .newsletter-header-logo {
+    height: 36px;
+    width: 48px;
+    margin-left: 4px;
+  }
+
   .newsletter-main {
-    padding: 24px 16px 0;
+    padding: 22px 14px 0;
+  }
+
+  .newsletter-main h2 {
+    font-size: 1.8rem;
+  }
+
+  .newsletter-main p,
+  .newsletter-main li {
+    font-size: 0.96rem;
   }
 
   .newsletter-note-portrait {
-    width: 152px;
+    width: 102px;
   }
 
   .newsletter-note-portrait img:first-child {
-    width: 152px;
+    width: 102px;
   }
 
   .newsletter-copperpod {
-    width: 112px;
+    width: 72px;
+    margin-top: -4px;
+    position: absolute;
+    left: 32px;
+    top: -200px;
   }
 
-  .newsletter-radar-next {
-    padding-bottom: 210px;
+  .newsletter-note-body {
+    margin-top: 4px;
+  }
+
+  .newsletter-fishing-cat {
+    width: min(78vw, 250px);
+  }
+
+  .newsletter-books {
+    width: 180px;
+    height: 224px;
+  }
+
+  .newsletter-book-paper {
+    width: 88px;
+  }
+
+  .newsletter-book-summer {
+    width: 90px;
+  }
+
+  .newsletter-book-bird {
+    width: 94px;
+    top: 92px;
   }
 
   .newsletter-barbet {
-    width: 240px;
+    width: min(66vw, 190px);
   }
 
   .newsletter-footer {

@@ -9,31 +9,40 @@ const Gallery = ({ id }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const carouselRef = useRef(null)
   const [isMobile, setIsMobile] = useState(false)
-  const [touchStart, setTouchStart] = useState(null)
-  const [touchEnd, setTouchEnd] = useState(null)
+  const [viewportWidth, setViewportWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  )
+  const [isInteracting, setIsInteracting] = useState(false)
+  const touchStartRef = useRef(null)
   const clamp = (v, min = 0, max = 100) => Math.min(max, Math.max(min, v))
 
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50
 
-  // Check if mobile
+  // Track viewport size
   useEffect(() => {
-    const checkMobile = () => {
+    const handleResize = () => {
       setIsMobile(window.innerWidth <= 768)
+      setViewportWidth(window.innerWidth)
     }
-    
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // Auto-slide effect
+  // Auto-slide effect — paused while the user is touching the carousel,
+  // and the 5s timer restarts whenever the slide changes
   useEffect(() => {
+    if (isInteracting) return
     const interval = setInterval(() => {
+      // Skip while the tab is hidden — animations can't run there and the
+      // slides would pile up into a scrambled jump when the user returns
+      if (document.hidden) return
       setCurrentIndex((prevIndex) => (prevIndex + 1) % projects.length)
     }, 5000)
     return () => clearInterval(interval)
-  }, [projects.length])
+  }, [isInteracting, currentIndex])
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + projects.length) % projects.length)
@@ -45,24 +54,28 @@ const Gallery = ({ id }) => {
 
   // Touch handlers
   const onTouchStart = (e) => {
-    setTouchEnd(null)
-    setTouchStart(e.targetTouches[0].clientX)
+    touchStartRef.current = {
+      x: e.targetTouches[0].clientX,
+      y: e.targetTouches[0].clientY
+    }
+    setIsInteracting(true)
   }
 
-  const onTouchMove = (e) => {
-    setTouchEnd(e.targetTouches[0].clientX)
-  }
+  const onTouchEnd = (e) => {
+    setIsInteracting(false)
+    if (!touchStartRef.current) return
 
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return
-    
-    const distance = touchStart - touchEnd
-    const isLeftSwipe = distance > minSwipeDistance
-    const isRightSwipe = distance < -minSwipeDistance
+    const dx = e.changedTouches[0].clientX - touchStartRef.current.x
+    const dy = e.changedTouches[0].clientY - touchStartRef.current.y
+    touchStartRef.current = null
 
-    if (isLeftSwipe) {
+    // Only treat mostly-horizontal gestures as swipes so vertical
+    // page scrolling over the carousel doesn't change slides
+    if (Math.abs(dx) < minSwipeDistance || Math.abs(dx) < Math.abs(dy)) return
+
+    if (dx < 0) {
       handleNext()
-    } else if (isRightSwipe) {
+    } else {
       handlePrev()
     }
   }
@@ -90,11 +103,10 @@ const Gallery = ({ id }) => {
 
         <div className="carousel-container">
           <div className="carousel-wrapper">
-            <div 
-              className="carousel" 
+            <div
+              className="carousel"
               ref={carouselRef}
               onTouchStart={onTouchStart}
-              onTouchMove={onTouchMove}
               onTouchEnd={onTouchEnd}
             >
               {projects.map((project, index) => {
@@ -112,37 +124,41 @@ const Gallery = ({ id }) => {
                 const isRight = position === 1
                 const isVisible = isMobile ? Math.abs(position) <= 1 : Math.abs(position) <= 2
 
-                // Mobile-specific positioning
+                // Mobile-specific positioning — derived from the real viewport
+                // width so the side cards peek in from the edges on any phone.
+                // The card width formula must stay in sync with Gallery.css.
                 const getMobileTransform = () => {
                   if (isMobile) {
-                    if (isCenter) return { 
-                      x: 0, 
-                      scale: 1, 
-                      opacity: 1, 
+                    const cardWidth = Math.min(280, viewportWidth - 110)
+                    const sideX = viewportWidth / 2 + (cardWidth * 0.8) / 2 - 36
+                    if (isCenter) return {
+                      x: 0,
+                      scale: 1,
+                      opacity: 1,
                       zIndex: 10,
                       rotateY: 0,
                       z: 0
                     }
-                    if (isLeft) return { 
-                      x: -200, 
-                      scale: 0.8, 
-                      opacity: 0.7, 
+                    if (isLeft) return {
+                      x: -sideX,
+                      scale: 0.8,
+                      opacity: 0.6,
                       zIndex: 5,
-                      rotateY: 20,
+                      rotateY: 18,
                       z: -40
                     }
-                    if (isRight) return { 
-                      x: 200, 
-                      scale: 0.8, 
-                      opacity: 0.7, 
+                    if (isRight) return {
+                      x: sideX,
+                      scale: 0.8,
+                      opacity: 0.6,
                       zIndex: 5,
-                      rotateY: -20,
+                      rotateY: -18,
                       z: -40
                     }
-                    return { 
-                      x: position > 0 ? 400 : -400, 
-                      scale: 0.6, 
-                      opacity: 0, 
+                    return {
+                      x: position > 0 ? sideX + 120 : -(sideX + 120),
+                      scale: 0.6,
+                      opacity: 0,
                       zIndex: 1,
                       rotateY: position > 0 ? -40 : 40,
                       z: -80
