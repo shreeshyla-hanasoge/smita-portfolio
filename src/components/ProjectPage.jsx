@@ -7,6 +7,34 @@ import './ProjectPage.css'
 // Project data (moved from Gallery for shared access)
 export const projects = [
   {
+    id: 8,
+    title: "Know the Indian Chameleon",
+    category: "Educational Poster",
+    description: "This project with TruStoree Media focused upon the Indian Chameleon, getting to know it better, and understanding the threats it faces. Being printed in an accordion format, it had different challenges of its own and was a fun experience designing the flow of information and balancing out the content across the folds.",
+    thumbnail: "/images/gallery/thumbnails/chameleon.jpg",
+    images: ["/images/gallery/chameleon_eng.jpg", "/images/gallery/chameleon_kannada.jpg"],
+    preview: { x: 50, y: 50, zoom: 1 },
+    details: {
+      medium: "Digital Illustration & Design",
+      tools: ["Procreate", "Adobe Illustrator", "Adobe InDesign"],
+      inspiration: "Highlighting the Indian Chameleon, its quiet life, and the threats it faces, designed as an accordion fold-out"
+    }
+  },
+  {
+    id: 9,
+    title: "Small Cats of India",
+    category: "Educational Poster",
+    description: "This project with Divyashree Rana, a PhD student from NCBS, was about her work on the small cats of India found in Dudhwa National Park and surrounding areas.",
+    thumbnail: "/images/gallery/thumbnails/small_cats.jpg",
+    images: ["/images/gallery/small_cats_fishing_cat.jpg", "/images/gallery/know_your_wild_cats_eng.jpg"],
+    preview: { x: 50, y: 50, zoom: 1 },
+    details: {
+      medium: "Digital Illustration & Design",
+      tools: ["Procreate", "Adobe Illustrator", "Adobe InDesign"],
+      inspiration: "Documenting the small cats of the Terai landscape in and around Dudhwa National Park"
+    }
+  },
+  {
     id: 1,
     title: "ABC of Indian Birds",
     category: "Illustration",
