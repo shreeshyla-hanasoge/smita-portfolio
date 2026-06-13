@@ -481,10 +481,8 @@ const ProjectPage = () => {
                         initial={false}
                         animate={getCarouselTransform(position, isCenter)}
                         transition={{
-                          duration: 0.8,
-                          ease: [0.25, 0.1, 0.25, 1.0],
-                          scale: { duration: 0.6 },
-                          rotateY: { duration: 0.7 }
+                          duration: 0.55,
+                          ease: [0.22, 1, 0.36, 1]
                         }}
                         onClick={() => {
                           // On mobile, tapping a side card brings it to center
@@ -509,10 +507,10 @@ const ProjectPage = () => {
                             </div>
                           )}
                           <div className="project-image">
-                            <motion.img 
-                              src={otherProject.thumbnail} 
+                            <motion.img
+                              src={otherProject.thumbnail}
                               alt={otherProject.title}
-                              loading="lazy"
+                              loading="eager"
                               style={{ 
                                 transformOrigin: '50% 50%',
                                 objectPosition: '50% 50%',

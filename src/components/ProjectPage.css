@@ -242,7 +242,8 @@
   position: absolute;
   width: 320px;
   cursor: pointer;
-  transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1.0);
+  /* Transform is animated by framer-motion; only non-motion props transition here */
+  transition: filter 0.4s ease;
   transform-style: preserve-3d;
   backface-visibility: hidden;
   pointer-events: auto;
@@ -349,8 +350,9 @@
 .project-info {
   text-align: center;
   margin-bottom: 40px;
-  opacity: 0;
-  animation: fadeInUp 0.6s ease 0.2s forwards;
+  /* `both` fill keeps it at opacity 0 from the first frame, so the title
+     fades in cleanly instead of flashing visible then snapping to 0 */
+  animation: fadeInUp 0.5s ease both;
 }
 
 .carousel-item.center .project-info {

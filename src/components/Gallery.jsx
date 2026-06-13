@@ -184,11 +184,9 @@ const Gallery = ({ id }) => {
                     className={`carousel-item ${isCenter ? 'center' : ''} ${isLeft ? 'left' : ''} ${isRight ? 'right' : ''} ${!isVisible ? 'hidden' : ''}`}
                     initial={false}
                     animate={transform}
-                    transition={{ 
-                      duration: 0.8, 
-                      ease: [0.25, 0.1, 0.25, 1.0],
-                      scale: { duration: 0.6 },
-                      rotateY: { duration: 0.7 }
+                    transition={{
+                      duration: 0.55,
+                      ease: [0.22, 1, 0.36, 1]
                     }}
                     onClick={() => {
                       // On mobile, clicking side cards navigates to them
@@ -213,12 +211,11 @@ const Gallery = ({ id }) => {
                         </div>
                       )}
                       <div className="project-image">
-                        <motion.img 
-                          src={project.thumbnail} 
+                        <motion.img
+                          src={project.thumbnail}
                           alt={project.title}
-                          loading="lazy"
-                          layoutId={`project-hero-${project.id}`}
-                          style={{ 
+                          loading="eager"
+                          style={{
                             transformOrigin: `${clamp(project.preview?.x ?? 50)}% ${clamp(project.preview?.y ?? 50)}%`,
                             objectPosition: `${clamp(project.preview?.x ?? 50)}% ${clamp(project.preview?.y ?? 50)}%`,
                             scale: project.preview?.zoom ?? 1
