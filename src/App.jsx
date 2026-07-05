@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import ReactGA from 'react-ga4'
 import { motion } from 'framer-motion'
@@ -10,6 +10,8 @@ import Gallery from './components/Gallery'
 import Contact from './components/Contact'
 import ProjectPage from './components/ProjectPage'
 import NewsletterPage from './components/NewsletterPage'
+import NewsletterQ2Page from './components/NewsletterQ2Page'
+import { latestNewsletter } from './components/newsletters'
 import './App.css'
 
 // Initialize Google Analytics
@@ -63,6 +65,8 @@ function App() {
             </>
           } />
           <Route path="/project/:projectId" element={<ProjectPage />} />
+          <Route path="/newsletter" element={<Navigate to={latestNewsletter.path} replace />} />
+          <Route path="/newsletter/q2-2026" element={<NewsletterQ2Page />} />
           <Route path="/newsletter/q1-2026" element={<NewsletterPage />} />
         </Routes>
       </div>

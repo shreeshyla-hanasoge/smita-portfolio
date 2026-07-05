@@ -97,7 +97,7 @@ const Navbar = () => {
             className="nav-link"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => handleRouteNavigation('/newsletter/q1-2026')}
+            onClick={() => handleRouteNavigation('/newsletter')}
           >
             Newsletter
           </motion.button>
@@ -124,7 +124,7 @@ const Navbar = () => {
           <button onClick={() => handleNavigation('gallery')}>Projects</button>
           <button onClick={() => handleNavigation('about')}>About</button>
           <button onClick={() => handleNavigation('contact')}>Contact</button>
-          <button onClick={() => handleRouteNavigation('/newsletter/q1-2026')}>Newsletter</button>
+          <button onClick={() => handleRouteNavigation('/newsletter')}>Newsletter</button>
         </motion.div>
       </div>
     </motion.nav>

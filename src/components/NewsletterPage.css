@@ -23,7 +23,7 @@
 }
 
 .newsletter-header {
-  min-height: 176px;
+  /* min-height: 176px; */
   padding: 28px 280px;
   display: flex;
   align-items: flex-start;
@@ -34,15 +34,15 @@
 .newsletter-header-copy h1 {
   margin: 0;
   font-family: 'Barlow', sans-serif;
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  line-height: 1.05;
+  font-size: clamp(2.2rem, 4.4vw, 3.5rem);
+  line-height: 1.04;
   font-weight: 700;
   color: var(--newsletter-green);
 }
 
 .newsletter-header-copy p {
   margin: 8px 0 0;
-  font-size: 1.5rem;
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
   line-height: 1.2;
   color: #ffffff;
 }
@@ -375,13 +375,11 @@
   }
 
   .newsletter-header-copy h1 {
-    font-size: clamp(2rem, 8.2vw, 2.85rem);
-    line-height: 0.98;
+    line-height: 1.0;
   }
 
   .newsletter-header-copy p {
     margin-top: 6px;
-    font-size: 0.88rem;
   }
 
   .newsletter-header-logo {
@@ -542,14 +540,6 @@
 
   .newsletter-header-copy {
     max-width: calc(100% - 74px);
-  }
-
-  .newsletter-header-copy h1 {
-    font-size: clamp(1.85rem, 9.8vw, 2.55rem);
-  }
-
-  .newsletter-header-copy p {
-    font-size: 0.84rem;
   }
 
   .newsletter-header-logo {

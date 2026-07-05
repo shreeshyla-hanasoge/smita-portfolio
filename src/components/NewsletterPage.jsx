@@ -1,5 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet-async'
+import NewsletterArchive from './NewsletterArchive'
 import './NewsletterPage.css'
 
 const radarItems = [
@@ -53,6 +54,8 @@ const NewsletterPage = () => {
         />
         <link rel="canonical" href="https://studiomintleaf.in/newsletter/q1-2026" />
       </Helmet>
+
+      <NewsletterArchive currentId="q1-2026" />
 
       <article className="newsletter-article">
         <header className="newsletter-header">
