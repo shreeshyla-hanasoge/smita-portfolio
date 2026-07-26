@@ -39,9 +39,9 @@ const NewsletterPage = () => {
         />
         <meta
           property="og:image"
-          content="https://studiomintleaf.in/images/gallery/newsletter-q1-2026.png"
+          content="https://www.studiomintleaf.in/images/gallery/newsletter-q1-2026.png"
         />
-        <meta property="og:url" content="https://studiomintleaf.in/newsletter/q1-2026" />
+        <meta property="og:url" content="https://www.studiomintleaf.in/newsletter/q1-2026" />
         <meta property="og:type" content="article" />
         <meta name="twitter:title" content="Field Notes From The Studio | Q1 2026" />
         <meta
@@ -50,9 +50,9 @@ const NewsletterPage = () => {
         />
         <meta
           name="twitter:image"
-          content="https://studiomintleaf.in/images/gallery/newsletter-q1-2026.png"
+          content="https://www.studiomintleaf.in/images/gallery/newsletter-q1-2026.png"
         />
-        <link rel="canonical" href="https://studiomintleaf.in/newsletter/q1-2026" />
+        <link rel="canonical" href="https://www.studiomintleaf.in/newsletter/q1-2026" />
       </Helmet>
 
       <NewsletterArchive currentId="q1-2026" />

@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://studiomintleaf.in/sitemap.xml
+
+Sitemap: https://www.studiomintleaf.in/sitemap.xml

@@ -62,18 +62,19 @@ const Landing = ({ id }) => {
             loop
             playsInline
             preload="metadata"
+            poster="/images/hero-poster.jpg"
             className="hero-video-element"
             style={{ objectPosition: getVideoObjectPosition() }}
             onError={handleVideoError}
             onLoadedData={handleVideoLoad}
           >
-            <source src="/smita_hero_video_2.mp4" type="video/mp4" />
+            <source src="/hero-video.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         ) : (
           <img
             src="/images/gallery/hero_image.png"
-            alt="Studio Mintleai Hero"
+            alt="Studio Mintleaf hero artwork"
             className="hero-video-element hero-fallback-image"
             style={{ objectPosition: getVideoObjectPosition() }}
             onError={() => console.warn('Fallback image also failed to load')}

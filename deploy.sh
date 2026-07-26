@@ -13,7 +13,7 @@ if [ $? -eq 0 ]; then
     
     # Deploy to S3
     echo "☁️  Deploying to S3 bucket..."
-    aws s3 sync dist/ s3://smita-portfolio-website-2025 --delete
+    aws s3 sync dist/ s3://smita-portfolio-website-2025 --delete --exclude ".DS_Store" --exclude "*/.DS_Store"
     
     if [ $? -eq 0 ]; then
         echo "✅ Deployment successful!"

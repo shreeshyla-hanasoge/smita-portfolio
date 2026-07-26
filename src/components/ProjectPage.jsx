@@ -390,16 +390,16 @@ const ProjectPage = () => {
         {/* Open Graph / Facebook */}
         <meta property="og:title" content={`${project.title} - Studio Mintleaf`} />
         <meta property="og:description" content={project.description} />
-        <meta property="og:image" content={`https://studiomintleaf.in${project.thumbnail}`} />
-        <meta property="og:url" content={`https://studiomintleaf.in/project/${project.id}`} />
+        <meta property="og:image" content={`https://www.studiomintleaf.in${project.thumbnail}`} />
+        <meta property="og:url" content={`https://www.studiomintleaf.in/project/${project.id}`} />
         <meta property="og:type" content="article" />
         
         {/* Twitter */}
         <meta name="twitter:title" content={`${project.title} - Studio Mintleaf`} />
         <meta name="twitter:description" content={project.description} />
-        <meta name="twitter:image" content={`https://studiomintleaf.in${project.thumbnail}`} />
+        <meta name="twitter:image" content={`https://www.studiomintleaf.in${project.thumbnail}`} />
         
-        <link rel="canonical" href={`https://studiomintleaf.in/project/${project.id}`} />
+        <link rel="canonical" href={`https://www.studiomintleaf.in/project/${project.id}`} />
       </Helmet>
 
       {/* Header Section */}
@@ -538,7 +538,7 @@ const ProjectPage = () => {
                             <motion.img
                               src={otherProject.thumbnail}
                               alt={otherProject.title}
-                              loading="eager"
+                              loading={isCenter ? 'eager' : 'lazy'}
                               style={{ 
                                 transformOrigin: '50% 50%',
                                 objectPosition: '50% 50%',
@@ -557,13 +557,13 @@ const ProjectPage = () => {
             </div>
 
             <div className="carousel-controls">
-              <button className="carousel-btn prev" onClick={handlePrev}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <button className="carousel-btn prev" onClick={handlePrev} aria-label="Previous project">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <path d="M15 18l-6-6 6-6"/>
                 </svg>
               </button>
-              <button className="carousel-btn next" onClick={handleNext}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <button className="carousel-btn next" onClick={handleNext} aria-label="Next project">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <path d="M9 18l6-6-6-6"/>
                 </svg>
               </button>
@@ -598,9 +598,9 @@ const ProjectPage = () => {
               onTouchStart={onLightboxTouchStart}
               onTouchEnd={onLightboxTouchEnd}
             >
-              <button className="lightbox-close" onClick={closeLightbox}>×</button>
-              <button className="lightbox-nav prev" onClick={prevLightboxImage}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <button className="lightbox-close" onClick={closeLightbox} aria-label="Close image viewer">×</button>
+              <button className="lightbox-nav prev" onClick={prevLightboxImage} aria-label="Previous image">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <path d="M15 18l-6-6 6-6"/>
                 </svg>
               </button>
@@ -623,8 +623,8 @@ const ProjectPage = () => {
                   }}
                 />
               </AnimatePresence>
-              <button className="lightbox-nav next" onClick={nextLightboxImage}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <button className="lightbox-nav next" onClick={nextLightboxImage} aria-label="Next image">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <path d="M9 18l6-6-6-6"/>
                 </svg>
               </button>
