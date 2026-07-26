@@ -19,9 +19,9 @@ const NewsletterQ2Page = () => {
         />
         <meta
           property="og:image"
-          content="https://studiomintleaf.in/images/newsletter/q2/q2-kingfisher.png"
+          content="https://www.studiomintleaf.in/images/newsletter/q2/q2-kingfisher.png"
         />
-        <meta property="og:url" content="https://studiomintleaf.in/newsletter/q2-2026" />
+        <meta property="og:url" content="https://www.studiomintleaf.in/newsletter/q2-2026" />
         <meta property="og:type" content="article" />
         <meta name="twitter:title" content="Field Notes From The Studio | Q2 2026" />
         <meta
@@ -30,9 +30,9 @@ const NewsletterQ2Page = () => {
         />
         <meta
           name="twitter:image"
-          content="https://studiomintleaf.in/images/newsletter/q2/q2-kingfisher.png"
+          content="https://www.studiomintleaf.in/images/newsletter/q2/q2-kingfisher.png"
         />
-        <link rel="canonical" href="https://studiomintleaf.in/newsletter/q2-2026" />
+        <link rel="canonical" href="https://www.studiomintleaf.in/newsletter/q2-2026" />
       </Helmet>
 
       <NewsletterArchive currentId="q2-2026" />
@@ -61,18 +61,20 @@ const NewsletterQ2Page = () => {
               <h2 id="q2-note-title">Artist&apos;s note</h2>
               <p>
                 AI is everywhere today &ndash; in your glasses, in the kids&apos; toys and
-                even in your shoes &ndash; but not in my artwork. While I may use AI to
-                understand some technicalities or figure out the best way to do something, it
-                does not make the artwork you see bearing the Studio Mintleaf label. Creating
-                art is what gives me greatest joy, and that part I will never outsource to AI.
+                even in your shoes &ndash; but not in my artwork.
+              </p>
+              <img
+                className="nlq2-kingfisher"
+                src="/images/newsletter/q2/q2-kingfisher.png"
+                alt="Blue-toned illustration of a kingfisher"
+              />
+              <p>
+                While I may use AI to understand some technicalities or figure out the best
+                way to do something, it does not make the artwork you see bearing the Studio
+                Mintleaf label. Creating art is what gives me greatest joy, and that part I
+                will never outsource to AI.
               </p>
             </div>
-
-            <img
-              className="nlq2-kingfisher"
-              src="/images/newsletter/q2/q2-kingfisher.png"
-              alt="Blue-toned illustration of a kingfisher"
-            />
           </section>
 
           {/* Projects */}
