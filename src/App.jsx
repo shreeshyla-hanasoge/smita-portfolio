@@ -11,6 +11,8 @@ import Contact from './components/Contact'
 import ProjectPage from './components/ProjectPage'
 import NewsletterPage from './components/NewsletterPage'
 import NewsletterQ2Page from './components/NewsletterQ2Page'
+import ServicesPage from './components/ServicesPage'
+import NotFound from './components/NotFound'
 import { latestNewsletter } from './components/newsletters'
 import './App.css'
 
@@ -39,19 +41,19 @@ function App() {
         
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://studiomintleaf.in/" />
+        <meta property="og:url" content="https://www.studiomintleaf.in/" />
         <meta property="og:title" content="Studio Mintleaf - Stories Beyond Pixels" />
         <meta property="og:description" content="Explore the creative portfolio of Studio Mintleaf, blending wildlife artistry with modern UI/UX design" />
-        <meta property="og:image" content="https://studiomintleaf.in/images/hero_image.png" />
+        <meta property="og:image" content="https://www.studiomintleaf.in/images/og-image.jpg" />
 
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://studiomintleaf.in/" />
+        <meta property="twitter:url" content="https://www.studiomintleaf.in/" />
         <meta property="twitter:title" content="Studio Mintleaf - Stories Beyond Pixels" />
         <meta property="twitter:description" content="Explore the creative portfolio of Studio Mintleaf, blending wildlife artistry with modern UI/UX design" />
-        <meta property="twitter:image" content="https://studiomintleaf.in/images/hero_image.png" />
-        
-        <link rel="canonical" href="https://studiomintleaf.in/" />
+        <meta property="twitter:image" content="https://www.studiomintleaf.in/images/og-image.jpg" />
+
+        <link rel="canonical" href="https://www.studiomintleaf.in/" />
       </Helmet>
       <div className="App">
         <Navbar />
@@ -65,9 +67,11 @@ function App() {
             </>
           } />
           <Route path="/project/:projectId" element={<ProjectPage />} />
+          <Route path="/services" element={<ServicesPage />} />
           <Route path="/newsletter" element={<Navigate to={latestNewsletter.path} replace />} />
           <Route path="/newsletter/q2-2026" element={<NewsletterQ2Page />} />
           <Route path="/newsletter/q1-2026" element={<NewsletterPage />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </Router>

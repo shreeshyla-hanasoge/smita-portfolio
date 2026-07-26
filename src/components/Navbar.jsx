@@ -69,7 +69,7 @@ const Navbar = () => {
           >
             Home
           </motion.button>
-          <motion.button 
+          <motion.button
             className="nav-link"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -77,7 +77,15 @@ const Navbar = () => {
           >
             Projects
           </motion.button>
-          <motion.button 
+          <motion.button
+            className="nav-link"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleRouteNavigation('/services')}
+          >
+            Services
+          </motion.button>
+          <motion.button
             className="nav-link"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -122,6 +130,7 @@ const Navbar = () => {
         >
           <button onClick={() => handleNavigation('landing')}>Home</button>
           <button onClick={() => handleNavigation('gallery')}>Projects</button>
+          <button onClick={() => handleRouteNavigation('/services')}>Services</button>
           <button onClick={() => handleNavigation('about')}>About</button>
           <button onClick={() => handleNavigation('contact')}>Contact</button>
           <button onClick={() => handleRouteNavigation('/newsletter')}>Newsletter</button>
