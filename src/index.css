@@ -5,6 +5,11 @@
   --text: #1a1a1a;
   --muted: #6c757d;
   --border: rgba(0, 0, 0, 0.1);
+
+  /* Typography system — shared with the Services page */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Barlow', sans-serif;
+  --ink: #26291F;
 }
 * {
   margin: 0;
@@ -15,8 +20,21 @@
 html, body {
   width: 100%;
   min-height: 100%;
-  overflow-x: hidden;
   scroll-behavior: smooth;
+}
+
+/* The root's value propagates to the viewport, so the page can never scroll
+   sideways. On <body> the same rule must be `clip`, not `hidden`: `hidden`
+   makes body a scroll container that never actually scrolls, which silently
+   breaks position: sticky and scroll-driven animations anywhere on the site.
+   `clip` trims the same stray overflow (the carousels' off-screen cards)
+   without creating one. */
+html {
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: clip;
 }
 
 body {
@@ -29,31 +47,36 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Typography hierarchy with Reenie Beanie */
+/* Typography hierarchy — Fraunces display over Barlow body */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Reenie Beanie', cursive;
-  font-weight: 400;
-  line-height: 1.2;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
   margin-bottom: 0.5em;
-  color: #383838;
+  color: var(--ink);
+  text-wrap: balance;
 }
 
 h1 {
-  font-size: 3.5rem;
-  letter-spacing: -0.02em;
+  font-size: 2.9rem;
+  letter-spacing: -0.015em;
 }
 
 h2 {
-  font-size: 2.8rem;
+  font-size: 2rem;
   letter-spacing: -0.01em;
 }
 
 h3 {
-  font-size: 2.2rem;
+  font-size: 1.4rem;
+}
+
+h4 {
+  font-size: 1.2rem;
 }
 
 p {
-  font-family: 'Barlow', sans-serif;
+  font-family: var(--font-body);
   font-size: 1rem;
   margin-bottom: 1em;
   line-height: 1.7;

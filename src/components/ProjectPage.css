@@ -59,12 +59,12 @@
 }
 
 .project-title {
-  font-family: 'Reenie Beanie', cursive;
-  font-size: 4rem;
-  color: var(--primary);
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  color: var(--ink);
   margin-bottom: 30px;
-  line-height: 1.1;
-  font-weight: 400;
+  line-height: 1.15;
+  font-weight: 600;
 }
 
 .project-description {
@@ -108,7 +108,7 @@
 
 .project-gallery h3 {
   text-align: center;
-  color: var(--primary);
+  color: var(--ink);
   font-size: 2rem;
   margin-bottom: 50px;
   font-weight: 600;
@@ -148,7 +148,7 @@
 
 .testimonials-section h3 {
   text-align: center;
-  color: var(--primary);
+  color: var(--ink);
   font-size: 2rem;
   margin-bottom: 50px;
   font-weight: 600;
@@ -208,7 +208,7 @@
 
 .explore-projects h3 {
   text-align: center;
-  color: var(--primary);
+  color: var(--ink);
   font-size: 2.2rem;
   font-weight: 600;
 }
