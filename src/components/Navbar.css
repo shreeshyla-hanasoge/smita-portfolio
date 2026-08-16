@@ -29,7 +29,10 @@
   margin: 0 auto;
   padding: 0 2rem;
   display: flex;
-  justify-content: space-between;
+  /* flex-start, not space-between: the auto margin on .nav-menu below is what
+     positions the links. With space-between the two would fight, and three
+     children would strand the menu in the middle. */
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -60,6 +63,9 @@
   display: flex;
   gap: 2rem;
   align-items: center;
+  /* Takes all the free space between the logo and the links, so the menu sits
+     against the right-hand side with the cart. */
+  margin-left: auto;
 }
 
 .nav-link {
@@ -116,6 +122,10 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  /* Spacing lives on the pill, not on .nav-actions — that wrapper is empty on
+     desktop whenever the basket is, and a margin there would shift the whole
+     menu sideways the moment someone picks their first card. */
+  margin-left: 0.75rem;
   font-family: var(--font-body);
   font-size: 0.95rem;
   font-weight: 600;
