@@ -1,0 +1,96 @@
+/*
+ * Sits top-left, tucked under the fixed navbar. Not the bottom, because the
+ * shop's collection tray lives there and the badge must never cover the thing
+ * being reviewed.
+ */
+
+.preview-badge {
+  position: fixed;
+  top: 96px;
+  left: 16px;
+  z-index: 1200;
+  max-width: 330px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 12px 12px 14px;
+  border-radius: 12px;
+  background: rgba(44, 44, 42, 0.92);
+  backdrop-filter: blur(10px);
+  color: #f6f4ee;
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  box-shadow: 0 8px 28px rgba(44, 44, 42, 0.28);
+}
+
+.preview-badge__dot {
+  width: 8px;
+  height: 8px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: #f0b429;
+  flex-shrink: 0;
+}
+
+.preview-badge__text strong {
+  font-weight: 600;
+  color: #fff;
+}
+
+.preview-badge__close {
+  background: none;
+  border: none;
+  color: rgba(246, 244, 238, 0.6);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  margin-left: 2px;
+  flex-shrink: 0;
+}
+
+.preview-badge__close:hover {
+  color: #fff;
+}
+
+/* Folded state: small enough to ignore, obvious enough to click. */
+.preview-badge--chip {
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px 7px 11px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  color: #f6f4ee;
+}
+
+.preview-badge--chip .preview-badge__dot {
+  margin-top: 0;
+  width: 6px;
+  height: 6px;
+}
+
+.preview-badge--chip:hover {
+  background: rgba(44, 44, 42, 0.98);
+}
+
+@media (max-width: 768px) {
+  .preview-badge {
+    top: 84px;
+    left: 12px;
+    right: 12px;
+    max-width: none;
+    font-size: 0.78rem;
+  }
+
+  /* The chip must not stretch the full width like the expanded notice does. */
+  .preview-badge--chip {
+    right: auto;
+    width: auto;
+    display: inline-flex;
+  }
+}

@@ -1,0 +1,1362 @@
+/*
+ * The shop — Art Card collection.
+ *
+ * Scoped under .store-root so the rest of the site is untouched: the shop
+ * needs tighter type and denser layout than a portfolio page, and the two
+ * shouldn't have to agree.
+ *
+ * Type rule: Reenie Beanie carries the studio's voice (page titles, section
+ * heads). Barlow carries everything a buyer must read accurately — prices,
+ * counts, specs, totals, form labels. Never a handwritten number.
+ */
+
+/* Tokens are declared on both the page wrapper and the tray, because the tray
+   is mounted at the app root (it has to outlive route changes) and so sits
+   outside .store-root. Anything else that escapes the wrapper belongs here
+   too — a token that resolves to nothing fails silently and looks almost
+   right, which is the worst way for it to fail. */
+.store-root,
+.tray {
+  /* surfaces */
+  --sm-paper: #fbfaf5;
+  --sm-surface: #ffffff;
+  --sm-sunk: #f3f1e9;
+
+  /* ink */
+  --sm-ink: #2c2c2a;
+  --sm-ink-soft: #5e5e56;
+  --sm-ink-faint: #8b8b81;
+
+  /* accent — the site's mint, darkened where it has to carry text */
+  --sm-mint: #72b847;
+  --sm-mint-deep: #487d26;
+  --sm-mint-wash: #f0f7e9;
+
+  --sm-warn: #b4531f;
+  --sm-rule: rgba(44, 44, 42, 0.12);
+  --sm-rule-strong: rgba(44, 44, 42, 0.26);
+
+  --sm-radius: 14px;
+  --sm-radius-sm: 9px;
+  --sm-shadow: 0 1px 2px rgba(44, 44, 42, 0.04), 0 10px 28px rgba(44, 44, 42, 0.07);
+  --sm-shadow-lift: 0 2px 4px rgba(44, 44, 42, 0.06), 0 18px 44px rgba(44, 44, 42, 0.13);
+
+  /* the physical card: 3.5 × 4 inches */
+  --card-ratio: 7 / 8;
+}
+
+.store-root {
+  background: var(--sm-paper);
+  color: var(--sm-ink);
+  font-family: 'Barlow', sans-serif;
+  min-height: 100vh;
+  padding-top: 96px;
+  padding-bottom: 120px;
+}
+
+/* The global `* { transition: all }` makes image swaps and 3D flips mushy. */
+.store-root img {
+  transition: none;
+}
+
+.sm-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.shop-block {
+  margin-top: 84px;
+}
+
+.sm-pagetitle {
+  font-family: 'Reenie Beanie', cursive;
+  font-size: 4.2rem;
+  line-height: 0.95;
+  margin: 0 0 24px;
+  color: var(--sm-ink);
+}
+
+.sm-note {
+  font-size: 0.92rem;
+  color: var(--sm-ink-soft);
+  line-height: 1.65;
+  margin-top: 20px;
+}
+
+.sm-note--inline {
+  background: var(--sm-mint-wash);
+  border-left: 3px solid var(--sm-mint);
+  padding: 12px 14px;
+  border-radius: 0 var(--sm-radius-sm) var(--sm-radius-sm) 0;
+  margin: 18px 0 0;
+  font-size: 0.88rem;
+}
+
+/* --------------------------------------------------------------- buttons */
+
+.sm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 14px 26px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+  min-height: 48px;
+}
+
+.sm-btn--primary { background: var(--sm-ink); color: #fff; }
+.sm-btn--primary:hover:not(:disabled) { background: var(--sm-mint-deep); }
+
+.sm-btn--ghost {
+  background: transparent;
+  color: var(--sm-ink);
+  border-color: var(--sm-rule-strong);
+}
+.sm-btn--ghost:hover { border-color: var(--sm-ink); background: rgba(44, 44, 42, 0.03); }
+
+.sm-btn--block { width: 100%; }
+
+.sm-btn:disabled {
+  background: var(--sm-sunk);
+  color: var(--sm-ink-faint);
+  cursor: not-allowed;
+}
+
+.store-root a:focus-visible,
+.store-root button:focus-visible,
+.store-root input:focus-visible,
+.store-root summary:focus-visible {
+  outline: 2px solid var(--sm-mint-deep);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.sm-textlink {
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--sm-mint-deep);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0;
+  display: inline-block;
+}
+.sm-textlink:hover { text-decoration: underline; }
+.sm-textlink--center { display: block; text-align: center; width: 100%; }
+.sm-textlink--inline { padding: 0; }
+
+/* ------------------------------------------------------------ breadcrumbs */
+
+.sm-crumbs { font-size: 0.85rem; color: var(--sm-ink-faint); margin-bottom: 20px; }
+.sm-crumbs a { color: var(--sm-ink-soft); text-decoration: none; }
+.sm-crumbs a:hover { text-decoration: underline; }
+.sm-crumbs__sep { margin: 0 8px; color: var(--sm-rule-strong); }
+
+/* -------------------------------------------------------- section headers */
+
+.sm-sectionhead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.sm-sectionhead__title {
+  font-family: 'Reenie Beanie', cursive;
+  font-size: 3.1rem;
+  line-height: 1;
+  margin: 0;
+  color: var(--sm-ink);
+}
+
+.sm-sectionhead__sub {
+  font-size: 0.98rem;
+  color: var(--sm-ink-soft);
+  margin: 6px 0 0;
+  max-width: 56ch;
+}
+
+/* ================================================================== HERO */
+
+.shop-hero {
+  padding: 28px 0 56px;
+  border-bottom: 1px solid var(--sm-rule);
+  margin-bottom: 48px;
+}
+
+.shop-hero__grid {
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 56px;
+  align-items: center;
+}
+
+.shop-hero__eyebrow {
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sm-ink-faint);
+  margin-bottom: 6px;
+}
+
+/* Fluid, because the title is now a name rather than a two-word phrase and it
+   has to survive every column width without breaking "Shop" onto a line of its
+   own. At 5.6rem "Studio Mintleaf Shop" cleared the column by one pixel — fine
+   until a font loads a hair wider. The clamp keeps it on one line from 375px
+   up; the looser line-height is insurance for the widths where it doesn't. */
+.shop-hero__title {
+  font-family: 'Reenie Beanie', cursive;
+  font-size: clamp(3rem, 5.6vw, 5.2rem);
+  line-height: 0.9;
+  text-wrap: balance;
+  color: var(--sm-ink);
+  margin: 0 0 20px;
+}
+
+.shop-hero__lede {
+  font-size: 1.35rem;
+  color: var(--sm-ink);
+  margin: 0 0 14px;
+  max-width: 34ch;
+}
+
+.shop-hero__intro {
+  font-size: 1.02rem;
+  color: var(--sm-ink-soft);
+  margin: 0;
+  max-width: 52ch;
+  line-height: 1.75;
+}
+
+/* The two faces, shown once, so nobody has to discover the flip to
+   understand what they're buying. */
+.shop-hero__demo { position: relative; height: 430px; max-width: 480px; }
+
+.shop-hero__demofront {
+  position: absolute;
+  left: 0;
+  top: 0;
+  aspect-ratio: var(--card-ratio);
+  width: 232px;
+  background: var(--tint);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--sm-shadow-lift);
+  transform: rotate(-3.5deg);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The reverse, as a card — same proportions as the front, laid down beside it
+   the way you would put the pair on a table. The two overlap by a sliver only:
+   enough to read as one object, not enough to hide either face. */
+.shop-hero__demoback {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  aspect-ratio: var(--card-ratio);
+  width: 232px;
+  background: var(--sm-surface);
+  border: 1px solid var(--sm-rule);
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 15px 16px 16px;
+  box-shadow: var(--sm-shadow-lift);
+  transform: rotate(2.5deg);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* A supplied back is the whole card, so it takes the padding off again. */
+.shop-hero__demoback:has(.ac__backart) { padding: 0; }
+
+.shop-hero__demoback .ac__fact { font-size: 0.78rem; line-height: 1.5; }
+.shop-hero__demoback .ac__lockup img { height: 15px; }
+
+/* ================================================================= SPECS */
+
+.shop-specs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--sm-rule);
+  border: 1px solid var(--sm-rule);
+  border-radius: var(--sm-radius);
+  overflow: hidden;
+}
+
+.shop-spec {
+  background: var(--sm-surface);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.shop-spec__label {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sm-ink-faint);
+}
+
+.shop-spec__value { font-size: 1.02rem; font-weight: 600; color: var(--sm-ink); }
+.shop-spec__detail { font-size: 0.85rem; color: var(--sm-ink-soft); }
+
+/* ================================================================= TIERS */
+
+/* A price list set as type. Boxing each tier made one list read as four
+   competing options, and the per-card rate was a second number to parse before
+   the first one had landed — the tray does that arithmetic live once there is
+   an actual basket to do it on. */
+.shop-tiers {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  margin: 0;
+  padding: 26px 0 4px;
+  border-top: 1px solid var(--sm-rule);
+}
+
+.shop-tier {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shop-tier dt {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sm-ink-faint);
+}
+
+.shop-tier dd {
+  margin: 0;
+  font-size: 2.1rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+/* Still worth saying which tier is the good one — as a word beside the price
+   rather than a badge floating over a panel that no longer exists. */
+.shop-tier__best {
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--sm-mint-deep);
+  white-space: nowrap;
+}
+
+/* =============================================================== FILTERS */
+
+.shop-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.shop-filter {
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  min-height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--sm-rule);
+  background: var(--sm-surface);
+  color: var(--sm-ink-soft);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.shop-filter:hover { border-color: var(--sm-rule-strong); color: var(--sm-ink); }
+.shop-filter.is-active { background: var(--sm-ink); border-color: var(--sm-ink); color: #fff; }
+
+/* ============================================================= THE CARDS */
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px 26px;
+}
+
+.ac { display: flex; flex-direction: column; }
+
+.ac__scene {
+  position: relative;
+  perspective: 1400px;
+  aspect-ratio: var(--card-ratio);
+  margin-bottom: 14px;
+}
+
+.ac__flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  /* framer drives nothing here — a CSS transition keeps the flip cheap and
+     lets it survive a paused rAF in embedded previews */
+  transition: transform 0.62s cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+
+.ac__flipper.is-flipped { transform: rotateY(180deg); }
+
+.ac__face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--sm-shadow);
+  font-family: 'Barlow', sans-serif;
+  text-align: left;
+}
+
+.ac:hover .ac__face { box-shadow: var(--sm-shadow-lift); }
+
+/* ---- front: composed in the browser, not a flat image ---- */
+
+.ac__face--front {
+  background: var(--tint);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+/* The artwork is the card — 1050 × 1200, the same 7:8 as the frame — so it
+   fills it edge to edge. `cover` rather than `contain` guards against a future
+   file that is a pixel or two off ratio: better a hairline crop than a white
+   band down the side of a printed card. The tint underneath matches the
+   artwork's own background, so nothing flashes while it loads. */
+.ac__face--front img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ac__turn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--sm-ink);
+  border: 1px solid rgba(44, 44, 42, 0.1);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+}
+
+.ac[data-theme='dark'] .ac__turn {
+  background: rgba(255, 255, 255, 0.14);
+  color: #f4f2ea;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ac__face--front:hover .ac__turn { background: #fff; }
+
+/* ---- back: the reason the card exists ---- */
+
+.ac__face--back {
+  transform: rotateY(180deg);
+  background: var(--sm-surface);
+  border: 1px solid var(--sm-rule);
+  padding: 20px 18px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* A supplied back is the card, edge to edge — the face drops its padding so
+   nothing of the studio's layout gets a second, competing margin.
+   `contain` rather than `cover`: the exported back is a hair wider than 7:8,
+   and letterboxing white on a white card is invisible where a crop would eat
+   the studio's own margin. */
+.ac__face--back:has(.ac__backart) { padding: 0; }
+
+.ac__backart {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+
+.ac__turn--back {
+  background: var(--sm-sunk);
+  border-color: var(--sm-rule);
+}
+
+/* The fact, set as it is printed: species name bold inside the sentence,
+   everything else regular. No heading — the sentence is the heading. */
+.ac__fact {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--sm-ink-soft);
+  margin: 0;
+  padding-right: 26px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.ac__fact strong { color: var(--sm-ink); font-weight: 600; }
+
+.ac__backfoot { margin-top: auto; padding-top: 10px; }
+
+.ac__more {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--sm-mint-deep);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+.ac__more:hover { text-decoration: underline; }
+
+.ac__lockup {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  border-top: 1px solid var(--sm-rule);
+  padding-top: 10px;
+}
+
+.ac__lockup .ac__mono { width: 22px; height: 22px; flex-shrink: 0; margin-top: 1px; }
+
+.ac__lockup-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+
+.ac__studio {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--sm-ink);
+  letter-spacing: 0.01em;
+}
+
+.ac__tagline { font-size: 0.66rem; color: var(--sm-ink-faint); font-style: italic; }
+.ac__contact { font-size: 0.66rem; color: var(--sm-ink-faint); }
+
+/* ---- chosen state ---- */
+
+.ac__count {
+  position: absolute;
+  top: -9px;
+  left: -9px;
+  z-index: 5;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--sm-mint-deep);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 8px rgba(44, 44, 42, 0.2);
+}
+
+.ac.is-chosen .ac__face { box-shadow: 0 0 0 2px var(--sm-mint), var(--sm-shadow-lift); }
+
+.ac__label { text-align: center; margin-bottom: 10px; }
+
+.ac__labelname {
+  display: block;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--sm-ink);
+  text-decoration: none;
+  line-height: 1.25;
+}
+.ac__labelname:hover { text-decoration: underline; }
+
+
+/* ---- add / stepper ---- */
+
+/* At zero there is nothing to decrement, so a stepper showing "− 0 +" is two
+   dead controls. The button becomes the stepper on first tap instead. */
+.ac-add {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--sm-rule-strong);
+  background: var(--sm-surface);
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--sm-ink);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.ac-add:hover { border-color: var(--sm-ink); background: var(--sm-sunk); }
+.ac-add--compact { width: auto; padding: 0 18px; min-height: 38px; }
+
+.ac-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 44px;
+  border-radius: 999px;
+  background: var(--sm-mint-wash);
+  border: 1px solid var(--sm-mint);
+  overflow: hidden;
+}
+
+.ac-step button {
+  width: 46px;
+  align-self: stretch;
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--sm-mint-deep);
+  cursor: pointer;
+}
+
+.ac-step button:hover:not(:disabled) { background: rgba(114, 184, 71, 0.16); }
+.ac-step button:disabled { color: var(--sm-ink-faint); cursor: not-allowed; }
+
+.ac-step span {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--sm-ink);
+  min-width: 24px;
+  text-align: center;
+}
+
+.ac-step--compact { width: auto; min-height: 38px; }
+.ac-step--compact button { width: 36px; font-size: 1.05rem; }
+
+/* ================================================================= TRAY */
+
+/* The tray does the bundle arithmetic out loud while the buyer chooses.
+   Without it, tiered pricing is a number that appears at checkout with no
+   explanation of how it got there. */
+.tray {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 900;
+  color: var(--sm-ink);
+  font-family: 'Barlow', sans-serif;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(18px) saturate(180%);
+  border-top: 1px solid var(--sm-rule);
+  box-shadow: 0 -8px 32px rgba(44, 44, 42, 0.1);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tray__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 14px 24px 16px;
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 24px;
+}
+
+.tray__stack { display: flex; align-items: center; }
+
+.tray__chip {
+  position: relative;
+  width: 42px;
+  height: 48px;
+  border-radius: 6px;
+  background: var(--tint, var(--sm-sunk));
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 8px rgba(44, 44, 42, 0.14);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  margin-right: -14px;
+}
+
+.tray__chip img { width: 100%; height: 100%; object-fit: cover; }
+
+.tray__chip--more {
+  background: var(--sm-ink);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-right: 0;
+}
+
+.tray__figures { display: flex; flex-direction: column; gap: 1px; padding-left: 14px; }
+
+.tray__count {
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sm-ink-faint);
+}
+
+.tray__price {
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.tray__price small { font-size: 0.8rem; font-weight: 500; color: var(--sm-ink-faint); }
+
+.tray__nudge {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--sm-ink-soft);
+  padding-left: 22px;
+  border-left: 2px solid var(--sm-mint);
+  line-height: 1.45;
+}
+
+.tray__nudge.is-won { color: var(--sm-mint-deep); font-weight: 600; }
+
+.tray__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--sm-ink);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 14px 26px;
+  min-height: 48px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.tray__cta:hover { background: var(--sm-mint-deep); }
+
+.tray__meter {
+  display: block;
+  height: 3px;
+  background: var(--sm-sunk);
+  overflow: hidden;
+}
+
+.tray__meterfill { display: block; height: 100%; background: var(--sm-mint); }
+
+/* ================================================================ DETAIL */
+
+.detail__grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+.detail__faces { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+.detail__face {
+  position: relative;
+  aspect-ratio: var(--card-ratio);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--sm-shadow-lift);
+  display: flex;
+  flex-direction: column;
+}
+
+.detail__face--front { background: var(--tint); }
+
+.shop-hero__demofront img,
+.detail__face--front img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.detail__face--back {
+  background: var(--sm-surface);
+  border: 1px solid var(--sm-rule);
+  padding: 20px;
+}
+
+.detail__face--back:has(.ac__backart) { padding: 0; }
+
+.detail__face--back .ac__fact { font-size: 0.86rem; }
+
+.detail__group {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sm-ink-faint);
+}
+
+.detail__title {
+  font-family: 'Barlow', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin: 6px 0 2px;
+}
+
+.detail__sci { font-style: italic; color: var(--sm-ink-faint); margin: 0 0 22px; }
+
+.detail__note {
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: var(--sm-ink-soft);
+  border-left: 2px solid var(--sm-rule-strong);
+  padding-left: 18px;
+  margin: 0 0 26px;
+}
+
+.detail__pricebox {
+  background: var(--sm-surface);
+  border: 1px solid var(--sm-rule);
+  border-radius: var(--sm-radius);
+  padding: 20px;
+}
+
+.detail__pricerow { display: flex; align-items: baseline; gap: 10px; }
+.detail__price { font-size: 1.8rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.detail__pricemeta { font-size: 0.82rem; color: var(--sm-ink-faint); }
+
+.detail__tierline {
+  font-size: 0.88rem;
+  color: var(--sm-ink-soft);
+  margin: 8px 0 16px;
+  line-height: 1.55;
+}
+
+.detail__specs { margin: 26px 0 0; }
+
+.detail__specs > div {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 14px;
+  padding: 9px 0;
+  border-bottom: 1px dashed var(--sm-rule);
+  font-size: 0.9rem;
+}
+
+.detail__specs > div:last-child { border-bottom: none; }
+.detail__specs dt { color: var(--sm-ink-faint); }
+.detail__specs dd { margin: 0; }
+
+/* ============================================================ CART / FORM */
+
+.sm-cart__grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 40px;
+  align-items: start;
+  margin-top: 8px;
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 18px;
+  padding: 16px;
+  background: var(--sm-surface);
+  border: 1px solid var(--sm-rule);
+  border-radius: var(--sm-radius);
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.line__art {
+  width: 70px;
+  aspect-ratio: var(--card-ratio);
+  border-radius: 7px;
+  overflow: hidden;
+  background: var(--tint, var(--sm-sunk));
+  display: block;
+}
+
+.line__art img { width: 100%; height: 100%; object-fit: cover; }
+
+.line__name {
+  font-weight: 600;
+  font-size: 1.02rem;
+  color: var(--sm-ink);
+  text-decoration: none;
+}
+.line__name:hover { text-decoration: underline; }
+
+.line__sci { font-size: 0.85rem; font-style: italic; color: var(--sm-ink-faint); margin: 2px 0 0; }
+
+.line__controls { display: flex; align-items: center; gap: 16px; margin-top: 12px; }
+
+.line__remove {
+  background: none;
+  border: none;
+  color: var(--sm-ink-faint);
+  font-size: 0.86rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 6px 0;
+}
+.line__remove:hover { color: var(--sm-warn); }
+
+/* order summary */
+
+.summary {
+  background: var(--sm-surface);
+  border: 1px solid var(--sm-rule);
+  border-radius: var(--sm-radius);
+  padding: 24px;
+  position: sticky;
+  top: 110px;
+}
+
+.summary__title {
+  font-family: 'Barlow', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 18px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.summary__title span { font-size: 0.85rem; font-weight: 500; color: var(--sm-ink-faint); }
+
+.summary__cards { list-style: none; padding: 0; margin: 0 0 18px; }
+
+.summary__cards li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 0;
+  font-size: 0.92rem;
+}
+
+.summary__chip {
+  width: 32px;
+  aspect-ratio: var(--card-ratio);
+  border-radius: 4px;
+  background: var(--tint, var(--sm-sunk));
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.summary__chip img { width: 100%; height: 100%; object-fit: cover; }
+.summary__cardname { display: flex; gap: 6px; align-items: baseline; }
+.summary__cardname small { color: var(--sm-ink-faint); }
+
+/* the bundle working-out */
+
+.bundles {
+  list-style: none;
+  padding: 14px 16px;
+  margin: 0 0 16px;
+  background: var(--sm-sunk);
+  border-radius: var(--sm-radius-sm);
+}
+
+.bundles li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 5px 0;
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.bundles__what { display: flex; align-items: baseline; gap: 6px; }
+.bundles__what em { font-style: normal; font-weight: 700; }
+.bundles__what small { color: var(--sm-ink-faint); font-size: 0.78rem; }
+.bundles__amount { font-weight: 600; }
+
+.summary__rows { margin: 0; }
+
+.summary__rows > div {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 0.98rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.summary__rows dt { color: var(--sm-ink-soft); }
+.summary__rows dd { margin: 0; font-weight: 500; }
+
+.summary__total {
+  border-top: 1px solid var(--sm-rule);
+  margin-top: 6px;
+  padding-top: 14px !important;
+  font-size: 1.2rem !important;
+}
+
+.summary__total dt { color: var(--sm-ink) !important; font-weight: 600; }
+.summary__total dd { font-weight: 700; }
+.summary__free { color: var(--sm-mint-deep); font-weight: 600; }
+
+.summary__nudge {
+  font-size: 0.88rem;
+  color: var(--sm-ink-soft);
+  line-height: 1.55;
+  background: var(--sm-mint-wash);
+  border-radius: var(--sm-radius-sm);
+  padding: 12px 14px;
+  margin: 14px 0 0;
+}
+
+.summary__meter {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(44, 44, 42, 0.08);
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.summary__meterfill { display: block; height: 100%; background: var(--sm-mint); }
+
+.summary__pay {
+  font-size: 0.78rem;
+  color: var(--sm-ink-faint);
+  text-align: center;
+  margin: 12px 0 0;
+  line-height: 1.5;
+}
+
+/* checkout form */
+
+.form {
+  background: var(--sm-surface);
+  border: 1px solid var(--sm-rule);
+  border-radius: var(--sm-radius);
+  padding: 28px;
+}
+
+.form__legend {
+  font-family: 'Barlow', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 20px;
+}
+
+.form__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field--full { grid-column: 1 / -1; }
+
+.field label { font-size: 0.82rem; font-weight: 600; color: var(--sm-ink-soft); }
+
+.store-root input[type='text'],
+.store-root input[type='email'],
+.store-root input[type='tel'] {
+  font-family: 'Barlow', sans-serif;
+  font-size: 1rem;
+  padding: 12px 14px;
+  min-height: 48px;
+  border: 1px solid var(--sm-rule-strong);
+  border-radius: var(--sm-radius-sm);
+  background: var(--sm-surface);
+  color: var(--sm-ink);
+  width: 100%;
+}
+
+.field.has-error input { border-color: var(--sm-warn); }
+.field__error { font-size: 0.8rem; color: var(--sm-warn); margin: 0; }
+.field__hint { font-size: 0.8rem; color: var(--sm-ink-faint); margin: 0; }
+
+.sim {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--sm-ink-faint);
+  margin: 20px 0 14px;
+  padding: 10px 12px;
+  border: 1px dashed var(--sm-rule-strong);
+  border-radius: var(--sm-radius-sm);
+}
+
+.sim input { width: auto; min-height: auto; }
+
+.form__legal {
+  font-size: 0.8rem;
+  color: var(--sm-ink-faint);
+  text-align: center;
+  margin: 14px 0 0;
+  line-height: 1.6;
+}
+
+/* =============================================================== OUTCOME */
+
+.outcome { max-width: 680px; text-align: center; padding-top: 8px; }
+
+/* The cards they just bought, fanned. A receipt worth looking at. */
+.outcome__fan {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 150px;
+  margin-bottom: 24px;
+}
+
+.outcome__fancard {
+  width: 92px;
+  aspect-ratio: var(--card-ratio);
+  border-radius: 8px;
+  background: var(--tint);
+  box-shadow: var(--sm-shadow-lift);
+  overflow: hidden;
+  margin: 0 -16px;
+  transform: rotate(calc(var(--i) * 7deg));
+  transform-origin: bottom center;
+}
+
+.outcome__fancard img { width: 100%; height: 100%; object-fit: cover; }
+
+.outcome__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--sm-warn);
+  color: #fff;
+  font-size: 1.6rem;
+  margin-bottom: 18px;
+}
+
+.outcome__title {
+  font-family: 'Reenie Beanie', cursive;
+  font-size: 3.8rem;
+  line-height: 1;
+  margin: 0 0 12px;
+}
+
+.outcome__lede { color: var(--sm-ink-soft); font-size: 1.05rem; }
+
+.outcome__card,
+.outcome__receipt {
+  text-align: left;
+  background: var(--sm-surface);
+  border: 1px solid var(--sm-rule);
+  border-radius: var(--sm-radius);
+  padding: 24px;
+  margin-top: 24px;
+}
+
+.outcome__card h2,
+.outcome__receipt h2 {
+  font-family: 'Barlow', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 14px;
+}
+
+.steps { margin: 0; padding-left: 20px; }
+.steps li { font-size: 0.95rem; color: var(--sm-ink-soft); margin-bottom: 10px; line-height: 1.6; }
+.steps strong { color: var(--sm-ink); }
+
+.outcome__receipt ul { list-style: none; padding: 0; margin: 0; }
+
+.outcome__receipt li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--sm-rule);
+  font-size: 0.95rem;
+}
+
+.outcome__sci { font-style: italic; color: var(--sm-ink-faint); font-size: 0.85rem; }
+
+.outcome__total {
+  border-bottom: none !important;
+  font-weight: 600;
+  font-size: 1.05rem !important;
+  padding-top: 14px !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.outcome__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+
+/* ================================================================ STUDIO */
+
+.shop-studio { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+.shop-studio__panel {
+  background: var(--sm-mint-wash);
+  border-radius: var(--sm-radius);
+  padding: 34px;
+}
+
+.shop-studio__panel--quiet { background: var(--sm-surface); border: 1px solid var(--sm-rule); }
+
+.shop-studio__panel h2 {
+  font-family: 'Reenie Beanie', cursive;
+  font-size: 2.6rem;
+  line-height: 1;
+  margin: 0 0 10px;
+}
+
+.shop-studio__panel p {
+  color: var(--sm-ink-soft);
+  max-width: 46ch;
+  margin: 0 0 20px;
+  font-size: 0.96rem;
+}
+
+/* ========================================================== EMPTY STATE */
+
+.sm-empty {
+  text-align: center;
+  padding: 64px 24px;
+  background: var(--sm-surface);
+  border: 1px dashed var(--sm-rule-strong);
+  border-radius: var(--sm-radius);
+  margin-top: 12px;
+}
+
+.sm-empty h2 { font-family: 'Reenie Beanie', cursive; font-size: 3rem; margin: 0 0 10px; }
+.sm-empty p { color: var(--sm-ink-soft); max-width: 46ch; margin: 0 auto 22px; }
+
+/* ============================================================ RESPONSIVE */
+
+@media (max-width: 1024px) {
+  .shop-hero__grid { grid-template-columns: 1fr; gap: 40px; }
+  .shop-hero__demo { padding-left: 0; max-width: 520px; }
+  .shop-specs { grid-template-columns: repeat(2, 1fr); }
+  .shop-grid { grid-template-columns: repeat(3, 1fr); }
+  .shop-tiers { grid-template-columns: repeat(2, 1fr); }
+  .detail__grid { grid-template-columns: 1fr; gap: 36px; }
+  .sm-cart__grid { grid-template-columns: 1fr; }
+  .summary { position: static; }
+  .shop-studio { grid-template-columns: 1fr; }
+  .tray__inner { grid-template-columns: auto 1fr auto; }
+  .tray__nudge { display: none; } /* the meter still carries the signal */
+}
+
+@media (max-width: 768px) {
+  .store-root { padding-top: 88px; padding-bottom: 150px; }
+  .sm-shell { padding: 0 18px; }
+  .shop-block { margin-top: 56px; }
+
+  .shop-hero { padding: 16px 0 36px; margin-bottom: 32px; }
+  /* No size override — the clamp above already lands at 3rem here, which is
+     what keeps the title on one line on a 375px phone. */
+  .shop-hero__lede { font-size: 1.15rem; }
+  .shop-hero__intro { font-size: 0.96rem; }
+  /* Both faces are the same physical object, so they stay the same size —
+     mismatched widths read as two different products rather than one card
+     turned over. */
+  /* Sized to sit side by side inside a 375px screen rather than overlap. The
+     overlap on wider screens falls on the back's own margin; at phone widths
+     it lands on the first line of the fact instead, which is the one thing the
+     pair exists to show. */
+  .shop-hero__demo { height: 312px; padding-bottom: 0; }
+  .shop-hero__demofront,
+  .shop-hero__demoback { width: 168px; }
+  .shop-hero__demoback { padding: 11px; }
+  .shop-hero__demoback .ac__fact { font-size: 0.62rem; line-height: 1.4; }
+  .shop-hero__demoback .ac__lockup img { height: 12px; }
+
+  .sm-pagetitle { font-size: 3.2rem; }
+  .sm-sectionhead__title { font-size: 2.5rem; }
+  .sm-sectionhead { gap: 14px; }
+
+  .shop-grid { grid-template-columns: repeat(2, 1fr); gap: 26px 16px; }
+  .ac__fact { font-size: 0.72rem; line-height: 1.5; }
+  .ac__studio { font-size: 0.72rem; }
+
+  .detail__faces { grid-template-columns: 1fr; max-width: 320px; }
+  .detail__title { font-size: 1.9rem; }
+
+  /* Filters scroll rather than wrap into a wall of pills */
+  .shop-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 -18px;
+    padding: 2px 18px;
+    width: calc(100% + 36px);
+  }
+  .shop-filters::-webkit-scrollbar { display: none; }
+
+  /* Tray becomes two rows: the numbers, then the action */
+  .tray__inner {
+    grid-template-columns: auto 1fr;
+    gap: 12px 14px;
+    padding: 12px 18px 14px;
+  }
+  .tray__chip { width: 34px; height: 39px; margin-right: -12px; }
+  .tray__figures { padding-left: 12px; }
+  .tray__price { font-size: 1.25rem; }
+
+  /* The nudge is hidden in the tablet range where the tray is a single row,
+     but on a phone the tray has rows to spare and the nudge is the most
+     valuable thing in it — it is the only place the tier maths is explained. */
+  .tray__nudge {
+    display: block;
+    grid-column: 1 / -1;
+    font-size: 0.84rem;
+    padding-left: 12px;
+    line-height: 1.4;
+  }
+
+  .tray__cta { grid-column: 1 / -1; justify-content: center; width: 100%; }
+
+  .shop-studio__panel { padding: 26px 20px; }
+  .shop-studio__panel h2 { font-size: 2.2rem; }
+
+  .form { padding: 20px; }
+  .form__grid { grid-template-columns: 1fr; }
+  .field--half { grid-column: 1 / -1; }
+
+  .outcome__title { font-size: 2.8rem; }
+  .outcome__fan { height: 120px; }
+  .outcome__fancard { width: 72px; }
+  .outcome__actions .sm-btn { width: 100%; }
+
+  .line { grid-template-columns: 58px 1fr; gap: 14px; }
+  .line__art { width: 58px; }
+}
+
+@media (max-width: 380px) {
+  .shop-grid { gap: 22px 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ac__flipper { transition: none; }
+}
