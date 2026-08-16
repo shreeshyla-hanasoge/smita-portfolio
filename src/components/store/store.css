@@ -5,9 +5,15 @@
  * needs tighter type and denser layout than a portfolio page, and the two
  * shouldn't have to agree.
  *
- * Type rule: Reenie Beanie carries the studio's voice (page titles, section
- * heads). Barlow carries everything a buyer must read accurately — prices,
- * counts, specs, totals, form labels. Never a handwritten number.
+ * Type rule: Fraunces carries the studio's voice (page titles, section heads).
+ * Barlow carries everything a buyer must read accurately — prices, counts,
+ * specs, totals, form labels.
+ *
+ * The voice face used to be Reenie Beanie, matching the portfolio pages. It is
+ * Fraunces now to match /services, which is the approved style tile and the
+ * newest word on what this site looks like. The palette below mirrors the
+ * --sv-* tokens in ServicesPage.css for the same reason; that file is the
+ * source of truth, and these should be changed together.
  */
 
 /* Tokens are declared on both the page wrapper and the tray, because the tray
@@ -17,24 +23,27 @@
    right, which is the worst way for it to fail. */
 .store-root,
 .tray {
+  /* Mirrors the --sv-* tokens in ServicesPage.css. Same values, shop names. */
+  --sm-serif: 'Fraunces', Georgia, serif;
+
   /* surfaces */
-  --sm-paper: #fbfaf5;
-  --sm-surface: #ffffff;
-  --sm-sunk: #f3f1e9;
+  --sm-paper: #f6f5ef;   /* --sv-paper-tint */
+  --sm-surface: #ffffff; /* --sv-paper */
+  --sm-sunk: #ecefe3;    /* --sv-sage */
 
   /* ink */
-  --sm-ink: #2c2c2a;
-  --sm-ink-soft: #5e5e56;
-  --sm-ink-faint: #8b8b81;
+  --sm-ink: #26291f;      /* --sv-ink */
+  --sm-ink-soft: #43473d; /* --sv-body */
+  --sm-ink-faint: #83867a;/* --sv-muted */
 
-  /* accent — the site's mint, darkened where it has to carry text */
-  --sm-mint: #72b847;
-  --sm-mint-deep: #487d26;
-  --sm-mint-wash: #f0f7e9;
+  /* accent — the Services green, not the old mint */
+  --sm-mint: #4f7a3e;      /* --sv-green */
+  --sm-mint-deep: #3e5c33; /* --sv-green-deep */
+  --sm-mint-wash: #ecefe3; /* --sv-sage */
 
-  --sm-warn: #b4531f;
-  --sm-rule: rgba(44, 44, 42, 0.12);
-  --sm-rule-strong: rgba(44, 44, 42, 0.26);
+  --sm-warn: #b0713f;      /* --sv-ochre */
+  --sm-rule: #e3e2d9;      /* --sv-line */
+  --sm-rule-strong: #c9c8bc;
 
   --sm-radius: 14px;
   --sm-radius-sm: 9px;
@@ -70,9 +79,11 @@
 }
 
 .sm-pagetitle {
-  font-family: 'Reenie Beanie', cursive;
-  font-size: 4.2rem;
-  line-height: 0.95;
+  font-family: var(--sm-serif);
+  font-size: clamp(30px, 4vw, 40px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
   margin: 0 0 24px;
   color: var(--sm-ink);
 }
@@ -175,9 +186,10 @@
 }
 
 .sm-sectionhead__title {
-  font-family: 'Reenie Beanie', cursive;
-  font-size: 3.1rem;
-  line-height: 1;
+  font-family: var(--sm-serif);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.15;
   margin: 0;
   color: var(--sm-ink);
 }
@@ -204,12 +216,14 @@
   align-items: center;
 }
 
+/* Same kicker as .sv-eyebrow on /services — green, 12px, wide-tracked. */
 .shop-hero__eyebrow {
-  font-size: 0.78rem;
-  letter-spacing: 0.18em;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--sm-ink-faint);
-  margin-bottom: 6px;
+  color: var(--sm-mint);
+  margin-bottom: 14px;
 }
 
 /* Fluid, because the title is now a name rather than a two-word phrase and it
@@ -218,9 +232,11 @@
    until a font loads a hair wider. The clamp keeps it on one line from 375px
    up; the looser line-height is insurance for the widths where it doesn't. */
 .shop-hero__title {
-  font-family: 'Reenie Beanie', cursive;
-  font-size: clamp(3rem, 5.6vw, 5.2rem);
-  line-height: 0.9;
+  font-family: var(--sm-serif);
+  font-size: clamp(38px, 5.4vw, 56px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
   text-wrap: balance;
   color: var(--sm-ink);
   margin: 0 0 20px;
@@ -1153,9 +1169,11 @@
 }
 
 .outcome__title {
-  font-family: 'Reenie Beanie', cursive;
-  font-size: 3.8rem;
-  line-height: 1;
+  font-family: var(--sm-serif);
+  font-size: clamp(30px, 4vw, 40px);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--sm-ink);
   margin: 0 0 12px;
 }
 
@@ -1225,10 +1243,12 @@
 .shop-studio__panel--quiet { background: var(--sm-surface); border: 1px solid var(--sm-rule); }
 
 .shop-studio__panel h2 {
-  font-family: 'Reenie Beanie', cursive;
-  font-size: 2.6rem;
-  line-height: 1;
-  margin: 0 0 10px;
+  font-family: var(--sm-serif);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--sm-ink);
+  margin: 0 0 12px;
 }
 
 .shop-studio__panel p {
@@ -1249,7 +1269,10 @@
   margin-top: 12px;
 }
 
-.sm-empty h2 { font-family: 'Reenie Beanie', cursive; font-size: 3rem; margin: 0 0 10px; }
+.sm-empty h2 {
+  font-family: var(--sm-serif); font-size: 26px; font-weight: 600;
+  line-height: 1.2; color: var(--sm-ink); margin: 0 0 12px;
+}
 .sm-empty p { color: var(--sm-ink-soft); max-width: 46ch; margin: 0 auto 22px; }
 
 /* ============================================================ RESPONSIVE */
@@ -1292,8 +1315,7 @@
   .shop-hero__demoback .ac__fact { font-size: 0.62rem; line-height: 1.4; }
   .shop-hero__demoback .ac__lockup img { height: 12px; }
 
-  .sm-pagetitle { font-size: 3.2rem; }
-  .sm-sectionhead__title { font-size: 2.5rem; }
+  .sm-sectionhead__title { font-size: 25px; }
   .sm-sectionhead { gap: 14px; }
 
   .shop-grid { grid-template-columns: repeat(2, 1fr); gap: 26px 16px; }
@@ -1338,13 +1360,12 @@
   .tray__cta { grid-column: 1 / -1; justify-content: center; width: 100%; }
 
   .shop-studio__panel { padding: 26px 20px; }
-  .shop-studio__panel h2 { font-size: 2.2rem; }
+  .shop-studio__panel h2 { font-size: 23px; }
 
   .form { padding: 20px; }
   .form__grid { grid-template-columns: 1fr; }
   .field--half { grid-column: 1 / -1; }
 
-  .outcome__title { font-size: 2.8rem; }
   .outcome__fan { height: 120px; }
   .outcome__fancard { width: 72px; }
   .outcome__actions .sm-btn { width: 100%; }

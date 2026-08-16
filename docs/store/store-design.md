@@ -51,33 +51,46 @@ tray at the bottom of the screen keeps score. This removes a whole page from the
 
 ### The type rule
 
-> **Reenie Beanie carries the voice. Barlow carries the money.**
+> **Fraunces carries the voice. Barlow carries the money.**
 
-Page titles and section heads are handwritten, exactly like the rest of the site. Prices,
-counts, per-card rates, specs, totals, form labels and errors are Barlow with tabular
-figures. A handwritten price is charming exactly once and unreadable every time after —
-and on this shop the numbers are doing argumentative work, so they have to be read
-accurately.
+Page titles and section heads are set in Fraunces, matching `/services`. Prices, counts,
+per-card rates, specs, totals, form labels and errors are Barlow with tabular figures —
+on this shop the numbers are doing argumentative work, so they have to be read
+accurately, and a display face is not where accuracy lives.
+
+The voice face was Reenie Beanie until `/services` landed. Its stylesheet describes
+itself as "tokens and layout from the approved style tile", which makes it the newest
+word on what this site looks like, so the shop follows it rather than the older
+portfolio pages. That switch is not only a font swap: Reenie Beanie is handwriting and
+had to be set enormous to read at all (the hero ran at 5.2rem), where Fraunces carries
+the same weight at 56px. Every heading in the shop was re-scaled to the Services scale
+rather than merely re-faced.
 
 ### Tokens
 
 Scoped to `.store-root` (and `.tray`, which mounts at the app root) in
-`src/components/store/store.css`, so the shop can be denser than a portfolio page without
-either having to agree with the other.
+`src/components/store/store.css`. **The values mirror the `--sv-*` tokens in
+`ServicesPage.css`, which is the source of truth — change them together.**
 
-| Token | Value | Use |
-| --- | --- | --- |
-| `--sm-paper` | `#FBFAF5` | Page |
-| `--sm-surface` | `#FFFFFF` | Cards' reverse, panels, forms |
-| `--sm-sunk` | `#F3F1E9` | Bundle breakdown, table heads |
-| `--sm-ink` | `#2C2C2A` | Text, primary buttons |
-| `--sm-ink-soft` / `--sm-ink-faint` | `#5E5E56` / `#8B8B81` | Body, meta |
-| `--sm-mint` / `--sm-mint-deep` | `#72B847` / `#487D26` | Accent / accent text |
-| `--card-ratio` | `7 / 8` | The physical card, everywhere |
+| Token | Value | Mirrors | Use |
+| --- | --- | --- | --- |
+| `--sm-serif` | `Fraunces, Georgia, serif` | `--sv-serif` | Headings |
+| `--sm-paper` | `#F6F5EF` | `--sv-paper-tint` | Page |
+| `--sm-surface` | `#FFFFFF` | `--sv-paper` | Card reverse, panels, forms |
+| `--sm-sunk` | `#ECEFE3` | `--sv-sage` | Bundle breakdown, nudges |
+| `--sm-ink` | `#26291F` | `--sv-ink` | Headings, primary buttons |
+| `--sm-ink-soft` / `--sm-ink-faint` | `#43473D` / `#83867A` | `--sv-body` / `--sv-muted` | Body, meta |
+| `--sm-mint` / `--sm-mint-deep` | `#4F7A3E` / `#3E5C33` | `--sv-green` / `--sv-green-deep` | Accent / accent text |
+| `--sm-warn` | `#B0713F` | `--sv-ochre` | Errors |
+| `--sm-rule` | `#E3E2D9` | `--sv-line` | Hairlines |
+| `--card-ratio` | `7 / 8` | — | The physical card, everywhere |
 
-The site's mint is darkened to `--sm-mint-deep` wherever it carries text: `#72B847` on
-white fails contrast at body size. Primary buttons are ink rather than mint — on a page
-made of artwork, a green button competes with the work; a charcoal one doesn't.
+The token names stayed `--sm-mint*` after the colour became the Services green, so the
+diff reads as a palette change rather than a rename touching every rule. Worth
+correcting if the two pages are ever merged onto one shared token file.
+
+Primary buttons are ink rather than green — on a page made of artwork, a coloured button
+competes with the work; a dark one doesn't.
 
 ### Front supplied, back composed
 

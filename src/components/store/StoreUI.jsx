@@ -5,10 +5,9 @@ import { formatINR } from '../../store/commerce'
 /**
  * Small shared furniture for the shop.
  *
- * Type rule for everything in here, and everywhere under .store-root: Reenie
- * Beanie carries the studio's voice — page titles, section heads. Barlow
- * carries the money — prices, counts, totals, form labels, errors. A
- * handwritten price is charming exactly once and unreadable every time after.
+ * Type rule for everything in here, and everywhere under .store-root: Fraunces
+ * carries the studio's voice — page titles, section heads — matching /services.
+ * Barlow carries the money: prices, counts, totals, form labels, errors.
  */
 
 export const Breadcrumbs = ({ trail }) => (
