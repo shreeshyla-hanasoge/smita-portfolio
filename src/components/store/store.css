@@ -5,15 +5,14 @@
  * needs tighter type and denser layout than a portfolio page, and the two
  * shouldn't have to agree.
  *
- * Type rule: Fraunces carries the studio's voice (page titles, section heads).
- * Barlow carries everything a buyer must read accurately — prices, counts,
- * specs, totals, form labels.
+ * Type rule: --font-display (Fraunces) carries the studio's voice — page titles
+ * and section heads. --font-body (Barlow) carries everything a buyer must read
+ * accurately: prices, counts, specs, totals, form labels.
  *
- * The voice face used to be Reenie Beanie, matching the portfolio pages. It is
- * Fraunces now to match /services, which is the approved style tile and the
- * newest word on what this site looks like. The palette below mirrors the
- * --sv-* tokens in ServicesPage.css for the same reason; that file is the
- * source of truth, and these should be changed together.
+ * Both come from :root in index.css, which is now the site's type system — the
+ * shop does not redeclare the families. The colours below still mirror the
+ * --sv-* tokens in ServicesPage.css by hand; folding those into :root too would
+ * leave one set of tokens for the whole site instead of two.
  */
 
 /* Tokens are declared on both the page wrapper and the tray, because the tray
@@ -23,8 +22,9 @@
    right, which is the worst way for it to fail. */
 .store-root,
 .tray {
-  /* Mirrors the --sv-* tokens in ServicesPage.css. Same values, shop names. */
-  --sm-serif: 'Fraunces', Georgia, serif;
+  /* The display face comes from :root — not redeclared here, so a change to
+     the site's type system reaches the shop without a second edit. */
+  --sm-serif: var(--font-display);
 
   /* surfaces */
   --sm-paper: #f6f5ef;   /* --sv-paper-tint */
@@ -32,7 +32,7 @@
   --sm-sunk: #ecefe3;    /* --sv-sage */
 
   /* ink */
-  --sm-ink: #26291f;      /* --sv-ink */
+  --sm-ink: var(--ink);   /* :root, == --sv-ink */
   --sm-ink-soft: #43473d; /* --sv-body */
   --sm-ink-faint: #83867a;/* --sv-muted */
 

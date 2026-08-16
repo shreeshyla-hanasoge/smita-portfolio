@@ -110,18 +110,18 @@
   gap: 0.75rem;
 }
 
-/* The cart is the one nav item set in Barlow — a count has to be read
-   accurately, and Reenie Beanie numerals are not the place for that. */
+/* Sits in the nav's own type and the Services green, so the one commercial
+   control in the header doesn't read as bolted on. */
 .nav-cart {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-family: 'Barlow', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.95rem;
   font-weight: 600;
-  color: #383838;
-  background: rgba(114, 184, 71, 0.12);
-  border: 1px solid rgba(114, 184, 71, 0.35);
+  color: var(--ink);
+  background: rgba(79, 122, 62, 0.1);
+  border: 1px solid rgba(79, 122, 62, 0.32);
   border-radius: 999px;
   padding: 0.5rem 0.9rem;
   min-height: 40px;
@@ -129,8 +129,8 @@
 }
 
 .nav-cart:hover {
-  background: rgba(114, 184, 71, 0.2);
-  border-color: var(--primary);
+  background: rgba(79, 122, 62, 0.18);
+  border-color: #4f7a3e;
 }
 
 .nav-cart__count {
