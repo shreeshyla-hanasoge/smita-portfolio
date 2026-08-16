@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
@@ -96,8 +96,118 @@ const faqs = [
   }
 ]
 
+// Below this width the long sections collapse behind a button, per the mobile design.
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.matchMedia('(max-width: 768px)').matches : false
+  )
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)')
+    const onChange = (e) => setIsMobile(e.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+  return isMobile
+}
+
+// Parallax for the jungle band. The subjects hold still and only the backdrop
+// travels behind them, which is why it is exported from a much taller crop.
+//
+// Where scroll-driven animations are supported the CSS handles this entirely
+// on the compositor, and this hook does nothing. Elsewhere it falls back to
+// writing a -1..1 progress value that the CSS applies to the backdrop. The
+// fallback reads scroll position inside rAF rather than on the scroll event,
+// so each frame paints the position it was actually scheduled for and the
+// drift stops the instant the scroll does.
+const useParallax = () => {
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    let frame = null
+    let running = false
+    let idle = 0
+    let last = null
+    let stopped = false
+
+    const tick = () => {
+      const rect = el.getBoundingClientRect()
+      const progress = 1 - 2 * ((rect.top + rect.height) / (window.innerHeight + rect.height))
+      if (progress !== last) {
+        el.style.setProperty('--p', progress.toFixed(4))
+        last = progress
+        idle = 0
+      } else if (++idle > 10) {
+        // Nothing has moved for ten frames — idle until the next scroll
+        running = false
+        frame = null
+        return
+      }
+      frame = window.requestAnimationFrame(tick)
+    }
+
+    const start = () => {
+      if (running || stopped) return
+      running = true
+      idle = 0
+      frame = window.requestAnimationFrame(tick)
+    }
+
+    const runFallback = () => {
+      el.classList.add('sv-band-js')
+      start()
+      window.addEventListener('scroll', start, { passive: true })
+      window.addEventListener('resize', start)
+    }
+
+    // No scroll-driven animation support: drive it from JS immediately.
+    if (!window.CSS?.supports?.('animation-timeline: view()')) {
+      runFallback()
+      return () => {
+        stopped = true
+        if (frame !== null) window.cancelAnimationFrame(frame)
+        window.removeEventListener('scroll', start)
+        window.removeEventListener('resize', start)
+      }
+    }
+
+    // Otherwise the CSS drives it on the compositor and this hook stays out of
+    // the way. (Sampling the animation's progress from JS to double-check is
+    // not reliable: during a compositor-driven scroll the main thread reads a
+    // stale value, so the check reports "frozen" for a timeline that is in fact
+    // running, and would disable the very path that makes this smooth.)
+    return () => {
+      stopped = true
+      if (frame !== null) window.cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', start)
+      window.removeEventListener('resize', start)
+    }
+  }, [])
+
+  return ref
+}
+
+const Disclosure = ({ label, open, onToggle }) => (
+  <button className="sv-disclosure" aria-expanded={open} onClick={onToggle}>
+    {open ? 'Show less' : label}
+  </button>
+)
+
 const ServicesPage = () => {
-  const [openFaq, setOpenFaq] = React.useState(0)
+  const isMobile = useIsMobile()
+  const parallaxRef = useParallax()
+  const [openFaq, setOpenFaq] = useState(0)
+  const [showServices, setShowServices] = useState(false)
+  const [showProcess, setShowProcess] = useState(false)
+  const [showFaq, setShowFaq] = useState(false)
+
+  // On desktop every section is always open; the buttons only exist on mobile.
+  const servicesOpen = !isMobile || showServices
+  const processOpen = !isMobile || showProcess
+  const faqOpen = !isMobile || showFaq
 
   return (
     <div className="services-page">
@@ -108,18 +218,25 @@ const ServicesPage = () => {
         <meta property="og:title" content="Services - Studio Mintleaf" />
         <meta property="og:description" content="Science communication, editorial illustration, nature-inspired merchandise and custom wildlife commissions." />
         <meta property="og:url" content="https://www.studiomintleaf.in/services" />
+        <meta property="og:image" content="https://www.studiomintleaf.in/images/services/hero-heron.jpg" />
         <meta property="og:type" content="website" />
 
         <meta name="twitter:title" content="Services - Studio Mintleaf" />
         <meta name="twitter:description" content="Science communication, editorial illustration, nature-inspired merchandise and custom wildlife commissions." />
+        <meta name="twitter:image" content="https://www.studiomintleaf.in/images/services/hero-heron.jpg" />
 
         <link rel="canonical" href="https://www.studiomintleaf.in/services" />
       </Helmet>
 
-      {/* Hero */}
+      {/* Hero — dark band, heron bleeding off the right */}
       <header className="sv-hero">
-        <div className="sv-wrap">
-          <motion.p className="sv-eyebrow" {...reveal}>Services</motion.p>
+        <div className="sv-hero-art" aria-hidden="true">
+          <div className="sv-wrap sv-hero-art-inner">
+            <img src="/images/services/hero-heron.jpg" alt="" />
+          </div>
+        </div>
+        <div className="sv-wrap sv-hero-inner">
+          <motion.p className="sv-eyebrow sv-eyebrow-light" {...reveal}>Services</motion.p>
           <motion.h1 {...reveal}>We tell stories — most of them happen to be about nature.</motion.h1>
           <motion.p className="sv-lede" {...reveal}>
             Our work sits at the intersection of art and science, turning research and biodiversity into visuals people connect with. Here's what we make, how a project unfolds, and answers to the questions we hear most.
@@ -128,60 +245,79 @@ const ServicesPage = () => {
       </header>
 
       {/* What we do */}
-      <section className="sv-section sv-section-first">
+      <section className="sv-section sv-section-what">
         <div className="sv-wrap sv-split">
           <motion.div className="sv-aside" {...reveal}>
             <p className="sv-eyebrow">What we do</p>
             <h2>Four ways in</h2>
             <p className="sv-note">From a single commissioned painting to a full interpretive exhibit — every project starts with the same question: what should people feel and understand?</p>
+            <img className="sv-art sv-art-spider" src="/images/services/spider.png" alt="Illustration of a Chrysilla volupe jumping spider" />
+            {isMobile && (
+              <Disclosure label="Read about it" open={showServices} onToggle={() => setShowServices((v) => !v)} />
+            )}
           </motion.div>
-          <div className="sv-main">
-            <div className="sv-services">
-              {services.map((service) => (
-                <motion.div className="sv-service" key={service.title} {...reveal}>
-                  <span className="sv-icon" aria-hidden="true">{service.icon}</span>
-                  <h3>{service.title}</h3>
-                  <p>{service.description}</p>
-                </motion.div>
-              ))}
+
+          {servicesOpen && (
+            <div className="sv-main">
+              <div className="sv-services">
+                {services.map((service) => (
+                  <motion.div className="sv-service" key={service.title} {...reveal}>
+                    <span className="sv-icon" aria-hidden="true">{service.icon}</span>
+                    <h3>{service.title}</h3>
+                    <p>{service.description}</p>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
-      {/* Process */}
+      {/* Full-bleed layered parallax band */}
+      <div className="sv-band-art" ref={parallaxRef} aria-hidden="true">
+        <img className="sv-layer sv-layer-bg" src="/images/services/jungle-bg.jpg" alt="" />
+        <img className="sv-layer sv-layer-mid" src="/images/services/jungle-stem.png" alt="" />
+        <img className="sv-layer sv-layer-fg" src="/images/services/jungle-branch.png" alt="" />
+      </div>
+
+      {/* How we do it — horizontal process */}
       <section className="sv-section sv-band-tint">
-        <div className="sv-wrap sv-split">
-          <motion.div className="sv-aside" {...reveal}>
+        <div className="sv-wrap">
+          <motion.div className="sv-process-head" {...reveal}>
             <p className="sv-eyebrow">How we do it</p>
             <h2>From first call to final files</h2>
             <p className="sv-note">Four stages, shared milestones, no surprises.</p>
+            {isMobile && (
+              <Disclosure label="Understand how we do it" open={showProcess} onToggle={() => setShowProcess((v) => !v)} />
+            )}
           </motion.div>
-          <div className="sv-main">
-            <ol className="sv-timeline">
-              {steps.map((step, i) => (
-                <motion.li key={step.title} {...reveal}>
-                  <span className="sv-step-num" aria-hidden="true">{i + 1}</span>
-                  <div>
+
+          {processOpen && (
+            <>
+              <ol className="sv-steps">
+                {steps.map((step, i) => (
+                  <motion.li key={step.title} {...reveal}>
+                    <span className="sv-step-num" aria-hidden="true">{i + 1}</span>
                     <h3>{step.title}</h3>
                     <p>{step.description}</p>
-                  </div>
-                </motion.li>
-              ))}
-            </ol>
-            <motion.p className="sv-process-coda" {...reveal}>
-              Every project is different. If your needs fall outside the standard process — coordinating with printers, adapting artwork for new formats, collaborating with subject experts — we're happy to tailor the workflow.
-            </motion.p>
-          </div>
+                  </motion.li>
+                ))}
+              </ol>
+              <motion.p className="sv-process-coda" {...reveal}>
+                Every project is different. If your needs fall outside the standard process — coordinating with printers, adapting artwork for new formats, collaborating with subject experts — we're happy to tailor the workflow.
+              </motion.p>
+            </>
+          )}
         </div>
       </section>
 
       {/* Testimonial */}
-      <section className="sv-section">
+      <section className="sv-section sv-section-quote">
         <div className="sv-wrap sv-split">
           <motion.div className="sv-aside" {...reveal}>
             <p className="sv-eyebrow">Kind words</p>
             <h2>From a recent collaboration</h2>
+            <img className="sv-art sv-art-flower" src="/images/services/copperpod.png" alt="Illustration of a copperpod flower" />
           </motion.div>
           <div className="sv-main">
             <motion.figure className="sv-quote" {...reveal}>
@@ -203,35 +339,41 @@ const ServicesPage = () => {
           <motion.div className="sv-aside" {...reveal}>
             <p className="sv-eyebrow">Questions</p>
             <h2>We're here to help</h2>
-            <p className="sv-note">Anything else — just ask in your first message.</p>
+            <p className="sv-note">Anything else — just ask.</p>
+            {isMobile && (
+              <Disclosure label="Go through the FAQ" open={showFaq} onToggle={() => setShowFaq((v) => !v)} />
+            )}
           </motion.div>
-          <div className="sv-main">
-            <motion.div className="sv-faq" {...reveal}>
-              {faqs.map((faq, i) => {
-                const isOpen = openFaq === i
-                return (
-                  <div className={`sv-faq-item ${isOpen ? 'open' : ''}`} key={faq.q}>
-                    <button
-                      className="sv-faq-q"
-                      aria-expanded={isOpen}
-                      onClick={() => setOpenFaq(isOpen ? null : i)}
-                    >
-                      {faq.q}
-                      <span className="sv-plus" aria-hidden="true"></span>
-                    </button>
-                    <div className="sv-faq-a" style={{ maxHeight: isOpen ? '400px' : '0' }}>
-                      <p>{faq.a}</p>
+          {faqOpen && (
+            <div className="sv-main">
+              <motion.div className="sv-faq" {...reveal}>
+                {faqs.map((faq, i) => {
+                  const isOpen = openFaq === i
+                  return (
+                    <div className={`sv-faq-item ${isOpen ? 'open' : ''}`} key={faq.q}>
+                      <button
+                        className="sv-faq-q"
+                        aria-expanded={isOpen}
+                        onClick={() => setOpenFaq(isOpen ? null : i)}
+                      >
+                        {faq.q}
+                        <span className="sv-plus" aria-hidden="true"></span>
+                      </button>
+                      <div className="sv-faq-a" style={{ maxHeight: isOpen ? '400px' : '0' }}>
+                        <p>{faq.a}</p>
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
-            </motion.div>
-          </div>
+                  )
+                })}
+              </motion.div>
+            </div>
+          )}
         </div>
       </section>
 
       {/* CTA */}
-      <section className="sv-band-sage">
+      <section className="sv-cta-band">
+        <img className="sv-art sv-art-dragonfly" src="/images/services/dragonfly.png" alt="" aria-hidden="true" />
         <div className="sv-wrap">
           <motion.div className="sv-cta" {...reveal}>
             <h2>Have a project in mind?</h2>
@@ -243,7 +385,7 @@ const ServicesPage = () => {
       </section>
 
       {/* Newsletter pointer */}
-      <section>
+      <section className="sv-section-news">
         <div className="sv-wrap sv-news-row">
           <div>
             <h2>Field notes, quarterly</h2>

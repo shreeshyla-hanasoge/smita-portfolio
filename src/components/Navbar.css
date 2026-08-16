@@ -40,12 +40,12 @@
 }
 
 .brand-text {
-  font-size: 2.2rem;
-  font-family: 'Reenie Beanie', cursive;
-  font-weight: 400;
-  color: #383838;
+  font-size: 1.35rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink);
   text-shadow: none;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.01em;
 }
 
 /* Logo Image */
@@ -65,9 +65,10 @@
 .nav-link {
   background: transparent;
   border: none;
-  color: #383838;
-  font-family: 'Reenie Beanie', cursive;
-  font-size: 2rem;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
   font-weight: 500;
   cursor: pointer;
   padding: 0.6rem 1rem;
@@ -183,9 +184,10 @@
 .mobile-menu button {
   background: none;
   border: none;
-  color: var(--primary);
-  font-family: 'Reenie Beanie', cursive;
-  font-size: 1.4rem;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
   padding: 1rem 2rem;
   cursor: pointer;
   text-align: left;

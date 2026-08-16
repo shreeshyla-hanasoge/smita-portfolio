@@ -1,14 +1,15 @@
-/* Services page — tokens and layout from the approved style tile.
-   Scoped under .services-page; headings here use Fraunces, overriding
-   the site-wide Reenie Beanie heading rule in index.css. */
+/* Services page — built to the approved desktop and mobile mocks.
+   Section colours sampled from the mock: hero #16191B, process band #F6F5F0,
+   CTA band #A1A696. Headings follow the site-wide Fraunces scale. */
 
 .services-page {
   --sv-ink: #26291F;
   --sv-body: #43473D;
   --sv-muted: #83867A;
   --sv-paper: #FFFFFF;
-  --sv-paper-tint: #F6F5EF;
-  --sv-sage: #ECEFE3;
+  --sv-paper-tint: #F6F5F0;
+  --sv-dark: #16191B;
+  --sv-olive: #A1A696;
   --sv-green: #4F7A3E;
   --sv-green-deep: #3E5C33;
   --sv-ochre: #B0713F;
@@ -20,6 +21,14 @@
   line-height: 1.65;
   color: var(--sv-body);
   background: var(--sv-paper);
+
+  /* No overflow-x here either — it would make this a scroll container and
+     freeze the band's view timeline. Each section that bleeds (the hero, the
+     jungle band) clips its own artwork instead. */
+
+  /* Clears the fixed navbar so the dark hero starts *below* it. Letting the
+     band run underneath tints the translucent bar to a murky grey. */
+  padding-top: 82px;
 }
 
 .services-page h1,
@@ -66,23 +75,72 @@
 }
 
 .sv-section { padding: 96px 0; }
-.sv-section-first { padding-top: 0; }
+.sv-section-quote { padding-bottom: 64px; }
 .sv-section-faq { padding-top: 0; }
 
-/* Hero — top padding clears the fixed site navbar */
-.sv-hero { padding: 168px 0 100px; }
+/* ============ Hero ============ */
+.sv-hero {
+  position: relative;
+  background: var(--sv-dark);
+  padding: 68px 0 88px;
+  overflow: hidden;
+  isolation: isolate;
+}
+/* The beak has to land just past "nature." at every width, so the artwork is
+   positioned against the *text column*, not the viewport. Anchoring it to the
+   viewport edge makes the two drift apart as the window widens: the centred
+   column moves right while the art does not.
+   `--art-w` caps at the size the mock draws, and the left offset is a fixed
+   fraction of it, so the beak keeps its distance from the column's left edge.
+   Below the cap both the art and the headline scale with vw together. */
+.sv-hero-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.sv-hero-art-inner {
+  position: relative;
+  height: 100%;
+  --art-w: clamp(700px, 120vw, 1537px);
+}
+.sv-hero-art img {
+  position: absolute;
+  bottom: -34px;
+  left: calc(var(--art-w) * -0.1163);
+  width: var(--art-w);
+  max-width: none;
+  height: auto;
+  display: block;
+}
+/* Blend the artwork's dark ground into the band so the join is invisible */
+.sv-hero-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, var(--sv-dark) 0%, rgba(22, 25, 27, 0.88) 12%, rgba(22, 25, 27, 0) 34%);
+}
+.sv-hero-inner { position: relative; z-index: 1; }
+
+.sv-eyebrow-light { color: #B9C4AE; }
+
+/* Width tuned so the three lines break as the mock does — the short last line
+   is what leaves room for the beak to arrive beside it. */
 .sv-hero h1 {
-  font-size: clamp(38px, 5.4vw, 56px);
-  max-width: 21ch;
-  margin-bottom: 26px;
+  font-size: clamp(34px, 3.9vw, 47px);
+  color: #FFFFFF;
+  max-width: 10.5em;
+  text-wrap: pretty;
+  margin-bottom: 30px;
 }
 .sv-lede {
-  font-size: 19px;
-  line-height: 1.6;
-  max-width: 54ch;
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 46ch;
 }
 
-/* Services grid — the hairline is the card */
+/* ============ Services grid ============ */
 .sv-services {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -97,83 +155,219 @@
 .sv-service h3 { font-size: 21px; margin-bottom: 8px; }
 .sv-service p { font-size: 15.5px; max-width: 44ch; margin-bottom: 0; }
 
-/* Process */
-.sv-band-tint { background: var(--sv-paper-tint); }
-.sv-timeline {
-  list-style: none;
-  position: relative;
-  max-width: 640px;
-  margin: 0;
-  padding: 0;
+/* Illustrations sit in the empty column, not in a box */
+.sv-art { display: block; height: auto; }
+.sv-art-spider {
+  width: 78%;
+  max-width: 240px;
+  margin-top: 48px;
 }
-.sv-timeline::before {
+.sv-art-flower {
+  width: 62%;
+  max-width: 190px;
+  margin-top: 28px;
+}
+
+/* ============ Full-bleed layered parallax band ============ */
+/* Three registered layers of one painting. The subjects — the bare stem and
+   the branch carrying the ladybird and caterpillar — hold still; only the
+   backdrop travels, which is why it is exported from a much taller crop.
+   `--p` runs -1..1 as the band crosses the viewport. */
+.sv-band-art {
+  --p: 0;
+  position: relative;
+  /* The subject artwork is drawn at 45% of the band's width, so its rendered
+     height is 0.159 × that width. Giving the band the same ratio means the
+     artwork fills it exactly top to bottom — no dead space below the vine, and
+     the artwork's top edge stays tucked under the band's own. Smaller subjects
+     mean a shorter vine, so the band slims to match rather than leaving it
+     stranded in a tall frame. */
+  width: 100%;
+  aspect-ratio: 3000 / 700;
+  min-height: 280px;
+  max-height: 620px;
+  /* Clips the oversized layers, in layout as well as paint — clip-path alone
+     leaves them contributing horizontal overflow on narrow screens. Safe for
+     the view timeline: the timeline's scroller is the nearest scroll container
+     *above* its subject, and this element is the subject. */
+  overflow: hidden;
+  background: #16241C;
+  isolation: isolate;
+}
+.sv-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+}
+
+/* The subjects are drawn at about two-thirds of the band so they read as a
+   quiet detail rather than a close-up. Since the vine is painted corner to
+   corner, scaling it down leaves its ends short of the edges — so they're
+   feathered out instead, which reads as the vine receding into shadow rather
+   than stopping in mid-air. `contain` keeps the artwork's proportions; the
+   backdrop fills the band around it. */
+.sv-layer-mid,
+.sv-layer-fg {
+  width: 45%;
+  height: auto;
+  left: 27.5%;
+  right: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  object-fit: fill;
+  /* Centred, so the ladybird and caterpillar sit in the middle of the band.
+     That puts both ends of the vine inside the frame, so both are feathered —
+     it emerges from shadow on the left and recedes into it on the right. The
+     top edge stays flush with the band's own, where it's cropped as before
+     (fading it would take the ladybird with it); the stem's cut end at the
+     bottom is feathered too. */
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, #000 26%, #000 86%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 6%, #000 80%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0%, #000 26%, #000 86%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 6%, #000 80%, transparent 100%);
+  mask-composite: intersect;
+}
+/* Sized well beyond the band so there is always more backdrop to move into,
+   and centred on the subjects' framing so the scene composites as painted. */
+.sv-layer-bg {
+  left: 50%;
+  top: 50%;
+  height: auto;
+  min-height: calc(100% + 640px);
+  /* Travel scales with the window: the backdrop is square, so its slack grows
+     with width. A flat pixel value that reads well at 1440 would drag an edge
+     into view at 1024. */
+  transform: translate3d(-50%, calc(-50% + var(--p) * min(28vw, 420px)), 0);
+  will-change: transform;
+}
+
+/* Scroll-driven animation runs on the compositor, so the drift is locked to
+   the scroll position instead of being pushed by a scroll listener on the main
+   thread — a listener always lands a frame late and visibly keeps moving for a
+   beat after the scroll stops. The JS fallback below only runs where this
+   isn't supported. */
+@supports (animation-timeline: view()) {
+  .sv-band-art {
+    view-timeline-name: --sv-band;
+    view-timeline-axis: block;
+  }
+  /* Longhands only: the `animation` shorthand resets duration to 0s and
+     animation-timeline to auto, which freezes a scroll-driven animation. */
+  .sv-layer-bg {
+    animation-name: sv-band-drift;
+    animation-duration: auto;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: --sv-band;
+    animation-range: cover 0% cover 100%;
+  }
+  /* Set by the component if the timeline never actually drives the layer, so a
+     browser that reports support but doesn't animate isn't left frozen. */
+  .sv-band-art.sv-band-js .sv-layer-bg { animation-name: none; }
+  /* Travel is generous because the backdrop is exported from a 3000px-tall
+     crop — there is far more of it than the band ever shows. */
+  @keyframes sv-band-drift {
+    from { transform: translate3d(-50%, calc(-50% - min(28vw, 420px)), 0); }
+    to   { transform: translate3d(-50%, calc(-50% + min(28vw, 420px)), 0); }
+  }
+}
+/* Deepens the corners so the band reads as a scene, not a flat crop */
+.sv-band-art::after {
   content: "";
   position: absolute;
-  left: 19px;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 45%, rgba(0, 0, 0, 0) 45%, rgba(8, 18, 13, 0.42) 100%);
+}
+
+/* ============ Process — horizontal ============ */
+.sv-band-tint { background: var(--sv-paper-tint); }
+.sv-process-head { max-width: 560px; }
+.sv-process-head h2 { font-size: 30px; }
+
+.sv-steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  margin: 56px 0 0;
+  padding: 0;
+  position: relative;
+}
+/* Hairline linking the four numbers */
+.sv-steps::before {
+  content: "";
+  position: absolute;
   top: 20px;
-  bottom: 20px;
-  width: 1px;
+  left: 20px;
+  right: 20px;
+  height: 1px;
   background: var(--sv-line);
 }
-.sv-timeline li {
-  position: relative;
-  display: grid;
-  grid-template-columns: 40px 1fr;
-  gap: 26px;
-  padding-bottom: 44px;
-}
-.sv-timeline li:last-child { padding-bottom: 0; }
+.sv-steps li { position: relative; }
 .sv-step-num {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--sv-sage);
+  background: #E7EADC;
   color: var(--sv-green-deep);
   font-weight: 600;
   font-size: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 20px;
   position: relative;
   z-index: 1;
   font-variant-numeric: tabular-nums;
 }
-.sv-timeline h3 { font-size: 19px; margin-bottom: 6px; padding-top: 7px; }
-.sv-timeline p { font-size: 15.5px; max-width: 58ch; margin-bottom: 0; }
+.sv-steps h3 { font-size: 19px; margin-bottom: 8px; }
+.sv-steps p { font-size: 14.5px; line-height: 1.65; margin-bottom: 0; }
+
 .sv-process-coda {
-  margin-top: 48px;
+  margin-top: 56px;
   padding-top: 26px;
   border-top: 1px solid var(--sv-line);
   font-family: var(--sv-serif);
   font-style: italic;
   font-size: 16.5px;
   color: var(--sv-muted);
-  max-width: 56ch;
+  max-width: 62ch;
 }
 
-/* Testimonial */
-.sv-quote { max-width: 720px; margin: 0; }
+/* ============ Testimonial ============ */
+/* Barlow regular, deliberately understated — the quote should not compete
+   with the section headings. */
+.sv-quote { max-width: 660px; margin: 0; }
 .sv-quote blockquote {
   border-left: 3px solid var(--sv-ochre);
-  padding-left: 30px;
+  padding-left: 28px;
   margin: 0 0 22px;
-  font-family: var(--sv-serif);
-  font-style: italic;
-  font-size: clamp(21px, 2.6vw, 26px);
-  line-height: 1.5;
-  color: var(--sv-ink);
-}
-.sv-quote figcaption { padding-left: 33px; }
-.sv-quote-name {
-  font-variant: all-small-caps;
-  letter-spacing: 0.08em;
-  font-weight: 600;
+  font-family: 'Barlow', sans-serif;
   font-size: 17px;
+  line-height: 1.7;
+  color: var(--sv-body);
+}
+.sv-quote figcaption { padding-left: 31px; }
+.sv-quote-name {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--sv-ink);
 }
-.sv-quote-role { font-size: 13.5px; color: var(--sv-muted); }
+.sv-quote-role { font-size: 14px; color: var(--sv-muted); }
 
-/* FAQ */
+/* ============ FAQ ============ */
 .sv-faq { max-width: 720px; }
 .sv-faq-item { border-bottom: 1px solid var(--sv-line); }
 .sv-faq-item:first-child { border-top: 1px solid var(--sv-line); }
@@ -189,7 +383,7 @@
   text-align: left;
   font-family: 'Barlow', sans-serif;
   font-weight: 500;
-  font-size: 17px;
+  font-size: 16px;
   color: var(--sv-ink);
   padding: 20px 8px;
   min-height: 48px;
@@ -216,48 +410,84 @@
 .sv-plus::before { width: 14px; height: 1.6px; }
 .sv-plus::after { width: 1.6px; height: 14px; }
 .sv-faq-item.open .sv-plus { transform: rotate(45deg); }
-.sv-faq-a {
-  overflow: hidden;
-  transition: max-height 260ms ease;
-}
+.sv-faq-a { overflow: hidden; transition: max-height 260ms ease; }
 .sv-faq-a p {
-  font-size: 15.5px;
+  font-size: 15px;
   max-width: 60ch;
   padding: 0 8px 22px;
   margin-bottom: 0;
 }
 
-/* CTA */
-.sv-band-sage { background: var(--sv-sage); }
-.sv-cta { max-width: 660px; padding: 112px 0; }
-.sv-cta h2 { font-size: clamp(30px, 4vw, 40px); margin-bottom: 14px; }
-.sv-cta > p { font-size: 17px; max-width: 48ch; margin-bottom: 32px; }
+/* ============ CTA band ============ */
+.sv-cta-band {
+  position: relative;
+  background: var(--sv-olive);
+  overflow: hidden;
+  isolation: isolate;
+}
+.sv-art-dragonfly {
+  position: absolute;
+  top: 0;
+  right: 0;
+  /* Sized from the mock's dragonfly, not the artwork's overall box: the PNG
+     carries extra leaves on its left that creep over the copy if it's scaled
+     any wider. */
+  width: 62%;
+  z-index: 0;
+  pointer-events: none;
+}
+.sv-cta {
+  position: relative;
+  z-index: 1;
+  max-width: 520px;
+  padding: 104px 0;
+}
+.sv-cta h2 { font-size: clamp(28px, 3.4vw, 36px); margin-bottom: 16px; }
+.sv-cta > p { font-size: 16px; max-width: 44ch; margin-bottom: 28px; color: #2E332A; }
 .sv-cta-email {
   font-family: var(--sv-serif);
   font-weight: 600;
-  font-size: clamp(20px, 3vw, 26px);
-  color: var(--sv-green-deep);
+  font-size: clamp(19px, 2.4vw, 23px);
+  color: var(--sv-ink);
   text-decoration-thickness: 1.5px;
   text-underline-offset: 6px;
-  transition: color 150ms ease;
+  transition: opacity 150ms ease;
   overflow-wrap: anywhere;
 }
-.sv-cta-email:hover { color: var(--sv-ink); }
+.sv-cta-email:hover { opacity: 0.72; }
 .sv-cta-side {
   margin-top: 26px;
-  font-size: 14px;
-  color: var(--sv-muted);
-  max-width: 44ch;
+  font-size: 14.5px;
+  color: #2E332A;
+  max-width: 42ch;
   margin-bottom: 0;
 }
 
-/* Newsletter pointer */
+/* ============ Mobile disclosure button ============ */
+.sv-disclosure {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 11px 26px;
+  border: 1px solid var(--sv-ink);
+  border-radius: 999px;
+  background: transparent;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--sv-ink);
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+}
+.sv-disclosure:hover { background: var(--sv-ink); color: #fff; }
+.sv-disclosure:focus-visible { outline: 2px solid var(--sv-green); outline-offset: 3px; }
+
+/* ============ Newsletter ============ */
 .sv-news-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 28px;
-  padding: 48px 32px;
+  padding: 56px 32px;
   flex-wrap: wrap;
 }
 .sv-news-row h2 { font-size: 21px; }
@@ -265,36 +495,132 @@
 .sv-news-link {
   font-size: 15px;
   font-weight: 600;
-  color: var(--sv-green-deep);
+  color: var(--sv-ink);
   text-decoration: none;
-  border-bottom: 1.5px solid var(--sv-green-deep);
+  border-bottom: 1.5px solid var(--sv-ink);
   padding-bottom: 2px;
-  transition: color 150ms ease, border-color 150ms ease;
+  transition: opacity 150ms ease;
 }
-.sv-news-link:hover { color: var(--sv-ink); border-color: var(--sv-ink); }
+.sv-news-link:hover { opacity: 0.65; }
 
-/* Footer */
+/* ============ Footer ============ */
 .sv-footer {
   border-top: 1px solid var(--sv-line);
-  padding: 36px 0 48px;
+  padding: 30px 0 44px;
 }
-.sv-footer p { font-size: 13.5px; color: var(--sv-muted); margin: 0; text-align: center; }
+.sv-footer p { font-size: 13px; color: var(--sv-muted); margin: 0; text-align: center; }
 
 /* ============ Responsive ============ */
+@media (max-width: 1024px) {
+  .sv-steps { grid-template-columns: repeat(2, 1fr); gap: 40px 32px; }
+  .sv-steps::before { display: none; }
+}
+
 @media (max-width: 860px) {
   .sv-split { display: block; }
-  .sv-split > .sv-aside { margin-bottom: 32px; }
+  .sv-split > .sv-aside { margin-bottom: 40px; }
+  .sv-services { grid-template-columns: 1fr; gap: 36px; }
+  .sv-hero-art { width: 100%; }
+  .sv-hero-art::after {
+    background: linear-gradient(to bottom, rgba(22, 25, 27, 0.55) 0%, rgba(22, 25, 27, 0.88) 55%, var(--sv-dark) 100%);
+  }
 }
 
-@media (max-width: 700px) {
-  .sv-services { grid-template-columns: 1fr; gap: 38px; }
-}
+@media (max-width: 768px) {
+  /* The mobile design runs the jungle band *after* the process section,
+     where desktop places it before. Flex ordering moves it without
+     duplicating the band or its images. */
+  .services-page { display: flex; flex-direction: column; }
+  .sv-hero { order: 1; }
+  .sv-section-what { order: 2; }
+  .sv-band-tint { order: 3; }
+  .sv-band-art { order: 4; }
+  .sv-section-quote { order: 5; }
+  .sv-section-faq { order: 6; }
+  .sv-cta-band { order: 7; }
+  .sv-section-news { order: 8; }
+  .sv-footer { order: 9; }
 
-@media (max-width: 600px) {
+  .services-page { padding-top: 76px; }
   .sv-wrap { padding: 0 22px; }
-  .sv-hero { padding: 140px 0 64px; }
-  .sv-section { padding: 68px 0; }
-  .sv-section-first, .sv-section-faq { padding-top: 0; }
-  .sv-cta { padding: 76px 0; }
-  .sv-news-row { padding: 40px 22px; }
+  .sv-section { padding: 64px 0; }
+  .sv-section-faq { padding-top: 0; }
+  .sv-hero { padding: 44px 0 56px; }
+  /* Top-anchored on mobile — the heron sits above the headline and only its
+     beak reaches across the first line, as the mobile mock draws it. Anchored
+     to the viewport's right edge rather than the text column. */
+  .sv-hero-art-inner { --art-w: 88vw; }
+  .sv-hero-art img {
+    top: 16px;
+    bottom: auto;
+    left: auto;
+    right: -22px;
+  }
+  .sv-hero-art::after {
+    background: linear-gradient(to right, var(--sv-dark) 0%, rgba(22, 25, 27, 0.75) 14%, rgba(22, 25, 27, 0) 42%);
+  }
+  .sv-hero-art::after {
+    background: linear-gradient(to right, var(--sv-dark) 0%, rgba(22, 25, 27, 0.7) 30%, rgba(22, 25, 27, 0) 70%);
+  }
+  .sv-hero h1 { max-width: 18ch; }
+  .sv-lede { font-size: 14.5px; }
+
+  /* Shorter band on the phone. The narrow viewport crops hard into the canvas,
+     so the framing pans left of centre to keep the ladybird and caterpillar
+     in shot. */
+  /* At this ratio `cover` fits by height, so the band's height sets the subject
+     scale — a shorter band keeps them from filling a phone screen. */
+  .sv-band-art { aspect-ratio: auto; height: 230px; min-height: 0; max-height: none; }
+  /* A phone is too narrow to shrink the subjects — at 66% they'd be specks — so
+     the band keeps the full-width fit here and crops the vine instead. */
+  .sv-layer,
+  .sv-layer-mid,
+  .sv-layer-fg {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    right: auto;
+    top: 0;
+    transform: none;
+    object-fit: cover;
+    object-position: 42% center;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  /* Wider than the phone so the square backdrop is tall enough to travel 180px
+     without dragging its own edge into the band. */
+  .sv-layer-bg {
+    width: 220%;
+    min-height: calc(100% + 420px);
+    transform: translate3d(-50%, calc(-50% + var(--p) * 180px), 0);
+  }
+  @supports (animation-timeline: view()) {
+    @keyframes sv-band-drift {
+      from { transform: translate3d(-50%, calc(-50% - 180px), 0); }
+      to   { transform: translate3d(-50%, calc(-50% + 180px), 0); }
+    }
+  }
+
+  .sv-steps { grid-template-columns: 1fr; gap: 34px; margin-top: 40px; }
+  .sv-process-coda { margin-top: 40px; }
+
+  /* Illustrations centre under their heading block on mobile */
+  .sv-art-spider { width: 62%; max-width: 230px; margin: 34px auto 0; }
+  .sv-art-flower { width: 48%; max-width: 170px; margin: 24px 0 0 auto; }
+
+  .sv-aside { text-align: left; }
+  .sv-aside .sv-disclosure { display: block; margin-left: auto; margin-right: auto; }
+
+  /* Extra head-room so the heading clears the dragonfly rather than colliding */
+  .sv-cta { padding: 132px 0 68px; }
+  .sv-art-dragonfly { width: 64%; max-width: 300px; }
+
+  .sv-news-row { padding: 44px 22px; align-items: flex-start; flex-direction: column; gap: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sv-layer-bg {
+    animation: none !important;
+    transform: translate3d(-50%, -50%, 0) !important;
+  }
 }
