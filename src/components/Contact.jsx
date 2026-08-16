@@ -10,8 +10,8 @@ const Contact = ({ id }) => {
   const [emailError, setEmailError] = useState('')
 
   const validateEmail = (email) => {
-    // Regex for stricter email validation
-    const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    // Regex for stricter email validation (TLDs can be longer than 6 chars, e.g. .photography)
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return regex.test(email);
   }
 

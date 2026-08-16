@@ -32,9 +32,11 @@ const Gallery = ({ id }) => {
   }, [])
 
   // Auto-slide effect — paused while the user is touching the carousel,
-  // and the 5s timer restarts whenever the slide changes
+  // and the 5s timer restarts whenever the slide changes.
+  // Disabled entirely for users who prefer reduced motion.
   useEffect(() => {
     if (isInteracting) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const interval = setInterval(() => {
       // Skip while the tab is hidden — animations can't run there and the
       // slides would pile up into a scrambled jump when the user returns
@@ -214,7 +216,7 @@ const Gallery = ({ id }) => {
                         <motion.img
                           src={project.thumbnail}
                           alt={project.title}
-                          loading="eager"
+                          loading={isCenter ? 'eager' : 'lazy'}
                           style={{
                             transformOrigin: `${clamp(project.preview?.x ?? 50)}% ${clamp(project.preview?.y ?? 50)}%`,
                             objectPosition: `${clamp(project.preview?.x ?? 50)}% ${clamp(project.preview?.y ?? 50)}%`,
@@ -233,24 +235,26 @@ const Gallery = ({ id }) => {
           </div>
 
           <div className="carousel-controls">
-            <button className="carousel-btn prev" onClick={handlePrev}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <button className="carousel-btn prev" onClick={handlePrev} aria-label="Previous project">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M15 18l-6-6 6-6"/>
               </svg>
             </button>
-            <button className="carousel-btn next" onClick={handleNext}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <button className="carousel-btn next" onClick={handleNext} aria-label="Next project">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M9 18l6-6-6-6"/>
               </svg>
             </button>
           </div>
 
           <div className="carousel-dots">
-            {projects.map((_, index) => (
+            {projects.map((project, index) => (
               <button
                 key={index}
                 className={`dot ${index === currentIndex ? 'active' : ''}`}
                 onClick={() => setCurrentIndex(index)}
+                aria-label={`Go to ${project.title}`}
+                aria-current={index === currentIndex}
               />
             ))}
           </div>
