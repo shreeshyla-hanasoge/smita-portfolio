@@ -1381,3 +1381,50 @@
 @media (prefers-reduced-motion: reduce) {
   .ac__flipper { transition: none; }
 }
+
+/* ------------------------------------------------- opening announcement */
+/* Shown until the shop opens on Ganesha Chaturthi. Deliberately quiet on the
+   shop page and firm in the cart, where it stands in for the pay button. */
+.shop-opening--banner {
+  background: rgba(79, 122, 62, 0.1);
+  border-bottom: 1px solid rgba(79, 122, 62, 0.24);
+  padding: 14px 0;
+}
+
+.shop-opening--banner p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--sm-ink);
+}
+
+.summary .shop-opening,
+.shop-opening:not(.shop-opening--banner) {
+  border: 1px solid rgba(79, 122, 62, 0.32);
+  background: rgba(79, 122, 62, 0.08);
+  border-radius: 14px;
+  padding: 18px 18px 16px;
+  margin-top: 4px;
+}
+
+.shop-opening__kicker {
+  margin: 0 0 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #4f7a3e;
+}
+
+.shop-opening__line {
+  margin: 0 0 8px;
+  font-size: 1.02rem;
+  line-height: 1.45;
+  color: var(--sm-ink);
+}
+
+.shop-opening__note {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--sm-ink-faint);
+}

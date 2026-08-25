@@ -9,7 +9,7 @@ import {
   BEST_VALUE_TIER,
   FREE_SHIPPING_OVER,
   SHIPPING_FLAT,
-  nextDispatch,
+  nextDispatch, SHOP_OPENS_LABEL,
 } from '../../store/commerce'
 import { trackViewItemList } from '../../store/analytics'
 import ArtCard, { CardBack } from './ArtCard'
@@ -78,6 +78,17 @@ const ShopPage = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
+
+      {/* The shop is browsable before it opens; say so before anyone fills a
+          collection they cannot pay for yet. */}
+      <div className="shop-opening shop-opening--banner">
+        <div className="sm-shell">
+          <p>
+            <strong>Opening on {SHOP_OPENS_LABEL}.</strong> Browse the cards and build your
+            collection now — it will be waiting when the shop opens.
+          </p>
+        </div>
+      </div>
 
       {/* ------------------------------------------------------------- hero */}
       <header className="shop-hero">

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { useCart } from '../../store/CartContext'
-import { formatINR, nextDispatch, FREE_SHIPPING_OVER } from '../../store/commerce'
+import { formatINR, nextDispatch, SHOP_OPENS_LABEL, FREE_SHIPPING_OVER } from '../../store/commerce'
 import { trackViewCart } from '../../store/analytics'
 import { Breadcrumbs, EmptyState, BundleBreakdown } from './StoreUI'
 import { CardStepper } from './ArtCard'
@@ -154,16 +154,18 @@ const CartPage = () => {
                 <strong>{dispatchDate.long}</strong>.
               </p>
 
-              <button
-                className="sm-btn sm-btn--primary sm-btn--block"
-                onClick={() => navigate('/shop/checkout')}
-              >
-                Checkout
-              </button>
-
-              <p className="summary__pay">
-                Card · UPI · Net banking · Wallets, via Razorpay. Prices include taxes.
-              </p>
+              {/* No payment until the shop opens. The collection still saves,
+                  so anyone who picks cards now keeps them for the day. */}
+              <div className="shop-opening">
+                <p className="shop-opening__kicker">Opening soon</p>
+                <p className="shop-opening__line">
+                  The shop opens on <strong>{SHOP_OPENS_LABEL}</strong>.
+                </p>
+                <p className="shop-opening__note">
+                  Your collection is saved on this device until then — nothing is
+                  charged today, and the first batch is posted on {dispatchDate.long}.
+                </p>
+              </div>
             </aside>
           </div>
         )}

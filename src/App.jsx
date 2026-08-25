@@ -19,7 +19,6 @@ import { CartProvider } from './store/CartContext'
 import ShopPage from './components/store/ShopPage'
 import CardDetailPage from './components/store/CardDetailPage'
 import CartPage from './components/store/CartPage'
-import CheckoutPage from './components/store/CheckoutPage'
 import { OrderSuccessPage, OrderFailedPage } from './components/store/OrderStatusPage'
 import CollectionTray from './components/store/CollectionTray'
 import PreviewBadge, { IS_PREVIEW } from './components/PreviewBadge'
@@ -103,7 +102,10 @@ function App() {
                 time — see shopRoutes() in src/store/catalog.js */}
             <Route path="/shop" element={<ShopPage />} />
             <Route path="/shop/cart" element={<CartPage />} />
-            <Route path="/shop/checkout" element={<CheckoutPage />} />
+            {/* Checkout is closed until the shop opens on Ganesha Chaturthi.
+                The page itself is kept, not deleted — reinstating it is a
+                one-line change on the day. */}
+            <Route path="/shop/checkout" element={<Navigate to="/shop/cart" replace />} />
             <Route path="/shop/order/success" element={<OrderSuccessPage />} />
             <Route path="/shop/order/failed" element={<OrderFailedPage />} />
             <Route path="/shop/card/:cardSlug" element={<CardDetailPage />} />

@@ -127,12 +127,30 @@ export const freeShippingNudge = (count) => {
 // ----------------------------------------------------------------- dispatch
 
 /**
- * Orders go out in one batch a month. Saying *which day* turns a delay into a
- * plan — "ships once a month" reads as an excuse, "packed on 1 September"
- * reads as a studio that knows what it is doing.
+ * The shop opens on Ganesha Chaturthi. Until then the catalogue is browsable
+ * and the collection tray still works, but nothing can be paid for — see
+ * CartPage and the /shop/checkout route.
  */
-export const nextDispatch = (now = new Date()) => {
-  const date = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+export const SHOP_OPENS = new Date(2026, 8, 14)   // 14 September 2026
+
+export const SHOP_OPENS_LABEL = 'Ganesha Chaturthi, 14 September 2026'
+
+/**
+ * Orders go out in one batch a month, on the 26th. Saying *which day* turns a
+ * delay into a plan — "ships once a month" reads as an excuse, "packed on the
+ * 26th" reads as a studio that knows what it is doing.
+ *
+ * Never quotes a date before the shop opens: the first batch cannot go out
+ * ahead of the first order.
+ */
+const BATCH_DAY = 26
+
+export const nextDispatch = (now = new Date(), opens = SHOP_OPENS) => {
+  const from = now > opens ? now : opens
+  // this month's batch if it is still ahead of us, otherwise next month's
+  const date = from.getDate() < BATCH_DAY
+    ? new Date(from.getFullYear(), from.getMonth(), BATCH_DAY)
+    : new Date(from.getFullYear(), from.getMonth() + 1, BATCH_DAY)
   return {
     date,
     label: date.toLocaleDateString('en-IN', { day: 'numeric', month: 'long' }),

@@ -1,3 +1,11 @@
+/* Breathing room above the block. Pages that end on a dense grid (the shop's
+   card collection) otherwise run their last row straight into the olive band. */
+.cta-band { margin-top: 96px; }
+
+@media (max-width: 768px) {
+  .cta-band { margin-top: 64px; }
+}
+
 /* The closing block shared by every page — enquiry CTA, newsletter pointer and
    copyright. Lifted out of the Services page so all pages stay identical; the
    colour values are inlined because the Services tokens are scoped to that

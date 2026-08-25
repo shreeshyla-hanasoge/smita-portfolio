@@ -209,7 +209,13 @@
    simply covers the band — none of the scaling, centring or edge-masking the
    old two-layer version needed. The framing sits on the insects rather than
    the middle of a tall canvas. */
+/* Drawn at a fraction of the band's width, which is the whole point of the
+   longer vines in this artwork: at this scale the ladybird and caterpillar
+   read as a small detail, while the vines still cross the frame and leave it
+   through the top and bottom edges, so no end is ever left hanging. */
 .sv-layer-fg {
+  width: 58%;
+  left: 21%;
   object-position: center 51%;
 }
 
