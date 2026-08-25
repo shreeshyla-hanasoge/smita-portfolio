@@ -6,7 +6,7 @@ import { cardsBySlug, CARDS, COLLECTION } from '../../store/catalog'
 import { formatINR, TIERS, nextDispatch } from '../../store/commerce'
 import { trackViewItem } from '../../store/analytics'
 import { useCart } from '../../store/CartContext'
-import ArtCard, { CardStepper, CardBack } from './ArtCard'
+import ArtCard, { CardStepper } from './ArtCard'
 import { Breadcrumbs } from './StoreUI'
 import './store.css'
 
@@ -17,7 +17,8 @@ const SITE = 'https://studiomintleaf.in'
  *
  * The grid sells; this page is what a WhatsApp forward or a search result
  * lands on, so it shows both faces at once rather than making a first-time
- * visitor discover the flip. It is also where the writing has room to breathe.
+ * visitor read about the species. The reverse stays unseen until the card
+ * itself arrives.
  */
 const CardDetailPage = () => {
   const { cardSlug } = useParams()
@@ -100,10 +101,6 @@ const CardDetailPage = () => {
               style={{ '--tint': card.tint }}
             >
               <img src={card.art} alt={`${card.name} art card, front`} />
-            </div>
-
-            <div className="detail__face detail__face--back">
-              <CardBack card={card} showLink={false} />
             </div>
           </motion.div>
 

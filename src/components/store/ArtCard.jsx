@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { STUDIO } from '../../store/catalog'
@@ -13,31 +13,10 @@ import { useCart } from '../../store/CartContext'
  * barbet, bottom for the tulip — so composing it would have meant redrawing the
  * studio's design badly. One image is both more faithful and less code.
  *
- * The back is composed, and follows the printed reverse: the fact with the
- * species name set bold, then the studio lockup. That way a new card needs one
- * artwork file rather than two, and the writing stays real text — selectable,
- * searchable, and readable by a screen reader.
- *
- * The card flips, because that is the product: an illustration on one side and
- * a piece of natural history on the other. The printed card carries a QR to the
- * species page; on the web that would be silly, so the reverse links instead.
+ * Only the front is shown. What is printed on the reverse is part of what
+ * someone gets when the card arrives, so the shop does not give it away — the
+ * card no longer turns over, here or on its own page.
  */
-
-const FlipIcon = ({ back = false }) => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    {back ? (
-      <>
-        <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
-        <path d="M3 3v5h5" />
-      </>
-    ) : (
-      <>
-        <path d="M21 12a9 9 0 1 1-3-6.7L21 8" />
-        <path d="M21 3v5h-5" />
-      </>
-    )}
-  </svg>
-)
 
 export const CardStepper = ({ quantity, onAdd, onSet, compact = false }) => {
   if (quantity === 0) {
@@ -111,7 +90,6 @@ export const CardBack = ({ card, showLink = true, linkTabIndex = 0 }) => {
 }
 
 const ArtCard = ({ card, index = 0 }) => {
-  const [flipped, setFlipped] = useState(false)
   const { quantityOf, add, setQuantity } = useCart()
   const quantity = quantityOf(card.slug)
   const chosen = quantity > 0
@@ -126,34 +104,14 @@ const ArtCard = ({ card, index = 0 }) => {
       transition={{ duration: 0.45, delay: Math.min(index, 7) * 0.05 }}
     >
       <div className="ac__scene">
-        <div className={`ac__flipper ${flipped ? 'is-flipped' : ''}`}>
-          {/* ------------------------------------------------------- front */}
-          <button
-            className="ac__face ac__face--front"
-            style={{ '--tint': card.tint }}
-            onClick={() => setFlipped(true)}
-            tabIndex={flipped ? -1 : 0}
-            aria-hidden={flipped}
-            aria-label={`${card.name}, ${card.scientific}. Turn the card over to read about it.`}
-          >
-            <img src={card.art} alt="" loading={index < 4 ? 'eager' : 'lazy'} />
-            <span className="ac__turn" aria-hidden="true">
-              <FlipIcon />
-            </span>
-          </button>
-
-          {/* -------------------------------------------------------- back */}
-          <div className="ac__face ac__face--back" aria-hidden={!flipped}>
-            <CardBack card={card} linkTabIndex={flipped ? 0 : -1} />
-            <button
-              className="ac__turn ac__turn--back"
-              onClick={() => setFlipped(false)}
-              tabIndex={flipped ? 0 : -1}
-              aria-label="Turn the card back over"
-            >
-              <FlipIcon back />
-            </button>
-          </div>
+        {/* Front only. What is printed on the reverse is meant to be found
+            when the card arrives, so there is nothing here to turn over. */}
+        <div className="ac__face ac__face--front" data-theme={card.theme} style={{ '--tint': card.tint }}>
+          <img
+            src={card.art}
+            alt={`${card.name}, ${card.scientific}`}
+            loading={index < 4 ? 'eager' : 'lazy'}
+          />
         </div>
 
         {/* Count rides on the card itself, so a scan down the grid shows what

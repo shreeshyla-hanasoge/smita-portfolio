@@ -416,28 +416,13 @@
 
 .ac__scene {
   position: relative;
-  perspective: 1400px;
   aspect-ratio: var(--card-ratio);
   margin-bottom: 14px;
 }
 
-.ac__flipper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  /* framer drives nothing here — a CSS transition keeps the flip cheap and
-     lets it survive a paused rAF in embedded previews */
-  transition: transform 0.62s cubic-bezier(0.2, 0.8, 0.25, 1);
-}
-
-.ac__flipper.is-flipped { transform: rotateY(180deg); }
-
 .ac__face {
   position: absolute;
   inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: var(--sm-shadow);
@@ -453,7 +438,6 @@
   background: var(--tint);
   border: none;
   padding: 0;
-  cursor: pointer;
   width: 100%;
   height: 100%;
 }
@@ -470,42 +454,9 @@
   display: block;
 }
 
-.ac__turn {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 3;
-  width: 30px;
-  height: 30px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.82);
-  color: var(--sm-ink);
-  border: 1px solid rgba(44, 44, 42, 0.1);
-  backdrop-filter: blur(6px);
-  cursor: pointer;
-}
 
-.ac[data-theme='dark'] .ac__turn {
-  background: rgba(255, 255, 255, 0.14);
-  color: #f4f2ea;
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.ac__face--front:hover .ac__turn { background: #fff; }
-
-/* ---- back: the reason the card exists ---- */
-
-.ac__face--back {
-  transform: rotateY(180deg);
-  background: var(--sm-surface);
-  border: 1px solid var(--sm-rule);
-  padding: 20px 18px 16px;
-  display: flex;
-  flex-direction: column;
-}
-
+.ac[data-theme='dark'] 
+.ac__face--front:hover 
 /* A supplied back is the card, edge to edge — the face drops its padding so
    nothing of the studio's layout gets a second, competing margin.
    `contain` rather than `cover`: the exported back is a hair wider than 7:8,
@@ -520,10 +471,6 @@
   background: #fff;
 }
 
-.ac__turn--back {
-  background: var(--sm-sunk);
-  border-color: var(--sm-rule);
-}
 
 /* The fact, set as it is printed: species name bold inside the sentence,
    everything else regular. No heading — the sentence is the heading. */
@@ -1379,7 +1326,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ac__flipper { transition: none; }
 }
 
 /* ------------------------------------------------- opening announcement */

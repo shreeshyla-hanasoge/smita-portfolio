@@ -227,7 +227,7 @@ const ShopPage = () => {
               {CARDS.length} cards, so far
             </h2>
             <p className="sm-sectionhead__sub">
-              Turn a card over to read what is on the back of it.
+              Each card carries the species&rsquo; story on the reverse.
             </p>
           </div>
           <div className="shop-filters" role="group" aria-label="Filter by group">
