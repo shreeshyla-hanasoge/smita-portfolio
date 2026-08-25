@@ -211,8 +211,8 @@
 
 .shop-hero__grid {
   display: grid;
-  grid-template-columns: 1fr 480px;
-  gap: 56px;
+  grid-template-columns: 1fr 620px;
+  gap: 40px;
   align-items: center;
 }
 
@@ -259,14 +259,14 @@
 
 /* The two faces, shown once, so nobody has to discover the flip to
    understand what they're buying. */
-.shop-hero__demo { position: relative; height: 430px; max-width: 480px; }
+.shop-hero__demo { position: relative; height: 556px; max-width: 620px; }
 
 .shop-hero__demofront {
   position: absolute;
   left: 0;
   top: 0;
   aspect-ratio: var(--card-ratio);
-  width: 232px;
+  width: 300px;
   background: var(--tint);
   border-radius: 12px;
   overflow: hidden;
@@ -285,7 +285,7 @@
   right: 0;
   bottom: 0;
   aspect-ratio: var(--card-ratio);
-  width: 232px;
+  width: 300px;
   background: var(--sm-surface);
   border: 1px solid var(--sm-rule);
   border-radius: 12px;
@@ -301,8 +301,8 @@
 /* A supplied back is the whole card, so it takes the padding off again. */
 .shop-hero__demoback:has(.ac__backart) { padding: 0; }
 
-.shop-hero__demoback .ac__fact { font-size: 0.78rem; line-height: 1.5; }
-.shop-hero__demoback .ac__lockup img { height: 15px; }
+.shop-hero__demoback .ac__fact { font-size: 0.9rem; line-height: 1.5; }
+.shop-hero__demoback .ac__lockup img { height: 19px; }
 
 /* ================================================================= SPECS */
 
@@ -1279,7 +1279,7 @@
 
 @media (max-width: 1024px) {
   .shop-hero__grid { grid-template-columns: 1fr; gap: 40px; }
-  .shop-hero__demo { padding-left: 0; max-width: 520px; }
+  .shop-hero__demo { padding-left: 0; max-width: 640px; }
   .shop-specs { grid-template-columns: repeat(2, 1fr); }
   .shop-grid { grid-template-columns: repeat(3, 1fr); }
   .shop-tiers { grid-template-columns: repeat(2, 1fr); }
@@ -1308,12 +1308,12 @@
      overlap on wider screens falls on the back's own margin; at phone widths
      it lands on the first line of the fact instead, which is the one thing the
      pair exists to show. */
-  .shop-hero__demo { height: 312px; padding-bottom: 0; }
+  .shop-hero__demo { height: 386px; padding-bottom: 0; }
   .shop-hero__demofront,
-  .shop-hero__demoback { width: 168px; }
-  .shop-hero__demoback { padding: 11px; }
-  .shop-hero__demoback .ac__fact { font-size: 0.62rem; line-height: 1.4; }
-  .shop-hero__demoback .ac__lockup img { height: 12px; }
+  .shop-hero__demoback { width: 208px; }
+  .shop-hero__demoback { padding: 13px; }
+  .shop-hero__demoback .ac__fact { font-size: 0.72rem; line-height: 1.4; }
+  .shop-hero__demoback .ac__lockup img { height: 14px; }
 
   .sm-sectionhead__title { font-size: 25px; }
   .sm-sectionhead { gap: 14px; }

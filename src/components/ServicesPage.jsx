@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
+import CommonCTA from './CommonCTA'
+import { projects } from './ProjectPage'
 import './ServicesPage.css'
 
 const reveal = {
@@ -95,6 +97,12 @@ const faqs = [
     a: "Absolutely — send us a note about what you have in mind and we'll let you know if it's something we can take on."
   }
 ]
+
+// Every testimonial the studio has, drawn from the project data so the two
+// can't drift apart. Flattened once at module load, not per render.
+const testimonials = projects.flatMap((project) =>
+  (project.testimonials || []).map((t) => ({ ...t, project: project.title }))
+)
 
 // Below this width the long sections collapse behind a button, per the mobile design.
 const useIsMobile = () => {
@@ -200,6 +208,8 @@ const ServicesPage = () => {
   const isMobile = useIsMobile()
   const parallaxRef = useParallax()
   const [openFaq, setOpenFaq] = useState(0)
+  const [quoteIndex, setQuoteIndex] = useState(0)
+  const quote = testimonials[quoteIndex]
   const [showServices, setShowServices] = useState(false)
   const [showProcess, setShowProcess] = useState(false)
   const [showFaq, setShowFaq] = useState(false)
@@ -273,11 +283,11 @@ const ServicesPage = () => {
         </div>
       </section>
 
-      {/* Full-bleed layered parallax band */}
+      {/* Full-bleed parallax band: painted backdrop behind a single layer of
+          vine artwork, which holds still while the backdrop drifts. */}
       <div className="sv-band-art" ref={parallaxRef} aria-hidden="true">
         <img className="sv-layer sv-layer-bg" src="/images/services/jungle-bg.jpg" alt="" />
-        <img className="sv-layer sv-layer-mid" src="/images/services/jungle-stem.png" alt="" />
-        <img className="sv-layer sv-layer-fg" src="/images/services/jungle-branch.png" alt="" />
+        <img className="sv-layer sv-layer-fg" src="/images/services/vine.png" alt="" />
       </div>
 
       {/* How we do it — horizontal process */}
@@ -311,24 +321,44 @@ const ServicesPage = () => {
         </div>
       </section>
 
-      {/* Testimonial */}
+      {/* Testimonials — manual carousel, one quote at a time */}
       <section className="sv-section sv-section-quote">
         <div className="sv-wrap sv-split">
           <motion.div className="sv-aside" {...reveal}>
             <p className="sv-eyebrow">Kind words</p>
-            <h2>From a recent collaboration</h2>
+            <h2>From the people we&rsquo;ve worked with</h2>
             <img className="sv-art sv-art-flower" src="/images/services/copperpod.png" alt="Illustration of a copperpod flower" />
           </motion.div>
           <div className="sv-main">
-            <motion.figure className="sv-quote" {...reveal}>
-              <blockquote>
-                &ldquo;Smita has a very pleasing aesthetic and design sense and a real feel for nature. The combination results in stunning designs, whether it's street art, information boards or any other visual medium.&rdquo;
-              </blockquote>
-              <figcaption>
-                <div className="sv-quote-name">Ashish Patel</div>
-                <div className="sv-quote-role">Volunteer, Friends of L Street</div>
-              </figcaption>
-            </motion.figure>
+            <motion.div className="sv-quote-carousel" {...reveal}>
+              <figure className="sv-quote" key={quoteIndex}>
+                <blockquote>&ldquo;{quote.text}&rdquo;</blockquote>
+                <figcaption>
+                  <div className="sv-quote-name">{quote.author}</div>
+                  <div className="sv-quote-role">{quote.role}</div>
+                </figcaption>
+              </figure>
+
+              <div className="sv-quote-nav">
+                <button
+                  className="sv-quote-btn"
+                  onClick={() => setQuoteIndex((i) => (i - 1 + testimonials.length) % testimonials.length)}
+                  aria-label="Previous testimonial"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <span className="sv-quote-count" aria-live="polite">
+                  {quoteIndex + 1} / {testimonials.length}
+                </span>
+                <button
+                  className="sv-quote-btn"
+                  onClick={() => setQuoteIndex((i) => (i + 1) % testimonials.length)}
+                  aria-label="Next testimonial"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -371,35 +401,8 @@ const ServicesPage = () => {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="sv-cta-band">
-        <img className="sv-art sv-art-dragonfly" src="/images/services/dragonfly.png" alt="" aria-hidden="true" />
-        <div className="sv-wrap">
-          <motion.div className="sv-cta" {...reveal}>
-            <h2>Have a project in mind?</h2>
-            <p>If you need to bring a story to life with illustration, tell us what you're imagining — species, format, audience, anything you have.</p>
-            <a className="sv-cta-email" href="mailto:smita@studiomintleaf.in">smita@studiomintleaf.in</a>
-            <p className="sv-cta-side">We usually reply within two working days. Based in Bangalore, working everywhere.</p>
-          </motion.div>
-        </div>
-      </section>
+      <CommonCTA />
 
-      {/* Newsletter pointer */}
-      <section className="sv-section-news">
-        <div className="sv-wrap sv-news-row">
-          <div>
-            <h2>Field notes, quarterly</h2>
-            <p>Sketches, new work and what we're noticing outside. No noise.</p>
-          </div>
-          <Link className="sv-news-link" to="/newsletter">Read the latest issue →</Link>
-        </div>
-      </section>
-
-      <footer className="sv-footer">
-        <div className="sv-wrap">
-          <p>&copy; 2026 Studio Mintleaf. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
   )
 }

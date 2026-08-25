@@ -63,14 +63,6 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <div className="nav-menu">
-          <motion.button 
-            className="nav-link"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => handleNavigation('landing')}
-          >
-            Home
-          </motion.button>
           <motion.button
             className="nav-link"
             whileHover={{ scale: 1.05 }}
@@ -86,22 +78,6 @@ const Navbar = () => {
             onClick={() => handleRouteNavigation('/services')}
           >
             Services
-          </motion.button>
-          <motion.button
-            className="nav-link"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => handleNavigation('about')}
-          >
-            About
-          </motion.button>
-          <motion.button 
-            className="nav-link"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => handleNavigation('contact')}
-          >
-            Contact
           </motion.button>
           <motion.button
             className="nav-link"
@@ -161,11 +137,8 @@ const Navbar = () => {
           animate={{ opacity: isMobileMenuOpen ? 1 : 0, y: isMobileMenuOpen ? 0 : -20 }}
           transition={{ duration: 0.3 }}
         >
-          <button onClick={() => handleNavigation('landing')}>Home</button>
           <button onClick={() => handleNavigation('gallery')}>Projects</button>
           <button onClick={() => handleRouteNavigation('/services')}>Services</button>
-          <button onClick={() => handleNavigation('about')}>About</button>
-          <button onClick={() => handleNavigation('contact')}>Contact</button>
           <button onClick={() => handleRouteNavigation('/newsletter')}>Newsletter</button>
           <button onClick={() => handleRouteNavigation('/shop')}>Shop</button>
           {hydrated && summary.count > 0 && (

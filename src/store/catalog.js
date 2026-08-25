@@ -63,6 +63,17 @@ export const CARDS = [
     note: 'A Western Ghats endemic that spends almost its whole life in the canopy, coming down only to breed in foam nests above monsoon pools.',
   },
   {
+    slug: 'blue-eyed-bush-frog',
+    name: 'Blue-eyed Bush Frog',
+    scientific: 'Raorchestes luteolus',
+    group: 'Amphibians',
+    theme: 'dark',
+    tint: '#121824',
+    art: '/images/cards/blue-eyed-bush-frog.jpg',
+    fact: 'calls from low bushes after the first rains, and skips the tadpole stage entirely — the eggs hatch straight into tiny froglets.',
+    note: 'A Western Ghats endemic, small enough to sit on a thumbnail, named for the pale blue ring around its eye.',
+  },
+  {
     slug: 'white-cheeked-barbet',
     name: 'White-cheeked Barbet',
     scientific: 'Psilopogon viridis',

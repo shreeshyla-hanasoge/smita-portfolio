@@ -2,6 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet-async'
 import NewsletterArchive from './NewsletterArchive'
 import './NewsletterPage.css'
+import CommonCTA from './CommonCTA'
 
 const radarItems = [
   {
@@ -228,6 +229,7 @@ const NewsletterPage = () => {
           <span>studiomintleaf.in</span>
         </footer>
       </article>
+      <CommonCTA />
     </div>
   )
 }

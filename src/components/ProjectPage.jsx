@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { useParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import './ProjectPage.css'
+import CommonCTA from './CommonCTA'
 
 // Project data (moved from Gallery for shared access)
 export const projects = [
@@ -635,6 +636,7 @@ const ProjectPage = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      <CommonCTA />
     </div>
   )
 }

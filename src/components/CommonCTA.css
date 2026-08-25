@@ -1,0 +1,103 @@
+/* The closing block shared by every page — enquiry CTA, newsletter pointer and
+   copyright. Lifted out of the Services page so all pages stay identical; the
+   colour values are inlined because the Services tokens are scoped to that
+   page's root. */
+
+.cta-wrap {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.cta-band h2,
+.cta-news-row h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  color: #26291F;
+  line-height: 1.15;
+  text-wrap: balance;
+  margin-bottom: 0;
+}
+
+.cta-news { background: #fff; }
+
+.cta-band {
+  position: relative;
+  background: #A1A696;
+  overflow: hidden;
+  isolation: isolate;
+}
+.cta-art {
+  position: absolute;
+  top: 0;
+  right: 0;
+  /* Sized from the mock's dragonfly, not the artwork's overall box: the PNG
+     carries extra leaves on its left that creep over the copy if it's scaled
+     any wider. */
+  width: 62%;
+  z-index: 0;
+  pointer-events: none;
+}
+.cta-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 520px;
+  padding: 104px 0;
+}
+.cta-inner h2 { font-size: clamp(28px, 3.4vw, 36px); margin-bottom: 16px; }
+.cta-inner > p { font-size: 16px; max-width: 44ch; margin-bottom: 28px; color: #2E332A; }
+.cta-email {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(19px, 2.4vw, 23px);
+  color: #26291F;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 6px;
+  transition: opacity 150ms ease;
+  overflow-wrap: anywhere;
+}
+.cta-email:hover { opacity: 0.72; }
+.cta-side {
+  margin-top: 26px;
+  font-size: 14.5px;
+  color: #2E332A;
+  max-width: 42ch;
+  margin-bottom: 0;
+}
+
+
+.cta-news-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 56px 32px;
+  flex-wrap: wrap;
+}
+.cta-news-row h2 { font-size: 21px; }
+.cta-news-row p { font-size: 14px; color: #83867A; margin: 2px 0 0; }
+.cta-news-link {
+  font-size: 15px;
+  font-weight: 600;
+  color: #26291F;
+  text-decoration: none;
+  border-bottom: 1.5px solid #26291F;
+  padding-bottom: 2px;
+  transition: opacity 150ms ease;
+}
+.cta-news-link:hover { opacity: 0.65; }
+
+/* ============ Footer ============ */
+.cta-footer {
+  border-top: 1px solid #E3E2D9;
+  padding: 30px 0 44px;
+}
+.cta-footer p { font-size: 13px; color: #83867A; margin: 0; text-align: center; }
+
+
+@media (max-width: 768px) {
+  .cta-wrap { padding: 0 22px; }
+  .cta-inner { padding: 132px 0 68px; }
+  .cta-art { width: 64%; max-width: 300px; }
+  .cta-news-row { padding: 44px 22px; align-items: flex-start; flex-direction: column; gap: 18px; }
+}

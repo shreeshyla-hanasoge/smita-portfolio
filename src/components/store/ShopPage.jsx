@@ -14,6 +14,7 @@ import {
 import { trackViewItemList } from '../../store/analytics'
 import ArtCard, { CardBack } from './ArtCard'
 import './store.css'
+import CommonCTA from '../CommonCTA'
 
 const SITE = 'https://studiomintleaf.in'
 
@@ -239,32 +240,8 @@ const ShopPage = () => {
         </div>
       </section>
 
-      {/* ---------------------------------------------------------- studio */}
-      <section className="sm-shell shop-block">
-        <div className="shop-studio">
-          <div className="shop-studio__panel">
-            <h2>Something bigger in mind?</h2>
-            <p>
-              Commissions, a species that matters to your organisation, an illustrated field guide,
-              a set of cards for a reserve or a school — the studio takes on a small number of
-              custom projects each quarter.
-            </p>
-            <Link to="/#contact" className="sm-btn sm-btn--ghost">
-              Send an enquiry
-            </Link>
-          </div>
-          <div className="shop-studio__panel shop-studio__panel--quiet">
-            <h2>New cards, four times a year</h2>
-            <p>
-              Each quarterly letter carries what the studio has been painting, what is going into
-              the next batch of cards, and the field notes behind them.
-            </p>
-            <Link to="/newsletter" className="sm-btn sm-btn--ghost">
-              Read the latest letter
-            </Link>
-          </div>
-        </div>
-      </section>
+      <CommonCTA />
+
     </div>
   )
 }

@@ -13,6 +13,7 @@ import NewsletterPage from './components/NewsletterPage'
 import NewsletterQ2Page from './components/NewsletterQ2Page'
 import ServicesPage from './components/ServicesPage'
 import NotFound from './components/NotFound'
+import CommonCTA from './components/CommonCTA'
 import { latestNewsletter } from './components/newsletters'
 import { CartProvider } from './store/CartContext'
 import ShopPage from './components/store/ShopPage'
@@ -89,7 +90,7 @@ function App() {
                 <Landing id="landing" />
                 <Gallery id="gallery" />
                 <About id="about" />
-                <Contact id="contact" />
+                <CommonCTA />
               </>
             } />
             <Route path="/project/:projectId" element={<ProjectPage />} />

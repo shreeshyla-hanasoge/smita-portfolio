@@ -183,7 +183,7 @@
      mean a shorter vine, so the band slims to match rather than leaving it
      stranded in a tall frame. */
   width: 100%;
-  aspect-ratio: 3000 / 700;
+  aspect-ratio: 3000 / 850;
   min-height: 280px;
   max-height: 620px;
   /* Clips the oversized layers, in layout as well as paint — clip-path alone
@@ -205,36 +205,14 @@
   display: block;
 }
 
-/* The subjects are drawn at about two-thirds of the band so they read as a
-   quiet detail rather than a close-up. Since the vine is painted corner to
-   corner, scaling it down leaves its ends short of the edges — so they're
-   feathered out instead, which reads as the vine receding into shadow rather
-   than stopping in mid-air. `contain` keeps the artwork's proportions; the
-   backdrop fills the band around it. */
-.sv-layer-mid,
+/* One piece of artwork, drawn with its vines running off every edge, so it
+   simply covers the band — none of the scaling, centring or edge-masking the
+   old two-layer version needed. The framing sits on the insects rather than
+   the middle of a tall canvas. */
 .sv-layer-fg {
-  width: 45%;
-  height: auto;
-  left: 27.5%;
-  right: auto;
-  top: 50%;
-  transform: translateY(-50%);
-  object-fit: fill;
-  /* Centred, so the ladybird and caterpillar sit in the middle of the band.
-     That puts both ends of the vine inside the frame, so both are feathered —
-     it emerges from shadow on the left and recedes into it on the right. The
-     top edge stays flush with the band's own, where it's cropped as before
-     (fading it would take the ladybird with it); the stem's cut end at the
-     bottom is feathered too. */
-  -webkit-mask-image:
-    linear-gradient(to right, transparent 0%, #000 26%, #000 86%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, #000 6%, #000 80%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(to right, transparent 0%, #000 26%, #000 86%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, #000 6%, #000 80%, transparent 100%);
-  mask-composite: intersect;
+  object-position: center 51%;
 }
+
 /* Sized well beyond the band so there is always more backdrop to move into,
    and centred on the subjects' framing so the scene composites as painted. */
 .sv-layer-bg {
@@ -366,6 +344,45 @@
   color: var(--sv-ink);
 }
 .sv-quote-role { font-size: 14px; color: var(--sv-muted); }
+
+/* Manual carousel — arrows only, no autoplay, so a quote never slides away
+   mid-sentence. A fixed min-height stops the block jumping as quotes of
+   different lengths cycle through. */
+.sv-quote-carousel { max-width: 660px; }
+.sv-quote-carousel .sv-quote { min-height: 190px; }
+
+.sv-quote-nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 26px;
+  padding-left: 31px;
+}
+.sv-quote-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--sv-line);
+  background: transparent;
+  color: var(--sv-ink);
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+.sv-quote-btn:hover { background: #F6F5F0; border-color: var(--sv-muted); }
+.sv-quote-btn:focus-visible { outline: 2px solid var(--sv-green); outline-offset: 3px; }
+.sv-quote-count {
+  font-size: 13.5px;
+  color: var(--sv-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 768px) {
+  .sv-quote-carousel .sv-quote { min-height: 240px; }
+  .sv-quote-nav { padding-left: 0; }
+}
 
 /* ============ FAQ ============ */
 .sv-faq { max-width: 720px; }
@@ -571,22 +588,8 @@
   /* At this ratio `cover` fits by height, so the band's height sets the subject
      scale — a shorter band keeps them from filling a phone screen. */
   .sv-band-art { aspect-ratio: auto; height: 230px; min-height: 0; max-height: none; }
-  /* A phone is too narrow to shrink the subjects — at 66% they'd be specks — so
-     the band keeps the full-width fit here and crops the vine instead. */
-  .sv-layer,
-  .sv-layer-mid,
-  .sv-layer-fg {
-    width: 100%;
-    height: 100%;
-    left: 0;
-    right: auto;
-    top: 0;
-    transform: none;
-    object-fit: cover;
-    object-position: 42% center;
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
+  .sv-layer-fg { object-position: 46% 51%; }
+
   /* Wider than the phone so the square backdrop is tall enough to travel 180px
      without dragging its own edge into the band. */
   .sv-layer-bg {
