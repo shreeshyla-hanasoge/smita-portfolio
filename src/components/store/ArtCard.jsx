@@ -16,6 +16,10 @@ import { useCart } from '../../store/CartContext'
  * Only the front is shown. What is printed on the reverse is part of what
  * someone gets when the card arrives, so the shop does not give it away — the
  * card no longer turns over, here or on its own page.
+ *
+ * The artwork itself is the link to the card's page. Leaving that to the name
+ * underneath meant aiming at a few words when the obvious target — the card —
+ * sat right there doing nothing.
  */
 
 export const CardStepper = ({ quantity, onAdd, onSet, compact = false }) => {
@@ -106,13 +110,19 @@ const ArtCard = ({ card, index = 0 }) => {
       <div className="ac__scene">
         {/* Front only. What is printed on the reverse is meant to be found
             when the card arrives, so there is nothing here to turn over. */}
-        <div className="ac__face ac__face--front" data-theme={card.theme} style={{ '--tint': card.tint }}>
+        <Link
+          to={`/shop/card/${card.slug}`}
+          className="ac__face ac__face--front"
+          data-theme={card.theme}
+          style={{ '--tint': card.tint }}
+          aria-label={`${card.name}, ${card.scientific} — see this card`}
+        >
           <img
             src={card.art}
-            alt={`${card.name}, ${card.scientific}`}
+            alt=""
             loading={index < 4 ? 'eager' : 'lazy'}
           />
-        </div>
+        </Link>
 
         {/* Count rides on the card itself, so a scan down the grid shows what
             has been collected without reading a single number twice. */}

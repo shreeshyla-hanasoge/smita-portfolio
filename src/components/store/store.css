@@ -440,6 +440,13 @@
   padding: 0;
   width: 100%;
   height: 100%;
+  display: block;
+  cursor: pointer;
+}
+
+.ac__face--front:focus-visible {
+  outline: 2px solid var(--sm-mint, #4f7a3e);
+  outline-offset: 3px;
 }
 
 /* The artwork is the card — 1050 × 1200, the same 7:8 as the frame — so it
@@ -739,7 +746,9 @@
   align-items: start;
 }
 
-.detail__faces { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+/* One face now the reverse is not shown, so the artwork takes the whole
+   column instead of sitting in a half-width slot with dead space beside it. */
+.detail__faces { max-width: 560px; }
 
 .detail__face {
   position: relative;
@@ -761,15 +770,8 @@
   display: block;
 }
 
-.detail__face--back {
-  background: var(--sm-surface);
-  border: 1px solid var(--sm-rule);
-  padding: 20px;
-}
 
-.detail__face--back:has(.ac__backart) { padding: 0; }
 
-.detail__face--back .ac__fact { font-size: 0.86rem; }
 
 .detail__group {
   font-size: 0.72rem;
@@ -1269,7 +1271,7 @@
   .ac__fact { font-size: 0.72rem; line-height: 1.5; }
   .ac__studio { font-size: 0.72rem; }
 
-  .detail__faces { grid-template-columns: 1fr; max-width: 320px; }
+  .detail__faces { max-width: 360px; }
   .detail__title { font-size: 1.9rem; }
 
   /* Filters scroll rather than wrap into a wall of pills */
