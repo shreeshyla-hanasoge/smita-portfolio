@@ -140,3 +140,7 @@ a:focus {
 ::-webkit-scrollbar-thumb:hover {
   background: #666;
 }
+/* Hash navigation lands under the fixed navbar without this. */
+section[id] {
+  scroll-margin-top: 90px;
+}

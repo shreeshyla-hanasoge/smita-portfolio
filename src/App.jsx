@@ -51,6 +51,28 @@ const PageTracker = () => {
     if (location.pathname.startsWith('/shop')) window.scrollTo(0, 0);
   }, [location.pathname]);
 
+  // Arriving at /#gallery from another page used to land on the hero: the
+  // router sets the hash but scrolls nothing, so only a second click — by
+  // which point we were already on home — actually moved. Scroll to the
+  // target ourselves once it exists, retrying for a few frames because the
+  // home sections mount and lay out after this effect first runs.
+  useEffect(() => {
+    if (!location.hash) return;
+    const id = decodeURIComponent(location.hash.slice(1));
+    let frame = null;
+    let tries = 0;
+    const seek = () => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      if (tries++ < 30) frame = requestAnimationFrame(seek);
+    };
+    frame = requestAnimationFrame(seek);
+    return () => frame && cancelAnimationFrame(frame);
+  }, [location.pathname, location.hash]);
+
   return null;
 };
 

@@ -226,10 +226,13 @@
   top: 50%;
   height: auto;
   min-height: calc(100% + 640px);
-  /* Travel scales with the window: the backdrop is square, so its slack grows
-     with width. A flat pixel value that reads well at 1440 would drag an edge
-     into view at 1024. */
-  transform: translate3d(-50%, calc(-50% + var(--p) * min(28vw, 420px)), 0);
+  /* The backdrop is the full 3000x5200 painting, so there is a great deal
+     more of it than the band shows — roughly 0.72 x the band's width in spare
+     height above and below. The travel is set to use most of that, which is
+     the point: the band should reveal new parts of the artwork as it passes,
+     not merely drift. Still viewport-relative, since the slack scales with
+     width and a flat value would expose an edge on a narrow window. */
+  transform: translate3d(-50%, calc(-50% + var(--p) * min(58vw, 900px)), 0);
   will-change: transform;
 }
 
@@ -259,8 +262,8 @@
   /* Travel is generous because the backdrop is exported from a 3000px-tall
      crop — there is far more of it than the band ever shows. */
   @keyframes sv-band-drift {
-    from { transform: translate3d(-50%, calc(-50% - min(28vw, 420px)), 0); }
-    to   { transform: translate3d(-50%, calc(-50% + min(28vw, 420px)), 0); }
+    from { transform: translate3d(-50%, calc(-50% - min(58vw, 900px)), 0); }
+    to   { transform: translate3d(-50%, calc(-50% + min(58vw, 900px)), 0); }
   }
 }
 /* Deepens the corners so the band reads as a scene, not a flat crop */
@@ -601,12 +604,12 @@
   .sv-layer-bg {
     width: 220%;
     min-height: calc(100% + 420px);
-    transform: translate3d(-50%, calc(-50% + var(--p) * 180px), 0);
+    transform: translate3d(-50%, calc(-50% + var(--p) * min(90vw, 420px)), 0);
   }
   @supports (animation-timeline: view()) {
     @keyframes sv-band-drift {
-      from { transform: translate3d(-50%, calc(-50% - 180px), 0); }
-      to   { transform: translate3d(-50%, calc(-50% + 180px), 0); }
+      from { transform: translate3d(-50%, calc(-50% - min(90vw, 420px)), 0); }
+      to   { transform: translate3d(-50%, calc(-50% + min(90vw, 420px)), 0); }
     }
   }
 
