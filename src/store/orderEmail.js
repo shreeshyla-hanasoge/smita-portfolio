@@ -1,5 +1,6 @@
 import emailjs from '@emailjs/browser'
 import { formatINR } from './commerce'
+import { STUDIO } from './catalog'
 
 /**
  * Order confirmations — one to the buyer, one to the studio.
@@ -9,56 +10,60 @@ import { formatINR } from './commerce'
  * one in particular is the packing instruction: if it does not arrive, nobody
  * knows what to put in an envelope.
  *
- * So the rules here are:
+ * **One template, sent twice.** EmailJS's free plan allows two templates in
+ * total and the contact form already uses one. Since the bodies are composed
+ * here anyway, the template does not need to know anything about orders — it
+ * is a generic envelope of {{subject}} and {{content}} addressed to
+ * {{to_email}}, which leaves the free plan with room to spare and keeps all
+ * the wording in the repository where it can be reviewed.
+ *
+ * Rules this module holds to:
  *
  *   - Sending never blocks the buyer. They have paid; they see their
- *     confirmation whether or not our mail provider is having a bad day.
- *   - A failure is reported, not swallowed. It goes to the console and to GA4,
- *     because an order that silently fails to reach the studio is the worst
- *     outcome this shop has.
- *   - Once per order id. A reload or a back-button must not re-send.
- *
- * The message bodies are composed here rather than in the EmailJS templates,
- * so the templates stay a handful of {{placeholders}} and the wording lives in
- * the repository where it can be reviewed and changed.
+ *     confirmation whether or not the mail provider is having a bad day.
+ *   - A failure is reported, not swallowed — console and GA4 — because an
+ *     order that silently fails to reach the studio is the worst outcome here.
+ *   - Once per order id. A reload must not re-send.
  */
 
 const SERVICE = import.meta.env.VITE_EMAILJS_SERVICE_ID
 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-const BUYER_TEMPLATE = import.meta.env.VITE_EMAILJS_ORDER_TEMPLATE_ID
-const STUDIO_TEMPLATE = import.meta.env.VITE_EMAILJS_STUDIO_TEMPLATE_ID
+const TEMPLATE = import.meta.env.VITE_EMAILJS_ORDER_TEMPLATE_ID
 
-export const ORDER_EMAIL_CONFIGURED = Boolean(SERVICE && PUBLIC_KEY && BUYER_TEMPLATE && STUDIO_TEMPLATE)
+export const ORDER_EMAIL_CONFIGURED = Boolean(SERVICE && PUBLIC_KEY && TEMPLATE)
 
 /** Strict SMTP servers reject bare carriage returns — the contact form hit
- *  this already, so every multi-line block we build gets normalised. */
+ *  this already, so everything multi-line we build gets normalised. */
 const clean = (text) => String(text).replace(/\r\n/g, '\n').replace(/\r/g, '\n')
 
-/** "Malabar Gliding Frog × 2" per line, one card per row. */
-const orderLines = (summary) =>
-  clean(
-    summary.items
-      .map((i) => `${i.name}${i.quantity > 1 ? ` × ${i.quantity}` : ''}`)
-      .join('\n')
-  )
+const lines = (summary) =>
+  summary.items.map((i) => `  ${i.name}${i.quantity > 1 ? ` × ${i.quantity}` : ''}`).join('\n')
 
-const shipTo = (buyer) =>
-  clean(
-    [
-      buyer.name,
-      buyer.address1,
-      buyer.address2,
-      `${buyer.city}, ${buyer.state} ${buyer.pincode}`,
-      buyer.phone,
-    ]
-      .filter(Boolean)
-      .join('\n')
-  )
+const address = (buyer) =>
+  [
+    buyer.name,
+    buyer.address1,
+    buyer.address2,
+    `${buyer.city}, ${buyer.state} ${buyer.pincode}`,
+    buyer.phone,
+  ]
+    .filter(Boolean)
+    .map((l) => `  ${l}`)
+    .join('\n')
 
-/**
- * A machine-readable copy of the order, for the packing-slip tool and as a
- * belt-and-braces record if the formatted body is ever mangled in transit.
- */
+/** Padded so the figures line up in a monospaced mail body — a receipt whose
+ *  numbers wander looks like a mistake. */
+const row = (label, value) => `  ${label.padEnd(14)}${value}`
+
+const money = (summary) =>
+  [
+    row(`Cards (${summary.count})`, formatINR(summary.subtotal)),
+    row('Shipping', summary.shipping === 0 ? 'Free' : formatINR(summary.shipping)),
+    row('Total', formatINR(summary.total)),
+  ].join('\n')
+
+/** A machine-readable copy, for the packing-slip tool and as a record if the
+ *  formatted body is ever mangled in transit. */
 const orderJson = ({ orderId, paymentId, summary, buyer, dispatch }) =>
   JSON.stringify(
     {
@@ -76,6 +81,53 @@ const orderJson = ({ orderId, paymentId, summary, buyer, dispatch }) =>
     1
   )
 
+const buyerBody = ({ orderId, summary, buyer, dispatch }) =>
+  clean(`Hello ${buyer.name.split(' ')[0]},
+
+Your order is confirmed. Thank you — it means a great deal.
+
+ORDER ${orderId}
+
+${lines(summary)}
+
+${money(summary)}
+
+WHAT HAPPENS NEXT
+
+Cards are packed and posted in one batch each month. Yours goes out on
+${dispatch}, and a tracking number will reach you by email when it does.
+
+If anything is wrong with this order, reply to this email with your order
+number and we will sort it out.
+
+${STUDIO.name}
+${STUDIO.tagline}
+${STUDIO.site}`)
+
+const studioBody = ({ orderId, paymentId, summary, buyer, dispatch }) =>
+  clean(`NEW ORDER — ${orderId}
+${summary.count} ${summary.count === 1 ? 'card' : 'cards'} · ${formatINR(summary.total)} · dispatch ${dispatch}
+
+PACK
+
+${lines(summary)}
+
+SHIP TO
+
+${address(buyer)}
+
+BUYER
+
+  ${buyer.email}
+
+PAYMENT
+
+${money(summary)}
+  Razorpay ${paymentId || '(id not returned)'}
+
+--- order data ---
+${orderJson({ orderId, paymentId, summary, buyer, dispatch })}`)
+
 const report = (which, error) => {
   console.error(`Order email (${which}) failed to send`, error)
   if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
@@ -83,20 +135,31 @@ const report = (which, error) => {
   }
 }
 
+const send = (which, params) =>
+  emailjs
+    .send(SERVICE, TEMPLATE, params, PUBLIC_KEY)
+    .then(() => true)
+    .catch((e) => {
+      report(which, e)
+      return false
+    })
+
 /**
  * Fire both confirmations. Resolves to a small report rather than throwing —
  * the caller is on the happy path of a completed payment and must not be
  * derailed by a mail failure.
  */
-export const sendOrderEmails = async ({ orderId, paymentId, summary, buyer, dispatch }) => {
+export const sendOrderEmails = async (order) => {
   if (!ORDER_EMAIL_CONFIGURED) {
     console.warn(
-      'Order emails are not configured — set VITE_EMAILJS_ORDER_TEMPLATE_ID and ' +
-        'VITE_EMAILJS_STUDIO_TEMPLATE_ID. The order is still recorded in the ' +
-        'notes on the payment in the Razorpay dashboard.'
+      'Order emails are not configured — set VITE_EMAILJS_SERVICE_ID, ' +
+        'VITE_EMAILJS_PUBLIC_KEY and VITE_EMAILJS_ORDER_TEMPLATE_ID. The order is ' +
+        'still recorded in the notes on the payment in the Razorpay dashboard.'
     )
     return { sent: false, reason: 'not_configured' }
   }
+
+  const { orderId, summary, buyer } = order
 
   // One send per order, however many times this page is reloaded.
   const guard = `sm.emailed.${orderId}`
@@ -107,55 +170,24 @@ export const sendOrderEmails = async ({ orderId, paymentId, summary, buyer, disp
     // Private mode — carry on and accept the small risk of a duplicate.
   }
 
-  const shared = {
-    order_id: orderId,
-    payment_id: paymentId || '',
-    order_lines: orderLines(summary),
-    card_count: String(summary.count),
-    subtotal: formatINR(summary.subtotal),
-    shipping: summary.shipping === 0 ? 'Free' : formatINR(summary.shipping),
-    total: formatINR(summary.total),
-    dispatch_date: dispatch,
-  }
+  const [buyerOk, studioOk] = await Promise.all([
+    send('buyer', {
+      to_email: buyer.email,
+      to_name: buyer.name,
+      reply_to: STUDIO.email,
+      subject: `Your Studio Mintleaf order ${orderId}`,
+      content: buyerBody(order),
+      order_id: orderId,
+    }),
+    send('studio', {
+      to_email: STUDIO.email,
+      to_name: STUDIO.name,
+      reply_to: buyer.email, // replying goes straight back to the buyer
+      subject: `New order ${orderId} — ${summary.count} cards, ${formatINR(summary.total)}`,
+      content: studioBody(order),
+      order_id: orderId,
+    }),
+  ])
 
-  const buyerSend = emailjs
-    .send(
-      SERVICE,
-      BUYER_TEMPLATE,
-      {
-        ...shared,
-        to_name: buyer.name,
-        to_email: buyer.email,
-        studio_email: 'smita@studiomintleaf.in',
-      },
-      PUBLIC_KEY
-    )
-    .then(() => true)
-    .catch((e) => {
-      report('buyer', e)
-      return false
-    })
-
-  const studioSend = emailjs
-    .send(
-      SERVICE,
-      STUDIO_TEMPLATE,
-      {
-        ...shared,
-        buyer_name: buyer.name,
-        buyer_email: buyer.email,
-        buyer_phone: buyer.phone || '',
-        ship_to: shipTo(buyer),
-        order_json: orderJson({ orderId, paymentId, summary, buyer, dispatch }),
-      },
-      PUBLIC_KEY
-    )
-    .then(() => true)
-    .catch((e) => {
-      report('studio', e)
-      return false
-    })
-
-  const [buyerOk, studioOk] = await Promise.all([buyerSend, studioSend])
   return { sent: buyerOk || studioOk, buyerOk, studioOk }
 }

@@ -354,9 +354,15 @@ only record an order happened:
 
 The bodies are composed in the module rather than in the EmailJS templates, so the
 templates stay a handful of `{{placeholders}}` and the wording lives in the repository
-where it can be reviewed. Set `VITE_EMAILJS_ORDER_TEMPLATE_ID` and
-`VITE_EMAILJS_STUDIO_TEMPLATE_ID` to switch it on; unset, orders still complete and the
-record is the notes attached to the Razorpay payment.
+where it can be reviewed. **One template, sent twice.** EmailJS's free plan allows two templates in total and the
+contact form already uses one. Because the bodies are composed in code, the template does
+not need to know anything about orders — it is a generic envelope of `{{subject}}` and
+`{{content}}` addressed to `{{to_email}}`. Set `VITE_EMAILJS_ORDER_TEMPLATE_ID` to switch
+it on; unset, orders still complete and the record is the notes on the Razorpay payment.
+
+If the shop outgrows EmailJS — its free tier also caps total sends, and a browser-sent
+email can be blocked by an ad-blocker — the replacement is the same serverless function
+Phase 2 needs for server-side re-pricing. See §11.
 
 **The backup is real and already in place.** Every payment carries the order id, the card
 slugs and the full shipping address as Razorpay notes, visible on the payment in the
