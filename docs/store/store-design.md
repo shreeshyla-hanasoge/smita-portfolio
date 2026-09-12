@@ -333,11 +333,34 @@ with the basket intact.
 The target is unchanged: **paid → shipped with tracking sent, in one sitting.** The
 monthly batch makes it easier than the multi-product version would have been.
 
-**Order routing — design; needs EmailJS templates.** On payment success, two sends (the
-site already carries `@emailjs/browser` for the contact form): one to the studio with the
-human summary *and* a compact JSON block of the order, one to the buyer with the cards,
-the total and the batch date. The JSON is what the packing slip reads, so the studio never
-re-types an address.
+**Order routing — Built** (`src/store/orderEmail.js`). On payment success, two EmailJS
+sends fire from the checkout — the earliest point the money is known to have moved, and
+still reached if the buyer closes the tab a second later:
+
+1. **To the buyer** — order id, cards, totals, and the batch date their order goes out on.
+2. **To the studio** — all of that plus the buyer's contact details, a multi-line shipping
+   address, and a compact JSON block of the order. The JSON is what the packing slip
+   reads, so nobody re-types an address.
+
+Three rules the module holds to, because until there is a server these two emails are the
+only record an order happened:
+
+- **Sending never blocks the buyer.** They have paid; the confirmation page renders
+  whether or not the mail provider is having a bad day. The send is not awaited.
+- **Failures are reported, not swallowed** — to the console and to GA4 as
+  `order_email_failed`. An order that silently fails to reach the studio is the worst
+  outcome this shop has, so it must be visible in the same place the revenue is.
+- **Once per order id**, guarded in `sessionStorage`, so a reload cannot re-send.
+
+The bodies are composed in the module rather than in the EmailJS templates, so the
+templates stay a handful of `{{placeholders}}` and the wording lives in the repository
+where it can be reviewed. Set `VITE_EMAILJS_ORDER_TEMPLATE_ID` and
+`VITE_EMAILJS_STUDIO_TEMPLATE_ID` to switch it on; unset, orders still complete and the
+record is the notes attached to the Razorpay payment.
+
+**The backup is real and already in place.** Every payment carries the order id, the card
+slugs and the full shipping address as Razorpay notes, visible on the payment in the
+dashboard. If an email is ever lost, the order is still packable from there.
 
 **Packing slip — design.** A single local file, `tools/packing-slip.html`: paste the JSON
 from the order email, get a print-ready A6 slip with the address, the species list and the
@@ -385,7 +408,8 @@ built).
 | E9.3 | Catalog, shop page, flip card, grid, card pages, JSON-LD | **Built** |
 | E9.4 | Basket, bundle pricing, tray, cart, checkout, outcomes, GA4 | **Built** (payment stubbed) |
 | E9.4 | Razorpay handoff — replace `handoff()` | Outstanding |
-| E9.4 | Order confirmation email (EmailJS templates ×2) | Outstanding |
+| E9.4 | Razorpay Checkout, behind a key guard | **Built** |
+| E9.5 | Order confirmation emails, buyer + studio | **Built** (needs two EmailJS templates) |
 | E9.3 | Per-card OG images + story cards | Blocked on E3.1/E3.2 |
 | E9.3 | Prerendering of shop routes | Blocked on E3.1 (#22) |
 | E9.2 | Print run, cardstock proof, mailer, postage rates | Smita |

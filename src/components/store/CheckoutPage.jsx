@@ -11,6 +11,7 @@ import {
   IS_TEST_KEY,
 } from '../../store/commerce'
 import { openCheckout } from '../../store/razorpay'
+import { sendOrderEmails } from '../../store/orderEmail'
 import {
   trackBeginCheckout,
   trackAddShippingInfo,
@@ -116,6 +117,18 @@ const CheckoutPage = () => {
 
     try {
       const { paymentId } = await handoff(orderId)
+
+      // Fire the confirmations here rather than on the success page: this is
+      // the earliest point we know the money moved, and it still runs if the
+      // buyer closes the tab a second later. Deliberately not awaited — they
+      // have paid, and a slow mail provider must not hold up their receipt.
+      sendOrderEmails({
+        orderId,
+        paymentId,
+        summary,
+        buyer: values,
+        dispatch: dispatchDate.long,
+      })
       // The basket is deliberately NOT cleared here — the success page clears
       // it once it has recorded the purchase. Someone who closes the tab during
       // the gateway redirect keeps their cards.
