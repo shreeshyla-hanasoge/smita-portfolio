@@ -109,3 +109,24 @@
   .cta-art { width: 64%; max-width: 300px; }
   .cta-news-row { padding: 44px 22px; align-items: flex-start; flex-direction: column; gap: 18px; }
 }
+
+/* Legal links above the copyright line. Quiet by design — they need to be
+   findable, not prominent. */
+.cta-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 22px;
+  margin-bottom: 14px;
+}
+
+.cta-legal a {
+  font-size: 13.5px;
+  color: #83867a;
+  text-decoration: none;
+}
+
+.cta-legal a:hover {
+  color: #4f7a3e;
+  text-decoration: underline;
+}

@@ -14,6 +14,7 @@ import NewsletterQ2Page from './components/NewsletterQ2Page'
 import ServicesPage from './components/ServicesPage'
 import NotFound from './components/NotFound'
 import CommonCTA from './components/CommonCTA'
+import PolicyPage from './components/PolicyPage'
 import { latestNewsletter } from './components/newsletters'
 import { canCheckout } from './store/commerce'
 import { CartProvider } from './store/CartContext'
@@ -140,6 +141,13 @@ function App() {
             {/* /store was the earlier iteration's path; keep it resolving so
                 nothing already shared points at a dead page. */}
             <Route path="/store/*" element={<Navigate to="/shop" replace />} />
+
+            {/* Policy pages. Razorpay's activation review needs each at its
+                own URL and reachable from the site — the footer links to them. */}
+            <Route path="/terms" element={<PolicyPage slug="terms" />} />
+            <Route path="/privacy" element={<PolicyPage slug="privacy" />} />
+            <Route path="/refunds" element={<PolicyPage slug="refunds" />} />
+            <Route path="/shipping" element={<PolicyPage slug="shipping" />} />
 
             {/* Must stay last — it matches anything the routes above did not. */}
             <Route path="*" element={<NotFound />} />

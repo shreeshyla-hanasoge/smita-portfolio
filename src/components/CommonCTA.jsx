@@ -42,6 +42,15 @@ const CommonCTA = () => (
 
     <footer className="cta-footer">
       <div className="cta-wrap">
+        {/* Razorpay's review looks for these from the site, not just at their
+            URLs, and a buyer deciding whether to pay should be able to find
+            the refund terms without hunting. */}
+        <nav className="cta-legal" aria-label="Policies">
+          <Link to="/terms">Terms</Link>
+          <Link to="/privacy">Privacy</Link>
+          <Link to="/refunds">Refunds &amp; Cancellation</Link>
+          <Link to="/shipping">Shipping</Link>
+        </nav>
         <p>&copy; 2026 Studio Mintleaf. All rights reserved.</p>
       </div>
     </footer>
