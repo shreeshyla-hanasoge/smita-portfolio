@@ -9,7 +9,7 @@ import {
   BEST_VALUE_TIER,
   FREE_SHIPPING_OVER,
   SHIPPING_FLAT,
-  nextDispatch, SHOP_OPENS_LABEL,
+  nextDispatch, SHOP_OPENS_LABEL, canCheckout,
 } from '../../store/commerce'
 import { trackViewItemList } from '../../store/analytics'
 import ArtCard, { CardBack } from './ArtCard'
@@ -80,7 +80,9 @@ const ShopPage = () => {
       </Helmet>
 
       {/* The shop is browsable before it opens; say so before anyone fills a
-          collection they cannot pay for yet. */}
+          collection they cannot pay for yet. Once it can take money the banner
+          has nothing left to announce, so it goes. */}
+      {!canCheckout() && (
       <div className="shop-opening shop-opening--banner">
         <div className="sm-shell">
           <p>
@@ -89,6 +91,7 @@ const ShopPage = () => {
           </p>
         </div>
       </div>
+      )}
 
       {/* ------------------------------------------------------------- hero */}
       <header className="shop-hero">

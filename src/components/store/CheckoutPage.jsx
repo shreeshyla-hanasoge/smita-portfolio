@@ -2,7 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { useCart } from '../../store/CartContext'
-import { formatINR, generateOrderId, toPaise, nextDispatch } from '../../store/commerce'
+import {
+  formatINR,
+  generateOrderId,
+  toPaise,
+  nextDispatch,
+  RAZORPAY_KEY_ID,
+  IS_TEST_KEY,
+} from '../../store/commerce'
+import { openCheckout } from '../../store/razorpay'
 import {
   trackBeginCheckout,
   trackAddShippingInfo,
@@ -15,9 +23,9 @@ import './store.css'
  * Checkout — address capture, then handoff.
  *
  * The site never touches card data. This form collects only what the postman
- * needs, then hands the amount and the order id to Razorpay's hosted checkout.
- * In this prototype the handoff is stubbed (see `handoff`) so the whole flow,
- * including the failure path, is clickable without live keys.
+ * needs, then hands the amount and the order id to Razorpay's Checkout modal.
+ * The route only renders when a key is configured — see canCheckout() — so
+ * there is no stubbed path left to fall through to.
  *
  * One page, not a wizard. At this order size a three-step checkout buys
  * nothing but three chances to leave.
@@ -54,7 +62,7 @@ const CheckoutPage = () => {
   const [values, setValues] = useState({})
   const [errors, setErrors] = useState({})
   const [busy, setBusy] = useState(false)
-  const [simulateFailure, setSimulateFailure] = useState(false)
+  const [cancelled, setCancelled] = useState(false)
   const dispatchDate = nextDispatch()
 
   useEffect(() => {
@@ -75,20 +83,21 @@ const CheckoutPage = () => {
   }
 
   /**
-   * Where Razorpay goes.
+   * Hand off to Razorpay.
    *
-   * Live version: POST the basket to a serverless function that re-prices it
-   * server-side from the same tier table, creates a Razorpay order, and
-   * returns { orderId, razorpayOrderId }. The client then opens Razorpay
-   * checkout with that id. Re-pricing on the server is not optional — the
-   * client can edit localStorage, so the amount here is a proposal, never the
-   * authority.
+   * Phase 1: no server, so Checkout opens in amount-only mode and the amount
+   * originates in this browser. Nothing ships until the studio has matched the
+   * payment in the dashboard — see docs/store/E9.1-commerce-architecture.md.
    */
-  const handoff = async (orderId) => {
-    await new Promise((r) => window.setTimeout(r, 900)) // stands in for the network
-    if (simulateFailure) throw new Error('payment_declined')
-    return { orderId, amountPaise: toPaise(summary.total), status: 'paid' }
-  }
+  const handoff = (orderId) =>
+    openCheckout({
+      keyId: RAZORPAY_KEY_ID,
+      orderId,
+      summary,
+      buyer: values,
+      dispatchLabel: dispatchDate.long,
+      amountPaise: toPaise(summary.total),
+    })
 
   const submit = async (e) => {
     e.preventDefault()
@@ -101,23 +110,32 @@ const CheckoutPage = () => {
     }
 
     setBusy(true)
+    setCancelled(false)
     trackAddShippingInfo(summary, 'india')
     const orderId = generateOrderId(new Date(), Math.floor(Math.random() * 1e6))
 
     try {
-      await handoff(orderId)
+      const { paymentId } = await handoff(orderId)
       // The basket is deliberately NOT cleared here — the success page clears
       // it once it has recorded the purchase. Someone who closes the tab during
       // the gateway redirect keeps their cards.
       navigate('/shop/order/success', {
         state: {
           orderId,
+          paymentId,
           summary,
           dispatch: dispatchDate.long,
           buyer: { name: values.name, email: values.email },
         },
       })
     } catch (err) {
+      // Closing the modal is a change of mind, not a decline. Sending someone
+      // to a page headed "that payment didn't go through" for deciding to
+      // think about it would be both wrong and alarming.
+      if (err.message === 'payment_cancelled') {
+        setCancelled(true)
+        return
+      }
       trackCheckoutFailure(err.message)
       navigate('/shop/order/failed', { state: { orderId, reason: err.message } })
     } finally {
@@ -178,14 +196,18 @@ const CheckoutPage = () => {
               ))}
             </div>
 
-            <label className="sim">
-              <input
-                type="checkbox"
-                checked={simulateFailure}
-                onChange={(e) => setSimulateFailure(e.target.checked)}
-              />
-              Prototype only — simulate a declined payment
-            </label>
+            {IS_TEST_KEY && (
+              <p className="sim">
+                Razorpay test mode — use a test card or UPI id. No money moves.
+              </p>
+            )}
+
+            {cancelled && (
+              <p className="field__error" role="status">
+                Payment window closed — nothing has been charged. Your cards are still here
+                whenever you are ready.
+              </p>
+            )}
 
             <button className="sm-btn sm-btn--primary sm-btn--block" type="submit" disabled={busy}>
               {busy ? 'Opening secure checkout…' : `Pay ${formatINR(summary.total)}`}

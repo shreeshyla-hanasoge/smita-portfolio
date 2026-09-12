@@ -135,6 +135,45 @@ export const SHOP_OPENS = new Date(2026, 8, 14)   // 14 September 2026
 
 export const SHOP_OPENS_LABEL = 'Ganesha Chaturthi, 14 September 2026'
 
+// ------------------------------------------------------------- payment gate
+
+/**
+ * The shop takes money only when BOTH are true:
+ *
+ *   1. a Razorpay key is configured (VITE_RAZORPAY_KEY_ID), and
+ *   2. the shop has opened — or this is a preview build.
+ *
+ * Two conditions, deliberately. The key alone would open the live shop the
+ * moment it was deployed, which could be days before the announced date. The
+ * date alone would open a checkout with no gateway behind it. The preview
+ * bypass is the whole point: it lets the studio put a real payment through on
+ * the review URL before opening day without the live site following suit.
+ *
+ * With no key the shop stays exactly as it is today — browsable, basket saves,
+ * checkout unreachable — so merging this changes nothing until a key is set.
+ */
+export const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || ''
+
+export const PAYMENTS_CONFIGURED = Boolean(RAZORPAY_KEY_ID)
+
+/** Razorpay test keys start rzp_test_, live ones rzp_live_. */
+export const IS_TEST_KEY = RAZORPAY_KEY_ID.startsWith('rzp_test_')
+
+/**
+ * Anything that is not the production build ignores the opening date, so the
+ * dev server and the review deploy can both put a payment through before the
+ * 14th. Only the real site waits for the day.
+ *
+ * Read directly rather than importing IS_PREVIEW from the badge component —
+ * this module sits under the UI and should not reach up into it.
+ */
+const BEFORE_OPENING_OK = import.meta.env.DEV || import.meta.env.VITE_PREVIEW === '1'
+
+export const isShopOpen = (now = new Date()) => now >= SHOP_OPENS
+
+export const canCheckout = (now = new Date()) =>
+  PAYMENTS_CONFIGURED && (isShopOpen(now) || BEFORE_OPENING_OK)
+
 /**
  * Orders go out in one batch a month, on the 26th. Saying *which day* turns a
  * delay into a plan — "ships once a month" reads as an excuse, "packed on the

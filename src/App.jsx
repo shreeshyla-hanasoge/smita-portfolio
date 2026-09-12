@@ -15,10 +15,12 @@ import ServicesPage from './components/ServicesPage'
 import NotFound from './components/NotFound'
 import CommonCTA from './components/CommonCTA'
 import { latestNewsletter } from './components/newsletters'
+import { canCheckout } from './store/commerce'
 import { CartProvider } from './store/CartContext'
 import ShopPage from './components/store/ShopPage'
 import CardDetailPage from './components/store/CardDetailPage'
 import CartPage from './components/store/CartPage'
+import CheckoutPage from './components/store/CheckoutPage'
 import { OrderSuccessPage, OrderFailedPage } from './components/store/OrderStatusPage'
 import CollectionTray from './components/store/CollectionTray'
 import PreviewBadge, { IS_PREVIEW } from './components/PreviewBadge'
@@ -124,10 +126,14 @@ function App() {
                 time — see shopRoutes() in src/store/catalog.js */}
             <Route path="/shop" element={<ShopPage />} />
             <Route path="/shop/cart" element={<CartPage />} />
-            {/* Checkout is closed until the shop opens on Ganesha Chaturthi.
-                The page itself is kept, not deleted — reinstating it is a
-                one-line change on the day. */}
-            <Route path="/shop/checkout" element={<Navigate to="/shop/cart" replace />} />
+            {/* Checkout opens only when a Razorpay key is configured AND the
+                shop has opened (or this is a preview build) — see canCheckout()
+                in commerce.js. With no key this stays a redirect, exactly as
+                before, so deploying this changes nothing on its own. */}
+            <Route
+              path="/shop/checkout"
+              element={canCheckout() ? <CheckoutPage /> : <Navigate to="/shop/cart" replace />}
+            />
             <Route path="/shop/order/success" element={<OrderSuccessPage />} />
             <Route path="/shop/order/failed" element={<OrderFailedPage />} />
             <Route path="/shop/card/:cardSlug" element={<CardDetailPage />} />
