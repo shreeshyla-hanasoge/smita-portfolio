@@ -3,6 +3,18 @@
 # Smita Portfolio Deployment Script
 echo "🚀 Deploying Smita Portfolio to AWS S3"
 
+# The live Razorpay key belongs to the production build and only to it.
+#
+# .env carries the TEST key, which is what local work and the review deploy
+# should use. Setting it here means a production deploy cannot accidentally
+# ship the test key — which would open the shop to real customers and take
+# payments that never actually charge them.
+#
+# A Razorpay Key ID is public by design: it is embedded in the client-side
+# JavaScript of every site that takes Razorpay payments. It is the Key SECRET
+# that must never appear in this repository, and it does not.
+export VITE_RAZORPAY_KEY_ID=rzp_live_Tc3meCtxIt3Gwi
+
 # Build the project
 echo "📦 Building project..."
 npm run build

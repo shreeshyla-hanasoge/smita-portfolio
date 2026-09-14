@@ -6,9 +6,11 @@
  * flat ₹60 / free-over-₹500 shipping, the monthly batch on the 26th, and the
  * GST position in GST_POSITION. If any of those change, these change with them.
  *
- * `confirm: true` marks a fact only the studio can supply — a legal name, a
- * postal address. Those render highlighted so they cannot go live unnoticed;
- * Razorpay checks the address on the site against the one on the account.
+ * The `confirm()` helper marks a fact only the studio can supply and renders it
+ * highlighted so it cannot go live unnoticed. Nothing uses it today: the studio
+ * trades under the brand name for now. It is kept because naming a registered
+ * entity and a postal address becomes necessary at GST registration, and then
+ * re-adding it is one line rather than rebuilding the mechanism.
  */
 
 export const POLICY_CONTACT = {
@@ -34,7 +36,6 @@ export const POLICIES = {
         heading: 'Who we are',
         body: [
           p('This website is operated by Studio Mintleaf, an illustration studio based in Bangalore, India. You can reach us at smita@studiomintleaf.in and we usually reply within two working days.'),
-          confirm('Registered legal name, business type (proprietorship, LLP, private limited) and full postal address. Razorpay checks these against your account, and the address must appear on this page.'),
         ],
       },
       {
